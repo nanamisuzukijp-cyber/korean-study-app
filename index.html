@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>韓国語 My Study</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+        "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background: #f7f7f7;
+      color: #333;
+    }
+
+    .app {
+      max-width: 700px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: #777;
+    }
+
+    .menu {
+      display: grid;
+      gap: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .main-button {
+      font-size: 20px;
+      font-weight: bold;
+      padding: 28px 20px;
+    }
+
+    .register {
+      color: #3b5ccc;
+    }
+
+    .study {
+      color: #c45454;
+    }
+
+    .info {
+      margin-top: 40px;
+      padding: 20px;
+      background: white;
+      border-radius: 14px;
+      color: #666;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <h1>韓国語 My Study</h1>
+      <p class="subtitle">自分専用の韓国語学習アプリ</p>
+    </header>
+
+    <main class="menu">
+      <button class="main-button register" onclick="registerMode()">
+        📝 単語・例文を登録する
+      </button>
+
+      <button class="main-button study" onclick="studyMode()">
+        📚 記憶する
+      </button>
+
+      <button onclick="wordList()">
+        📖 登録した単語を見る
+      </button>
+
+      <button onclick="tagManager()">
+        🏷️ タグを管理する
+      </button>
+    </main>
+
+    <div class="info">
+      <strong>現在の状態</strong>
+      <p>
+        まだ単語が登録されていません。<br>
+        「単語・例文を登録する」から学習したい単語を登録してみましょう。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function registerMode() {
+      alert("登録モードはこれから作ります！");
+    }
+
+    function studyMode() {
+      alert("記憶モードはこれから作ります！");
+    }
+
+    function wordList() {
+      alert("単語一覧はこれから作ります！");
+    }
+
+    function tagManager() {
+      alert("タグ管理はこれから作ります！");
+    }
+  </script>
+</body>
+</html>
