@@ -187,7 +187,7 @@ async function apiRequest(path, options = {}) {
   const headers = { ...(options.headers || {}) };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(API_BASE_URL + path, {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
     credentials: "omit",
@@ -196,21 +196,35 @@ async function apiRequest(path, options = {}) {
 
   const text = await response.text();
   let data = {};
-  try { data = text ? JSON.parse(text) : {}; }
-  catch { data = { raw: text }; }
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (error) {
+    data = { raw: text };
+  }
 
   if (!response.ok) {
-    const error = new Error(data.error || `APIエラー (${response.status})`);
+    const error = new Error(
+      data.error || `APIエラー (${response.status})`
+    );
     error.status = response.status;
     error.data = data;
     throw error;
   }
+
   return data;
 }
 
 function showAuthScreen() {
   document.getElementById("authScreen").style.display = "flex";
   document.getElementById("app").classList.remove("active");
+}
+
+function clearAuthMessages() {
+  ["loginMessage", "registerMessage"].forEach((id) => {
+    const element = document.getElementById(id);
+    element.textContent = "";
+    element.className = "message";
+  });
 }
 
 function showLoginForm() {
@@ -225,14 +239,6 @@ function showRegisterForm() {
   clearAuthMessages();
 }
 
-function clearAuthMessages() {
-  ["loginMessage", "registerMessage"].forEach((id) => {
-    const element = document.getElementById(id);
-    element.textContent = "";
-    element.className = "message";
-  });
-}
-
 function showAuthMessage(id, text, type = "error") {
   const element = document.getElementById(id);
   element.textContent = text;
@@ -245,7 +251,10 @@ async function login() {
   const password = document.getElementById("loginPassword").value;
 
   if (!email || !password) {
-    showAuthMessage("loginMessage", "メールアドレスとパスワードを入力してください。");
+    showAuthMessage(
+      "loginMessage",
+      "メールアドレスとパスワードを入力してください。"
+    );
     return;
   }
 
@@ -259,7 +268,9 @@ async function login() {
       body: JSON.stringify({ email, password })
     });
 
-    if (!data.token) throw new Error("認証トークンを取得できませんでした。");
+    if (!data.token) {
+      throw new Error("認証トークンを取得できませんでした。");
+    }
 
     localStorage.setItem(AUTH_TOKEN_KEY, data.token);
     currentUser = data.user;
@@ -283,10 +294,12 @@ async function registerAccount() {
     showAuthMessage("registerMessage", "必要な項目を入力してください。");
     return;
   }
+
   if (password !== confirmation) {
     showAuthMessage("registerMessage", "パスワードが一致しません。");
     return;
   }
+
   if (password.length < 8) {
     showAuthMessage("registerMessage", "パスワードは8文字以上にしてください。");
     return;
@@ -302,7 +315,9 @@ async function registerAccount() {
       body: JSON.stringify({ email, password })
     });
 
-    if (!data.token) throw new Error("認証トークンを取得できませんでした。");
+    if (!data.token) {
+      throw new Error("認証トークンを取得できませんでした。");
+    }
 
     localStorage.setItem(AUTH_TOKEN_KEY, data.token);
     currentUser = data.user;
@@ -322,6 +337,7 @@ async function logout() {
   } catch (error) {
     console.error(error);
   }
+
   localStorage.removeItem(AUTH_TOKEN_KEY);
   currentUser = null;
   words = [];
@@ -333,6 +349,7 @@ async function logout() {
 
 async function checkAuth() {
   const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
   if (!token) {
     showAuthScreen();
     return;
@@ -365,9 +382,8 @@ async function enterApp() {
       handleAuthenticationExpired();
       return;
     }
-    alert("クラウドデータの読み込みに失敗しました。
-" + error.message);
-    throw error;
+    alert(`クラウドデータの読み込みに失敗しました。\n${error.message}`);
+    return;
   }
 
   updateHomeStatus();
@@ -384,7 +400,10 @@ function handleAuthenticationExpired() {
   tags = [];
   showAuthScreen();
   showLoginForm();
-  showAuthMessage("loginMessage", "ログインの有効期限が切れました。もう一度ログインしてください。");
+  showAuthMessage(
+    "loginMessage",
+    "ログインの有効期限が切れました。もう一度ログインしてください。"
+  );
 }
 
 async function loadCloudData() {
@@ -392,14 +411,19 @@ async function loadCloudData() {
     apiRequest("/words"),
     apiRequest("/tags")
   ]);
+
   words = result[0].words || [];
   tags = (result[1].tags || []).map((tag) => tag.name);
 }
 
 function showScreen(screenId) {
-  document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach((screen) => {
+    screen.classList.remove("active");
+  });
+
   const target = document.getElementById(screenId);
   if (target) target.classList.add("active");
+
   window.scrollTo({ top: 0, behavior: "smooth" });
   updateHomeStatus();
   updateTagSelect();
@@ -409,6 +433,7 @@ function showScreen(screenId) {
 
 function updateHomeStatus() {
   const text = document.getElementById("wordCountText");
+
   if (words.length === 0) {
     text.textContent = "まだ単語が登録されていません。";
   } else {
@@ -419,28 +444,34 @@ function updateHomeStatus() {
 function updateTagSelect() {
   const select = document.getElementById("wordTag");
   if (!select) return;
+
   const current = select.value;
   select.innerHTML = '<option value="">タグを選択してください</option>';
+
   tags.forEach((tag) => {
     const option = document.createElement("option");
     option.value = tag;
     option.textContent = tag;
     select.appendChild(option);
   });
+
   if (tags.includes(current)) select.value = current;
 }
 
 function updateTestTagSelect() {
   const select = document.getElementById("testTagSelect");
   if (!select) return;
+
   const current = select.value;
   select.innerHTML = '<option value="">タグを選択してください</option>';
+
   tags.forEach((tag) => {
     const option = document.createElement("option");
     option.value = tag;
     option.textContent = tag;
     select.appendChild(option);
   });
+
   if (tags.includes(current)) select.value = current;
 }
 
@@ -453,6 +484,7 @@ async function addTag() {
     alert("タグ名を入力してください。");
     return;
   }
+
   if (tags.includes(tag)) {
     alert("そのタグはすでに存在します。");
     return;
@@ -464,6 +496,7 @@ async function addTag() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: tag })
     });
+
     tags.push(tag);
     updateTagSelect();
     updateTestTagSelect();
@@ -473,8 +506,7 @@ async function addTag() {
       handleAuthenticationExpired();
       return;
     }
-    alert("タグの保存に失敗しました。
-" + error.message);
+    alert(`タグの保存に失敗しました。\n${error.message}`);
   }
 }
 
@@ -486,7 +518,8 @@ function checkDuplicateKoreanWord() {
   if (!duplicate) return;
 
   document.getElementById("duplicateKoreanText").textContent = duplicate.korean;
-  document.getElementById("duplicateJapaneseText").textContent = duplicate.japanese || "日本語の意味が登録されていません。";
+  document.getElementById("duplicateJapaneseText").textContent =
+    duplicate.japanese || "日本語の意味が登録されていません。";
   document.getElementById("duplicateModal").classList.add("active");
 }
 
@@ -497,6 +530,7 @@ function closeDuplicateModal() {
 function confirmDuplicateRegistration() {
   duplicateCheckHandled = true;
   closeDuplicateModal();
+
   if (pendingWordData) {
     const data = pendingWordData;
     pendingWordData = null;
@@ -514,6 +548,7 @@ function cancelDuplicateRegistration() {
 
 async function translateExample() {
   const text = document.getElementById("koreanExample").value.trim();
+
   if (!text) {
     showTranslationStatus("韓国語の例文を入力してください。", "error");
     return;
@@ -533,13 +568,16 @@ async function translateExample() {
 
     document.getElementById("japaneseExample").value = data.japanese || "";
     document.getElementById("englishExample").value = data.english || "";
-    showTranslationStatus("✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。", "success");
+    showTranslationStatus(
+      "✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。",
+      "success"
+    );
   } catch (error) {
     if (error.status === 401) {
       handleAuthenticationExpired();
       return;
     }
-    showTranslationStatus("❌ " + error.message, "error");
+    showTranslationStatus(`❌ ${error.message}`, "error");
   } finally {
     button.disabled = false;
     button.textContent = "🌐 日本語・英語に自動翻訳";
@@ -558,26 +596,18 @@ function showMessage(text, type) {
   message.className = `message ${type}`;
 }
 
-function showRegisterResult(text, type = "success") {
-  const message = document.getElementById("registerMessage");
-  message.textContent = text;
-  message.className = `message ${type}`;
-  message.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
-
-  window.clearTimeout(showRegisterResult.timer);
-  showRegisterResult.timer = window.setTimeout(() => {
-    message.textContent = "";
-    message.className = "message";
-  }, 3000);
-}
-
 function clearRegisterForm() {
-  ["koreanWord", "japaneseMeaning", "koreanExample", "japaneseExample", "englishExample", "wordMemo"].forEach((id) => {
+  [
+    "koreanWord",
+    "japaneseMeaning",
+    "koreanExample",
+    "japaneseExample",
+    "englishExample",
+    "wordMemo"
+  ].forEach((id) => {
     document.getElementById(id).value = "";
   });
+
   document.getElementById("wordTag").value = "";
   document.getElementById("translationStatus").textContent = "";
   document.getElementById("translationStatus").className = "translation-status";
@@ -614,11 +644,16 @@ async function registerWord() {
     return;
   }
 
-  if (!duplicateCheckHandled && words.some((word) => word.korean === wordData.korean)) {
+  if (
+    !duplicateCheckHandled &&
+    words.some((word) => word.korean === wordData.korean)
+  ) {
     const duplicate = words.find((word) => word.korean === wordData.korean);
     pendingWordData = wordData;
+
     document.getElementById("duplicateKoreanText").textContent = duplicate.korean;
-    document.getElementById("duplicateJapaneseText").textContent = duplicate.japanese || "日本語の意味が登録されていません。";
+    document.getElementById("duplicateJapaneseText").textContent =
+      duplicate.japanese || "日本語の意味が登録されていません。";
     document.getElementById("duplicateModal").classList.add("active");
     return;
   }
@@ -638,32 +673,46 @@ async function saveNewWordToCloud(wordData, allowDuplicate = false) {
     duplicateCheckHandled = false;
     pendingWordData = null;
     clearRegisterForm();
-    showRegisterResult(`✅ 「${wordData.korean}」を登録しました！`, "success");
+    showMessage(`✅ 「${wordData.korean}」を登録しました！`, "success");
     updateHomeStatus();
     updateAvailableTestCount();
+
+    const message = document.getElementById("registerMessage");
+    message.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    window.clearTimeout(saveNewWordToCloud.successTimer);
+    saveNewWordToCloud.successTimer = window.setTimeout(() => {
+      message.textContent = "";
+      message.className = "message";
+    }, 3000);
   } catch (error) {
     if (error.status === 401) {
       handleAuthenticationExpired();
       return;
     }
+
     if (error.status === 409) {
       pendingWordData = wordData;
       const duplicate = error.data?.duplicate;
-      document.getElementById("duplicateKoreanText").textContent = duplicate?.korean || wordData.korean;
-      document.getElementById("duplicateJapaneseText").textContent = duplicate?.japanese || "";
+      document.getElementById("duplicateKoreanText").textContent =
+        duplicate?.korean || wordData.korean;
+      document.getElementById("duplicateJapaneseText").textContent =
+        duplicate?.japanese || "";
       document.getElementById("duplicateModal").classList.add("active");
       return;
     }
-    showMessage("登録に失敗しました。
-" + error.message, "error");
+
+    showMessage(`登録に失敗しました。\n${error.message}`, "error");
   }
 }
 
 function selectTestMode(mode) {
   selectedTestMode = mode;
+
   document.querySelectorAll(".test-mode-button").forEach((button) => {
     button.classList.toggle("selected", button.dataset.mode === mode);
   });
+
   document.getElementById("testTagArea").classList.toggle("active", mode === "tag");
   updateAvailableTestCount();
 }
@@ -672,10 +721,12 @@ function getWordsForTest(mode) {
   if (mode === "all") return [...words];
   if (mode === "review") return words.filter((word) => word.memoryLevel === "review");
   if (mode === "weak") return words.filter((word) => word.memoryLevel === "weak");
+
   if (mode === "tag") {
     const tag = document.getElementById("testTagSelect").value;
     return tag ? words.filter((word) => word.tag === tag) : [];
   }
+
   return [];
 }
 
@@ -687,15 +738,18 @@ function updateAvailableTestCount() {
 
 function shuffleArray(array) {
   const result = [...array];
+
   for (let i = result.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     [result[i], result[j]] = [result[j], result[i]];
   }
+
   return result;
 }
 
 function startTest() {
   const candidates = getWordsForTest(selectedTestMode);
+
   if (!candidates.length) {
     alert("この条件で出題できる単語がありません。");
     return;
@@ -704,7 +758,9 @@ function startTest() {
   let modeLabel = "📚 すべての単語";
   if (selectedTestMode === "review") modeLabel = "🧠 もっと覚える";
   if (selectedTestMode === "weak") modeLabel = "🫠 まだまだ";
-  if (selectedTestMode === "tag") modeLabel = `🏷️ ${document.getElementById("testTagSelect").value}`;
+  if (selectedTestMode === "tag") {
+    modeLabel = `🏷️ ${document.getElementById("testTagSelect").value}`;
+  }
 
   testSession = {
     words: shuffleArray(candidates),
@@ -722,6 +778,7 @@ function startTest() {
 
 function renderTestQuestion() {
   const word = testSession.words[testSession.index];
+
   if (!word) {
     finishTest();
     return;
@@ -730,12 +787,14 @@ function renderTestQuestion() {
   testSession.revealed = false;
   testSession.rated = false;
 
-  document.getElementById("testProgress").textContent = `問題 ${testSession.index + 1} / ${testSession.words.length}`;
+  document.getElementById("testProgress").textContent =
+    `問題 ${testSession.index + 1} / ${testSession.words.length}`;
   document.getElementById("testKoreanWord").textContent = word.korean || "";
   document.getElementById("testKoreanExample").textContent = word.koreanExample || "";
   document.getElementById("testJapaneseMeaning").textContent = word.japanese || "";
   document.getElementById("testJapaneseExample").textContent = word.japaneseExample || "";
-  document.getElementById("testEnglishExample").textContent = word.englishExample || "（英訳は登録されていません）";
+  document.getElementById("testEnglishExample").textContent =
+    word.englishExample || "（英訳は登録されていません）";
 
   const memoBox = document.getElementById("testMemoBox");
   if (word.memo && word.memo.trim()) {
@@ -753,13 +812,19 @@ function renderTestQuestion() {
   resetRatingButtons();
   document.getElementById("nextTestButton").classList.remove("active");
   document.getElementById("nextTestButton").textContent =
-    testSession.index === testSession.words.length - 1 ? "テスト結果を見る →" : "次の問題 →";
+    testSession.index === testSession.words.length - 1
+      ? "テスト結果を見る →"
+      : "次の問題 →";
 }
 
 function speakKoreanExample() {
   const text = document.getElementById("testKoreanExample").textContent.trim();
   if (!text) return;
-  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+
+  if (
+    !("speechSynthesis" in window) ||
+    !("SpeechSynthesisUtterance" in window)
+  ) {
     alert("このブラウザでは読み上げ機能を利用できません。");
     return;
   }
@@ -770,13 +835,19 @@ function speakKoreanExample() {
   utterance.rate = 0.9;
 
   const voices = window.speechSynthesis.getVoices();
-  const koreanVoice = voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("ko"));
+  const koreanVoice = voices.find(
+    (voice) =>
+      voice.lang &&
+      voice.lang.toLowerCase().startsWith("ko")
+  );
+
   if (koreanVoice) utterance.voice = koreanVoice;
   window.speechSynthesis.speak(utterance);
 }
 
 function showTestAnswer() {
   if (testSession.revealed) return;
+
   testSession.revealed = true;
   document.getElementById("answerArea").classList.add("active");
   document.getElementById("ratingArea").classList.add("active");
@@ -809,18 +880,23 @@ async function rateCurrentQuestion(level) {
     document.getElementById("nextTestButton").classList.add("active");
   } catch (error) {
     buttons.forEach((button) => { button.disabled = false; });
+
     if (error.status === 401) {
       handleAuthenticationExpired();
       return;
     }
-    alert("評価の保存に失敗しました。
-" + error.message);
+
+    alert(`評価の保存に失敗しました。\n${error.message}`);
   }
 }
 
 function getRatingButton(level) {
-  if (level === "perfect") return document.getElementById("perfectRatingButton");
-  if (level === "review") return document.getElementById("reviewRatingButton");
+  if (level === "perfect") {
+    return document.getElementById("perfectRatingButton");
+  }
+  if (level === "review") {
+    return document.getElementById("reviewRatingButton");
+  }
   return document.getElementById("weakRatingButton");
 }
 
@@ -842,27 +918,36 @@ function nextTestQuestion() {
     alert("まず評価を選んでください。");
     return;
   }
+
   testSession.index += 1;
+
   if (testSession.index >= testSession.words.length) {
     finishTest();
     return;
   }
+
   window.scrollTo({ top: 0, behavior: "smooth" });
   renderTestQuestion();
 }
 
 function finishTest() {
   document.getElementById("resultTotal").textContent = `${testSession.words.length}問終了`;
-  document.getElementById("resultPerfect").textContent = `💯 完璧：${testSession.counts.perfect}問`;
-  document.getElementById("resultReview").textContent = `🧠 もっと覚える：${testSession.counts.review}問`;
-  document.getElementById("resultWeak").textContent = `🫠 まだまだ：${testSession.counts.weak}問`;
-  document.getElementById("retryWeakButton").disabled = testSession.counts.weak === 0;
-  document.getElementById("retryReviewButton").disabled = testSession.counts.review === 0;
+  document.getElementById("resultPerfect").textContent =
+    `💯 完璧：${testSession.counts.perfect}問`;
+  document.getElementById("resultReview").textContent =
+    `🧠 もっと覚える：${testSession.counts.review}問`;
+  document.getElementById("resultWeak").textContent =
+    `🫠 まだまだ：${testSession.counts.weak}問`;
+  document.getElementById("retryWeakButton").disabled =
+    testSession.counts.weak === 0;
+  document.getElementById("retryReviewButton").disabled =
+    testSession.counts.review === 0;
   showScreen("testResultScreen");
 }
 
 function startFocusedTest(level) {
   const candidates = words.filter((word) => word.memoryLevel === level);
+
   if (!candidates.length) {
     alert("該当する単語がありません。");
     return;
@@ -884,6 +969,7 @@ function startFocusedTest(level) {
 
 function restartSameTest() {
   const candidates = getWordsForTest(testSession.mode);
+
   if (!candidates.length) {
     alert("現在、この条件で出題できる単語がありません。");
     return;
@@ -904,9 +990,10 @@ function restartSameTest() {
 }
 
 function exitTest() {
-  const confirmed = confirm("テストを途中で終了しますか？
+  const confirmed = confirm(
+    "テストを途中で終了しますか？\n\nすでに選択した評価は保存されています。"
+  );
 
-すでに選択した評価は保存されています。");
   if (confirmed) showScreen("testSetupScreen");
 }
 
