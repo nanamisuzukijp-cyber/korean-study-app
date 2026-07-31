@@ -1,7 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -10,12 +12,16 @@
   <title>韓国語 My Study</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+
     body {
+
       margin: 0;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -23,9 +29,12 @@
         "Hiragino Kaku Gothic ProN",
         "Yu Gothic",
         sans-serif;
+
       background: #f7f7f7;
+
       color: #333;
     }
+
 
     button,
     input,
@@ -34,380 +43,1538 @@
       font: inherit;
     }
 
+
     button {
       cursor: pointer;
     }
 
+
     .app {
+
       max-width: 760px;
+
       margin: 0 auto;
+
       min-height: 100vh;
-      padding: 30px 20px 60px;
+
+      padding:
+        30px
+        20px
+        60px;
     }
+
 
     /* =========================
        共通
     ========================= */
 
+
     header {
+
       text-align: center;
+
       margin-bottom: 35px;
     }
 
+
     h1 {
+
       margin: 0;
+
       font-size: 32px;
     }
 
+
     .subtitle {
+
       margin-top: 10px;
+
       color: #777;
     }
+
 
     .screen {
       display: none;
     }
 
+
     .screen.active {
       display: block;
     }
 
+
     .page-title {
+
       font-size: 26px;
-      margin: 0 0 25px;
+
+      margin:
+        0
+        0
+        25px;
     }
 
+
     .back-button {
+
       border: none;
+
       background: none;
-      padding: 5px 0;
+
+      padding:
+        5px
+        0;
+
       margin-bottom: 20px;
+
       color: #666;
     }
 
+
     .back-button:hover {
-      text-decoration: underline;
+
+      text-decoration:
+        underline;
     }
+
 
     /* =========================
        トップ画面
     ========================= */
 
+
     .menu {
+
       display: grid;
+
       gap: 18px;
     }
 
+
     .menu-button {
+
       width: 100%;
+
       border: none;
-      border-radius: 16px;
-      padding: 28px 20px;
-      background: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      font-size: 20px;
-      font-weight: bold;
+
+      border-radius:
+        16px;
+
+      padding:
+        28px
+        20px;
+
+      background:
+        white;
+
+      box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.08);
+
+      font-size:
+        20px;
+
+      font-weight:
+        bold;
+
       transition:
         transform 0.15s,
         box-shadow 0.15s;
     }
 
+
     .menu-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0 6px 16px
+        rgba(0, 0, 0, 0.12);
     }
+
 
     .register-button {
-      color: #3b5ccc;
+
+      color:
+        #3b5ccc;
     }
+
 
     .test-button {
-      color: #c45454;
+
+      color:
+        #c45454;
     }
 
+
     .status-card {
-      margin-top: 28px;
-      padding: 20px;
-      background: white;
-      border-radius: 16px;
-      line-height: 1.7;
+
+      margin-top:
+        28px;
+
+      padding:
+        20px;
+
+      background:
+        white;
+
+      border-radius:
+        16px;
+
+      line-height:
+        1.7;
     }
+
 
     /* =========================
        登録フォーム
     ========================= */
 
+
     .form-card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+      background:
+        white;
+
+      border-radius:
+        18px;
+
+      padding:
+        25px;
+
+      box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.06);
     }
+
 
     .form-group {
-      margin-bottom: 22px;
+
+      margin-bottom:
+        22px;
     }
+
 
     .form-group label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
+
+      display:
+        block;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        8px;
     }
 
+
     .required {
-      color: #d34f4f;
-      font-size: 13px;
-      margin-left: 5px;
+
+      color:
+        #d34f4f;
+
+      font-size:
+        13px;
+
+      margin-left:
+        5px;
     }
+
 
     input[type="text"],
     textarea,
     select {
-      width: 100%;
-      border: 1px solid #d8d8d8;
-      border-radius: 10px;
-      padding: 12px 14px;
-      background: white;
-      outline: none;
-      transition: border-color 0.15s;
+
+      width:
+        100%;
+
+      border:
+        1px solid #d8d8d8;
+
+      border-radius:
+        10px;
+
+      padding:
+        12px 14px;
+
+      background:
+        white;
+
+      outline:
+        none;
+
+      transition:
+        border-color 0.15s;
     }
+
 
     input[type="text"]:focus,
     textarea:focus,
     select:focus {
-      border-color: #6b7dd8;
+
+      border-color:
+        #6b7dd8;
     }
+
 
     textarea {
-      min-height: 100px;
-      resize: vertical;
-      line-height: 1.6;
+
+      min-height:
+        100px;
+
+      resize:
+        vertical;
+
+      line-height:
+        1.6;
     }
+
 
     .help-text {
-      margin-top: 7px;
-      font-size: 13px;
-      color: #888;
-      line-height: 1.5;
+
+      margin-top:
+        7px;
+
+      font-size:
+        13px;
+
+      color:
+        #888;
+
+      line-height:
+        1.5;
     }
 
+
     /* =========================
-       翻訳ボタン
+       翻訳
     ========================= */
 
+
     .translate-button {
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 13px 16px;
-      margin-top: 10px;
-      background: #5b67c8;
-      color: white;
-      font-weight: bold;
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        10px;
+
+      padding:
+        13px 16px;
+
+      margin-top:
+        10px;
+
+      background:
+        #5b67c8;
+
+      color:
+        white;
+
+      font-weight:
+        bold;
+
       transition:
         opacity 0.15s,
         transform 0.15s;
     }
 
+
     .translate-button:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
+
+      opacity:
+        0.92;
+
+      transform:
+        translateY(-1px);
     }
+
 
     .translate-button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-      transform: none;
+
+      cursor:
+        not-allowed;
+
+      opacity:
+        0.6;
+
+      transform:
+        none;
     }
+
 
     .translation-status {
-      display: none;
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.5;
+
+      display:
+        none;
+
+      margin-top:
+        10px;
+
+      padding:
+        10px 12px;
+
+      border-radius:
+        10px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.5;
     }
+
 
     .translation-status.loading {
-      display: block;
-      background: #f2f4ff;
-      color: #4f5ca8;
+
+      display:
+        block;
+
+      background:
+        #f2f4ff;
+
+      color:
+        #4f5ca8;
     }
+
 
     .translation-status.success {
-      display: block;
-      background: #edf8f0;
-      color: #2c713d;
+
+      display:
+        block;
+
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
     }
 
+
     .translation-status.error {
-      display: block;
-      background: #fff0f0;
-      color: #a63838;
+
+      display:
+        block;
+
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
     }
+
 
     /* =========================
        タグ
     ========================= */
 
+
     .tag-row {
-      display: flex;
-      gap: 10px;
+
+      display:
+        flex;
+
+      gap:
+        10px;
     }
+
 
     .tag-row select {
-      flex: 1;
+
+      flex:
+        1;
     }
+
 
     .small-button {
-      border: 1px solid #ccc;
-      background: #fafafa;
-      border-radius: 10px;
-      padding: 10px 14px;
-      white-space: nowrap;
+
+      border:
+        1px solid #ccc;
+
+      background:
+        #fafafa;
+
+      border-radius:
+        10px;
+
+      padding:
+        10px 14px;
+
+      white-space:
+        nowrap;
     }
 
+
     .small-button:hover {
-      background: #f0f0f0;
+
+      background:
+        #f0f0f0;
     }
+
 
     /* =========================
        登録ボタン
     ========================= */
 
+
     .submit-button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 10px;
-      background: #3b5ccc;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      margin-top:
+        10px;
+
+      background:
+        #3b5ccc;
+
+      color:
+        white;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
     }
 
+
     .submit-button:hover {
-      opacity: 0.9;
+
+      opacity:
+        0.9;
     }
+
 
     /* =========================
        メッセージ
     ========================= */
 
+
     .message {
-      margin-top: 15px;
-      padding: 13px 15px;
-      border-radius: 10px;
-      display: none;
-      line-height: 1.5;
+
+      margin-top:
+        15px;
+
+      padding:
+        13px 15px;
+
+      border-radius:
+        10px;
+
+      display:
+        none;
+
+      line-height:
+        1.5;
     }
+
 
     .message.success {
-      display: block;
-      background: #edf8f0;
-      color: #2c713d;
+
+      display:
+        block;
+
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
     }
 
+
     .message.error {
-      display: block;
-      background: #fff0f0;
-      color: #a63838;
+
+      display:
+        block;
+
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
     }
+
 
     /* =========================
        モーダル
     ========================= */
 
+
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 1000;
+
+      position:
+        fixed;
+
+      inset:
+        0;
+
+      background:
+        rgba(0, 0, 0, 0.45);
+
+      display:
+        none;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      padding:
+        20px;
+
+      z-index:
+        1000;
     }
+
 
     .modal-overlay.active {
-      display: flex;
+
+      display:
+        flex;
     }
+
 
     .modal {
-      width: 100%;
-      max-width: 440px;
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+
+      width:
+        100%;
+
+      max-width:
+        440px;
+
+      background:
+        white;
+
+      border-radius:
+        18px;
+
+      padding:
+        25px;
+
+      box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.2);
     }
+
 
     .modal h3 {
-      margin-top: 0;
-      line-height: 1.5;
+
+      margin-top:
+        0;
+
+      line-height:
+        1.5;
     }
+
 
     .modal p {
-      line-height: 1.7;
-      color: #555;
+
+      line-height:
+        1.7;
+
+      color:
+        #555;
     }
+
 
     .modal-buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 20px;
+
+      display:
+        grid;
+
+      gap:
+        10px;
+
+      margin-top:
+        20px;
     }
+
 
     .modal-button {
-      border: none;
-      border-radius: 10px;
-      padding: 13px;
-      font-weight: bold;
+
+      border:
+        none;
+
+      border-radius:
+        10px;
+
+      padding:
+        13px;
+
+      font-weight:
+        bold;
     }
+
 
     .modal-primary {
-      background: #3b5ccc;
-      color: white;
+
+      background:
+        #3b5ccc;
+
+      color:
+        white;
     }
+
 
     .modal-secondary {
-      background: #eee;
-      color: #333;
+
+      background:
+        #eee;
+
+      color:
+        #333;
     }
 
+
     /* =========================
-       スマホ用
+       テスト開始画面
     ========================= */
+
+
+    .test-setup-card {
+
+      background:
+        white;
+
+      border-radius:
+        18px;
+
+      padding:
+        25px;
+
+      box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.06);
+    }
+
+
+    .setup-question {
+
+      margin:
+        0 0 18px;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
+    }
+
+
+    .test-mode-list {
+
+      display:
+        grid;
+
+      gap:
+        12px;
+    }
+
+
+    .test-mode-button {
+
+      width:
+        100%;
+
+      text-align:
+        left;
+
+      border:
+        2px solid #e1e1e1;
+
+      border-radius:
+        14px;
+
+      padding:
+        16px;
+
+      background:
+        white;
+
+      transition:
+        border-color 0.15s,
+        background 0.15s;
+    }
+
+
+    .test-mode-button:hover {
+
+      border-color:
+        #c7cce9;
+    }
+
+
+    .test-mode-button.selected {
+
+      border-color:
+        #5b67c8;
+
+      background:
+        #f3f5ff;
+    }
+
+
+    .test-mode-title {
+
+      display:
+        block;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        4px;
+    }
+
+
+    .test-mode-description {
+
+      display:
+        block;
+
+      color:
+        #777;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
+    }
+
+
+    .test-tag-area {
+
+      margin-top:
+        20px;
+
+      padding-top:
+        20px;
+
+      border-top:
+        1px solid #eee;
+
+      display:
+        none;
+    }
+
+
+    .test-tag-area.active {
+
+      display:
+        block;
+    }
+
+
+    .test-start-button {
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      margin-top:
+        22px;
+
+      background:
+        #c45454;
+
+      color:
+        white;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
+    }
+
+
+    .test-start-button:hover {
+
+      opacity:
+        0.9;
+    }
+
+
+    .test-start-button:disabled {
+
+      opacity:
+        0.5;
+
+      cursor:
+        not-allowed;
+    }
+
+
+    .available-count {
+
+      margin-top:
+        14px;
+
+      font-size:
+        14px;
+
+      color:
+        #777;
+
+      text-align:
+        center;
+    }
+
+
+    /* =========================
+       テスト問題画面
+    ========================= */
+
+
+    .test-progress {
+
+      text-align:
+        center;
+
+      color:
+        #777;
+
+      font-size:
+        14px;
+
+      margin-bottom:
+        15px;
+    }
+
+
+    .test-card {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.06);
+    }
+
+
+    .test-section-label {
+
+      font-size:
+        13px;
+
+      color:
+        #888;
+
+      margin-bottom:
+        8px;
+    }
+
+
+    .test-korean-word {
+
+      font-size:
+        34px;
+
+      font-weight:
+        bold;
+
+      text-align:
+        center;
+
+      margin:
+        5px 0 30px;
+
+      line-height:
+        1.4;
+
+      word-break:
+        break-word;
+    }
+
+
+    .test-korean-example-box {
+
+      padding:
+        18px;
+
+      background:
+        #f7f7f7;
+
+      border-radius:
+        14px;
+
+      margin-bottom:
+        24px;
+    }
+
+
+    .test-korean-example {
+
+      font-size:
+        18px;
+
+      line-height:
+        1.8;
+
+      margin:
+        0;
+
+      white-space:
+        pre-wrap;
+
+      word-break:
+        break-word;
+    }
+
+
+    .reveal-button {
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      background:
+        #5b67c8;
+
+      color:
+        white;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
+    }
+
+
+    .reveal-button:hover {
+
+      opacity:
+        0.92;
+    }
+
+
+    /* =========================
+       答え
+    ========================= */
+
+
+    .answer-area {
+
+      display:
+        none;
+
+      margin-top:
+        25px;
+
+      padding-top:
+        25px;
+
+      border-top:
+        1px solid #e5e5e5;
+    }
+
+
+    .answer-area.active {
+
+      display:
+        block;
+    }
+
+
+    .answer-block {
+
+      margin-bottom:
+        22px;
+    }
+
+
+    .answer-block:last-child {
+
+      margin-bottom:
+        0;
+    }
+
+
+    .answer-label {
+
+      font-size:
+        13px;
+
+      color:
+        #888;
+
+      margin-bottom:
+        7px;
+    }
+
+
+    .answer-text {
+
+      margin:
+        0;
+
+      font-size:
+        18px;
+
+      line-height:
+        1.7;
+
+      white-space:
+        pre-wrap;
+
+      word-break:
+        break-word;
+    }
+
+
+    .answer-divider {
+
+      margin:
+        24px
+        0;
+
+      border:
+        none;
+
+      border-top:
+        1px solid #eee;
+    }
+
+
+    /* =========================
+       評価ボタン
+    ========================= */
+
+
+    .rating-area {
+
+      margin-top:
+        28px;
+
+      display:
+        none;
+    }
+
+
+    .rating-area.active {
+
+      display:
+        block;
+    }
+
+
+    .rating-question {
+
+      text-align:
+        center;
+
+      font-weight:
+        bold;
+
+      margin:
+        0 0 12px;
+    }
+
+
+    .rating-buttons {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap:
+        10px;
+    }
+
+
+    .rating-button {
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        14px 8px;
+
+      font-weight:
+        bold;
+
+      line-height:
+        1.4;
+    }
+
+
+    .perfect-button {
+
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
+    }
+
+
+    .review-button {
+
+      background:
+        #fff6df;
+
+      color:
+        #8a6412;
+    }
+
+
+    .weak-button {
+
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
+    }
+
+
+    .rating-button.selected {
+
+      outline:
+        3px solid #aaa;
+
+      outline-offset:
+        2px;
+    }
+
+
+    .rating-button:disabled {
+
+      cursor:
+        default;
+
+      opacity:
+        0.7;
+    }
+
+
+    /* =========================
+       次へ
+    ========================= */
+
+
+    .next-button {
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      margin-top:
+        18px;
+
+      background:
+        #333;
+
+      color:
+        white;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
+
+      display:
+        none;
+    }
+
+
+    .next-button.active {
+
+      display:
+        block;
+    }
+
+
+    .next-button:hover {
+
+      opacity:
+        0.9;
+    }
+
+
+    /* =========================
+       テスト結果
+    ========================= */
+
+
+    .result-card {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 4px 12px
+        rgba(0, 0, 0, 0.06);
+
+      text-align:
+        center;
+    }
+
+
+    .result-title {
+
+      margin:
+        0 0 10px;
+
+      font-size:
+        28px;
+    }
+
+
+    .result-total {
+
+      color:
+        #777;
+
+      margin-bottom:
+        25px;
+    }
+
+
+    .result-list {
+
+      display:
+        grid;
+
+      gap:
+        10px;
+
+      margin-bottom:
+        25px;
+    }
+
+
+    .result-item {
+
+      padding:
+        14px;
+
+      border-radius:
+        12px;
+
+      font-weight:
+        bold;
+    }
+
+
+    .result-perfect {
+
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
+    }
+
+
+    .result-review {
+
+      background:
+        #fff6df;
+
+      color:
+        #8a6412;
+    }
+
+
+    .result-weak {
+
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
+    }
+
+
+    .result-buttons {
+
+      display:
+        grid;
+
+      gap:
+        10px;
+    }
+
+
+    .result-button {
+
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        14px;
+
+      font-weight:
+        bold;
+    }
+
+
+    .result-button.primary {
+
+      background:
+        #5b67c8;
+
+      color:
+        white;
+    }
+
+
+    .result-button.secondary {
+
+      background:
+        #eee;
+
+      color:
+        #333;
+    }
+
+
+    .result-button:disabled {
+
+      opacity:
+        0.45;
+
+      cursor:
+        not-allowed;
+    }
+
+
+    /* =========================
+       スマホ
+    ========================= */
+
 
     @media (max-width: 600px) {
 
       .app {
+
         padding:
           25px 15px 50px;
       }
 
+
       h1 {
-        font-size: 28px;
+
+        font-size:
+          28px;
       }
+
 
       .page-title {
-        font-size: 23px;
+
+        font-size:
+          23px;
       }
 
-      .form-card {
-        padding: 20px;
+
+      .form-card,
+      .test-setup-card,
+      .test-card,
+      .result-card {
+
+        padding:
+          20px;
       }
+
 
       .tag-row {
-        flex-direction: column;
+
+        flex-direction:
+          column;
       }
 
+
       .small-button {
-        width: 100%;
+
+        width:
+          100%;
       }
+
+
+      .test-korean-word {
+
+        font-size:
+          29px;
+      }
+
+
+      .rating-buttons {
+
+        grid-template-columns:
+          1fr;
+      }
+
     }
+
   </style>
 </head>
 
@@ -415,6 +1582,7 @@
 <body>
 
   <div class="app">
+
 
     <!-- =========================
          ヘッダー
@@ -433,9 +1601,9 @@
     </header>
 
 
-    <!-- =========================
+    <!-- ==================================================
          トップ画面
-    ========================= -->
+    ================================================== -->
 
     <section
       id="homeScreen"
@@ -444,7 +1612,8 @@
 
       <div class="menu">
 
-        <!-- 登録する -->
+
+        <!-- 登録 -->
 
         <button
           class="menu-button register-button"
@@ -454,19 +1623,18 @@
         </button>
 
 
-        <!-- テストする -->
+        <!-- テスト -->
 
         <button
           class="menu-button test-button"
-          onclick="comingSoon('テスト')"
+          onclick="showScreen('testSetupScreen')"
         >
           ✏️ テストする
         </button>
 
+
       </div>
 
-
-      <!-- 現在の登録数 -->
 
       <div class="status-card">
 
@@ -483,9 +1651,9 @@
     </section>
 
 
-    <!-- =========================
+    <!-- ==================================================
          登録画面
-    ========================= -->
+    ================================================== -->
 
     <section
       id="registerScreen"
@@ -508,9 +1676,7 @@
       <div class="form-card">
 
 
-        <!-- =====================
-             1. 韓国語
-        ===================== -->
+        <!-- 韓国語 -->
 
         <div class="form-group">
 
@@ -534,9 +1700,7 @@
         </div>
 
 
-        <!-- =====================
-             2. 日本語の意味
-        ===================== -->
+        <!-- 日本語の意味 -->
 
         <div class="form-group">
 
@@ -560,9 +1724,7 @@
         </div>
 
 
-        <!-- =====================
-             3. 韓国語の例文
-        ===================== -->
+        <!-- 韓国語例文 -->
 
         <div class="form-group">
 
@@ -583,8 +1745,6 @@
           ></textarea>
 
 
-          <!-- 自動翻訳ボタン -->
-
           <button
             type="button"
             id="translateButton"
@@ -594,8 +1754,6 @@
             🌐 日本語・英語に自動翻訳
           </button>
 
-
-          <!-- 翻訳状態 -->
 
           <div
             id="translationStatus"
@@ -615,9 +1773,7 @@
         </div>
 
 
-        <!-- =====================
-             4. 例文の日本語訳
-        ===================== -->
+        <!-- 日本語例文 -->
 
         <div class="form-group">
 
@@ -648,9 +1804,7 @@
         </div>
 
 
-        <!-- =====================
-             5. 例文の英訳
-        ===================== -->
+        <!-- 英語例文 -->
 
         <div class="form-group">
 
@@ -677,9 +1831,7 @@
         </div>
 
 
-        <!-- =====================
-             6. タグ
-        ===================== -->
+        <!-- タグ -->
 
         <div class="form-group">
 
@@ -692,7 +1844,6 @@
 
           <div class="tag-row">
 
-            <!-- タグ選択 -->
 
             <select id="wordTag">
 
@@ -702,8 +1853,6 @@
 
             </select>
 
-
-            <!-- 新しいタグ -->
 
             <button
               type="button"
@@ -728,9 +1877,7 @@
         </div>
 
 
-        <!-- =====================
-             7. メモ
-        ===================== -->
+        <!-- メモ -->
 
         <div class="form-group">
 
@@ -749,9 +1896,7 @@
         </div>
 
 
-        <!-- =====================
-             登録ボタン
-        ===================== -->
+        <!-- 登録 -->
 
         <button
           type="button"
@@ -762,8 +1907,6 @@
         </button>
 
 
-        <!-- 登録結果 -->
-
         <div
           id="registerMessage"
           class="message"
@@ -773,12 +1916,488 @@
 
     </section>
 
+
+    <!-- ==================================================
+         テスト開始画面
+    ================================================== -->
+
+    <section
+      id="testSetupScreen"
+      class="screen"
+    >
+
+      <button
+        class="back-button"
+        onclick="showScreen('homeScreen')"
+      >
+        ← トップに戻る
+      </button>
+
+
+      <h2 class="page-title">
+        ✏️ テストする
+      </h2>
+
+
+      <div class="test-setup-card">
+
+
+        <p class="setup-question">
+          どの単語から出題しますか？
+        </p>
+
+
+        <div
+          id="testModeList"
+          class="test-mode-list"
+        >
+
+
+          <!-- 全単語 -->
+
+          <button
+            type="button"
+            class="test-mode-button selected"
+            data-mode="all"
+            onclick="selectTestMode('all')"
+          >
+
+            <span class="test-mode-title">
+              📚 すべての単語
+            </span>
+
+            <span class="test-mode-description">
+              登録されているすべての単語からランダムに出題します。
+            </span>
+
+          </button>
+
+
+          <!-- もっと覚える -->
+
+          <button
+            type="button"
+            class="test-mode-button"
+            data-mode="review"
+            onclick="selectTestMode('review')"
+          >
+
+            <span class="test-mode-title">
+              🧠 もっと覚える
+            </span>
+
+            <span class="test-mode-description">
+              「もっと覚える」と評価した単語だけを出題します。
+            </span>
+
+          </button>
+
+
+          <!-- まだまだ -->
+
+          <button
+            type="button"
+            class="test-mode-button"
+            data-mode="weak"
+            onclick="selectTestMode('weak')"
+          >
+
+            <span class="test-mode-title">
+              🫠 まだまだ
+            </span>
+
+            <span class="test-mode-description">
+              「まだまだ」と評価した単語だけを出題します。
+            </span>
+
+          </button>
+
+
+          <!-- タグ -->
+
+          <button
+            type="button"
+            class="test-mode-button"
+            data-mode="tag"
+            onclick="selectTestMode('tag')"
+          >
+
+            <span class="test-mode-title">
+              🏷️ タグから選ぶ
+            </span>
+
+            <span class="test-mode-description">
+              選択したタグが付いている単語だけを出題します。
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <!-- タグ選択 -->
+
+        <div
+          id="testTagArea"
+          class="test-tag-area"
+        >
+
+          <label for="testTagSelect">
+
+            出題するタグ
+
+          </label>
+
+
+          <select
+            id="testTagSelect"
+          >
+
+            <option value="">
+              タグを選択してください
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 件数 -->
+
+        <p
+          id="availableTestCount"
+          class="available-count"
+        >
+          出題可能な単語：0件
+        </p>
+
+
+        <!-- 開始 -->
+
+        <button
+          id="startTestButton"
+          type="button"
+          class="test-start-button"
+          onclick="startTest()"
+        >
+          テストを始める
+        </button>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         テスト問題画面
+    ================================================== -->
+
+    <section
+      id="testQuestionScreen"
+      class="screen"
+    >
+
+      <button
+        class="back-button"
+        onclick="exitTest()"
+      >
+        ← テストをやめる
+      </button>
+
+
+      <div
+        id="testProgress"
+        class="test-progress"
+      >
+        問題 1 / 1
+      </div>
+
+
+      <div class="test-card">
+
+
+        <div class="test-section-label">
+          韓国語
+        </div>
+
+
+        <div
+          id="testKoreanWord"
+          class="test-korean-word"
+        >
+        </div>
+
+
+        <div class="test-section-label">
+          韓国語の例文
+        </div>
+
+
+        <div class="test-korean-example-box">
+
+          <p
+            id="testKoreanExample"
+            class="test-korean-example"
+          >
+          </p>
+
+        </div>
+
+
+        <!-- 答えを見る -->
+
+        <button
+          id="revealAnswerButton"
+          type="button"
+          class="reveal-button"
+          onclick="showTestAnswer()"
+        >
+          👁️ 答えを見る
+        </button>
+
+
+        <!-- 答え -->
+
+        <div
+          id="answerArea"
+          class="answer-area"
+        >
+
+          <div class="answer-block">
+
+            <div class="answer-label">
+              日本語の意味
+            </div>
+
+            <p
+              id="testJapaneseMeaning"
+              class="answer-text"
+            >
+            </p>
+
+          </div>
+
+
+          <hr class="answer-divider">
+
+
+          <div class="answer-block">
+
+            <div class="answer-label">
+              日本語の例文
+            </div>
+
+            <p
+              id="testJapaneseExample"
+              class="answer-text"
+            >
+            </p>
+
+          </div>
+
+
+          <div class="answer-block">
+
+            <div class="answer-label">
+              英語の例文
+            </div>
+
+            <p
+              id="testEnglishExample"
+              class="answer-text"
+            >
+            </p>
+
+          </div>
+
+
+          <!-- 評価 -->
+
+          <div
+            id="ratingArea"
+            class="rating-area"
+          >
+
+            <p class="rating-question">
+              この単語はどうでしたか？
+            </p>
+
+
+            <div class="rating-buttons">
+
+
+              <button
+                id="perfectRatingButton"
+                type="button"
+                class="rating-button perfect-button"
+                onclick="rateCurrentQuestion('perfect')"
+              >
+                💯 完璧
+              </button>
+
+
+              <button
+                id="reviewRatingButton"
+                type="button"
+                class="rating-button review-button"
+                onclick="rateCurrentQuestion('review')"
+              >
+                🧠 もっと覚える
+              </button>
+
+
+              <button
+                id="weakRatingButton"
+                type="button"
+                class="rating-button weak-button"
+                onclick="rateCurrentQuestion('weak')"
+              >
+                🫠 まだまだ
+              </button>
+
+
+            </div>
+
+          </div>
+
+
+          <!-- 次の問題 -->
+
+          <button
+            id="nextTestButton"
+            type="button"
+            class="next-button"
+            onclick="nextTestQuestion()"
+          >
+            次の問題 →
+          </button>
+
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         テスト結果
+    ================================================== -->
+
+    <section
+      id="testResultScreen"
+      class="screen"
+    >
+
+      <button
+        class="back-button"
+        onclick="showScreen('homeScreen')"
+      >
+        ← トップに戻る
+      </button>
+
+
+      <div class="result-card">
+
+
+        <h2 class="result-title">
+          🎉 テスト終了！
+        </h2>
+
+
+        <p
+          id="resultTotal"
+          class="result-total"
+        >
+          0問終了
+        </p>
+
+
+        <div class="result-list">
+
+
+          <div
+            id="resultPerfect"
+            class="result-item result-perfect"
+          >
+            💯 完璧：0問
+          </div>
+
+
+          <div
+            id="resultReview"
+            class="result-item result-review"
+          >
+            🧠 もっと覚える：0問
+          </div>
+
+
+          <div
+            id="resultWeak"
+            class="result-item result-weak"
+          >
+            🫠 まだまだ：0問
+          </div>
+
+
+        </div>
+
+
+        <div class="result-buttons">
+
+
+          <button
+            id="retryWeakButton"
+            type="button"
+            class="result-button primary"
+            onclick="startFocusedTest('weak')"
+          >
+            🫠「まだまだ」だけもう一度
+          </button>
+
+
+          <button
+            id="retryReviewButton"
+            type="button"
+            class="result-button primary"
+            onclick="startFocusedTest('review')"
+          >
+            🧠「もっと覚える」だけもう一度
+          </button>
+
+
+          <button
+            type="button"
+            class="result-button secondary"
+            onclick="restartSameTest()"
+          >
+            🔄 同じ範囲でもう一度
+          </button>
+
+
+          <button
+            type="button"
+            class="result-button secondary"
+            onclick="showScreen('homeScreen')"
+          >
+            🏠 トップへ戻る
+          </button>
+
+
+        </div>
+
+      </div>
+
+    </section>
+
+
   </div>
 
 
-  <!-- =========================
+  <!-- ==================================================
        重複確認モーダル
-  ========================= -->
+  ================================================== -->
 
   <div
     id="duplicateModal"
@@ -786,6 +2405,7 @@
   >
 
     <div class="modal">
+
 
       <h3>
         この単語はすでに登録されています。
@@ -802,6 +2422,7 @@
 
       <div class="modal-buttons">
 
+
         <button
           class="modal-button modal-primary"
           onclick="confirmDuplicateRegistration()"
@@ -817,6 +2438,7 @@
           登録をやめる
         </button>
 
+
       </div>
 
     </div>
@@ -826,8 +2448,9 @@
 
   <script>
 
+
     /* ==================================================
-       DeepL中継WorkerのURL
+       DeepL中継Worker
     ================================================== */
 
     const TRANSLATION_WORKER_URL =
@@ -835,7 +2458,7 @@
 
 
     /* ==================================================
-       データ保存用のキー
+       localStorage
     ================================================== */
 
     const WORD_STORAGE_KEY =
@@ -846,7 +2469,7 @@
 
 
     /* ==================================================
-       単語データを取得
+       単語取得
     ================================================== */
 
     function getWords() {
@@ -881,7 +2504,7 @@
 
 
     /* ==================================================
-       単語データを保存
+       単語保存
     ================================================== */
 
     function saveWords(words) {
@@ -895,7 +2518,7 @@
 
 
     /* ==================================================
-       タグを取得
+       タグ取得
     ================================================== */
 
     function getTags() {
@@ -930,7 +2553,7 @@
 
 
     /* ==================================================
-       タグを保存
+       タグ保存
     ================================================== */
 
     function saveTags(tags) {
@@ -944,7 +2567,7 @@
 
 
     /* ==================================================
-       画面を切り替える
+       画面切り替え
     ================================================== */
 
     function showScreen(screenId) {
@@ -966,9 +2589,19 @@
       );
 
 
-      document
-        .getElementById(screenId)
-        .classList.add("active");
+      const target =
+        document.getElementById(
+          screenId
+        );
+
+
+      if (target) {
+
+        target.classList.add(
+          "active"
+        );
+
+      }
 
 
       window.scrollTo({
@@ -979,12 +2612,14 @@
 
       updateHomeStatus();
       updateTagSelect();
+      updateTestTagSelect();
+      updateAvailableTestCount();
 
     }
 
 
     /* ==================================================
-       トップ画面の登録数を更新
+       登録数
     ================================================== */
 
     function updateHomeStatus() {
@@ -1021,7 +2656,7 @@
 
 
     /* ==================================================
-       タグ選択欄を更新
+       登録画面のタグ
     ================================================== */
 
     function updateTagSelect() {
@@ -1089,7 +2724,75 @@
 
 
     /* ==================================================
-       新しいタグを追加
+       テスト画面のタグ
+    ================================================== */
+
+    function updateTestTagSelect() {
+
+      const select =
+        document.getElementById(
+          "testTagSelect"
+        );
+
+
+      if (!select) {
+        return;
+      }
+
+
+      const currentValue =
+        select.value;
+
+
+      const tags =
+        getTags();
+
+
+      select.innerHTML =
+        '<option value="">タグを選択してください</option>';
+
+
+      tags.forEach(
+        function(tag) {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            tag;
+
+
+          option.textContent =
+            tag;
+
+
+          select.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      if (
+        tags.includes(
+          currentValue
+        )
+      ) {
+
+        select.value =
+          currentValue;
+
+      }
+
+    }
+
+
+    /* ==================================================
+       新しいタグ
     ================================================== */
 
     function addTag() {
@@ -1124,8 +2827,6 @@
         getTags();
 
 
-      /* すでに存在するタグか確認 */
-
       if (
         tags.includes(tag)
       ) {
@@ -1142,19 +2843,12 @@
       }
 
 
-      /* タグを保存 */
-
       tags.push(tag);
 
       saveTags(tags);
 
-
-      /* 選択欄を更新 */
-
       updateTagSelect();
 
-
-      /* 新しく作ったタグを自動選択 */
 
       const wordTag =
         document.getElementById(
@@ -1168,6 +2862,9 @@
           tag;
 
       }
+
+
+      updateTestTagSelect();
 
     }
 
@@ -1186,8 +2883,6 @@
           .value
           .trim();
 
-
-      /* 入力チェック */
 
       if (!koreanExample) {
 
@@ -1215,8 +2910,6 @@
         );
 
 
-      /* 翻訳中はボタンを無効化 */
-
       button.disabled =
         true;
 
@@ -1233,43 +2926,44 @@
 
       try {
 
-        /* =========================
-           Workerへ送信
-        ========================= */
-
         const response =
           await fetch(
             TRANSLATION_WORKER_URL,
             {
-              method: "POST",
+
+              method:
+                "POST",
 
               headers: {
+
                 "Content-Type":
                   "application/json"
+
               },
 
-              body: JSON.stringify({
+              body:
+                JSON.stringify({
 
-                text:
-                  koreanExample
+                  text:
+                    koreanExample
 
-              })
+                })
 
             }
           );
 
-
-        /* HTTPエラー */
 
         if (!response.ok) {
 
           let errorMessage =
             "翻訳に失敗しました。";
 
+
           try {
 
             const errorData =
               await response.json();
+
 
             if (
               errorData &&
@@ -1298,10 +2992,6 @@
         }
 
 
-        /* =========================
-           翻訳結果を取得
-        ========================= */
-
         const data =
           await response.json();
 
@@ -1326,13 +3016,6 @@
         }
 
 
-        /* =========================
-           入力欄へ自動入力
-
-           ここでユーザーが
-           自由に編集できます。
-        ========================= */
-
         document
           .getElementById(
             "japaneseExample"
@@ -1348,8 +3031,6 @@
           .value =
           english;
 
-
-        /* 成功メッセージ */
 
         showTranslationStatus(
           "✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。",
@@ -1376,10 +3057,6 @@
 
       } finally {
 
-        /* =========================
-           ボタンを元に戻す
-        ========================= */
-
         button.disabled =
           false;
 
@@ -1393,7 +3070,7 @@
 
 
     /* ==================================================
-       翻訳ステータス表示
+       翻訳メッセージ
     ================================================== */
 
     function showTranslationStatus(
@@ -1419,7 +3096,7 @@
 
 
     /* ==================================================
-       重複登録用の一時データ
+       重複登録用
     ================================================== */
 
     let pendingWordData =
@@ -1427,12 +3104,10 @@
 
 
     /* ==================================================
-       単語を登録する
+       単語登録
     ================================================== */
 
     function registerWord() {
-
-      /* 入力内容を取得 */
 
       const korean =
         document
@@ -1496,9 +3171,9 @@
           .trim();
 
 
-      /* ==================================================
-         必須項目のチェック
-      ================================================== */
+      /* =========================
+         必須チェック
+      ========================= */
 
       if (!korean) {
 
@@ -1580,9 +3255,9 @@
       }
 
 
-      /* ==================================================
-         新しい単語データを作成
-      ================================================== */
+      /* =========================
+         データ作成
+      ========================= */
 
       const wordData = {
 
@@ -1623,9 +3298,9 @@
         getWords();
 
 
-      /* ==================================================
-         同じ韓国語がすでに存在するか確認
-      ================================================== */
+      /* =========================
+         重複チェック
+      ========================= */
 
       const duplicate =
         words.find(
@@ -1668,8 +3343,6 @@
       }
 
 
-      /* 重複していなければそのまま登録 */
-
       saveNewWord(
         wordData
       );
@@ -1678,7 +3351,7 @@
 
 
     /* ==================================================
-       重複しているけど登録する
+       重複して登録
     ================================================== */
 
     function confirmDuplicateRegistration() {
@@ -1688,9 +3361,8 @@
       }
 
 
-      saveNewWord(
-        pendingWordData
-      );
+      const wordData =
+        pendingWordData;
 
 
       pendingWordData =
@@ -1699,11 +3371,16 @@
 
       closeDuplicateModal();
 
+
+      saveNewWord(
+        wordData
+      );
+
     }
 
 
     /* ==================================================
-       重複確認モーダルを閉じる
+       モーダル閉じる
     ================================================== */
 
     function closeDuplicateModal() {
@@ -1715,7 +3392,6 @@
         .classList
         .remove("active");
 
-
       pendingWordData =
         null;
 
@@ -1723,7 +3399,7 @@
 
 
     /* ==================================================
-       単語データを実際に保存
+       実際に保存
     ================================================== */
 
     function saveNewWord(
@@ -1744,12 +3420,8 @@
       );
 
 
-      /* 入力欄を空にする */
-
       clearRegisterForm();
 
-
-      /* 登録成功メッセージ */
 
       showMessage(
         "「" +
@@ -1759,15 +3431,15 @@
       );
 
 
-      /* トップ画面の登録数も更新 */
-
       updateHomeStatus();
+
+      updateAvailableTestCount();
 
     }
 
 
     /* ==================================================
-       登録フォームを空にする
+       登録フォーム初期化
     ================================================== */
 
     function clearRegisterForm() {
@@ -1821,8 +3493,6 @@
         .value = "";
 
 
-      /* 翻訳状態もリセット */
-
       const status =
         document.getElementById(
           "translationStatus"
@@ -1840,7 +3510,7 @@
 
 
     /* ==================================================
-       登録メッセージを表示
+       登録メッセージ
     ================================================== */
 
     function showMessage(
@@ -1866,16 +3536,1191 @@
 
 
     /* ==================================================
-       まだ作っていない機能
+       テスト関連変数
     ================================================== */
 
-    function comingSoon(
-      name
+    let selectedTestMode =
+      "all";
+
+
+    let testSession = {
+
+      words:
+        [],
+
+      index:
+        0,
+
+      revealed:
+        false,
+
+      rated:
+        false,
+
+      mode:
+        "all",
+
+      modeLabel:
+        "",
+
+      counts: {
+
+        perfect:
+          0,
+
+        review:
+          0,
+
+        weak:
+          0
+
+      }
+
+    };
+
+
+    /* ==================================================
+       テストモード選択
+    ================================================== */
+
+    function selectTestMode(
+      mode
     ) {
 
-      alert(
-        name +
-        "は次の段階で作ります！"
+      selectedTestMode =
+        mode;
+
+
+      const buttons =
+        document.querySelectorAll(
+          ".test-mode-button"
+        );
+
+
+      buttons.forEach(
+        function(button) {
+
+          if (
+            button.dataset.mode ===
+            mode
+          ) {
+
+            button.classList.add(
+              "selected"
+            );
+
+          } else {
+
+            button.classList.remove(
+              "selected"
+            );
+
+          }
+
+        }
+      );
+
+
+      const tagArea =
+        document.getElementById(
+          "testTagArea"
+        );
+
+
+      if (mode === "tag") {
+
+        tagArea.classList.add(
+          "active"
+        );
+
+      } else {
+
+        tagArea.classList.remove(
+          "active"
+        );
+
+      }
+
+
+      updateAvailableTestCount();
+
+    }
+
+
+    /* ==================================================
+       テスト候補取得
+    ================================================== */
+
+    function getWordsForTest(
+      mode
+    ) {
+
+      const words =
+        getWords();
+
+
+      if (mode === "all") {
+
+        return words;
+
+      }
+
+
+      if (mode === "review") {
+
+        return words.filter(
+          function(word) {
+
+            return (
+              word.memoryLevel ===
+              "review"
+            );
+
+          }
+        );
+
+      }
+
+
+      if (mode === "weak") {
+
+        return words.filter(
+          function(word) {
+
+            return (
+              word.memoryLevel ===
+              "weak"
+            );
+
+          }
+        );
+
+      }
+
+
+      if (mode === "tag") {
+
+        const tag =
+          document
+            .getElementById(
+              "testTagSelect"
+            )
+            .value;
+
+
+        if (!tag) {
+
+          return [];
+
+        }
+
+
+        return words.filter(
+          function(word) {
+
+            return (
+              word.tag ===
+              tag
+            );
+
+          }
+        );
+
+      }
+
+
+      return [];
+
+    }
+
+
+    /* ==================================================
+       出題可能数更新
+    ================================================== */
+
+    function updateAvailableTestCount() {
+
+      const countElement =
+        document.getElementById(
+          "availableTestCount"
+        );
+
+
+      const startButton =
+        document.getElementById(
+          "startTestButton"
+        );
+
+
+      if (!countElement) {
+        return;
+      }
+
+
+      const words =
+        getWordsForTest(
+          selectedTestMode
+        );
+
+
+      countElement.textContent =
+        "出題可能な単語：" +
+        words.length +
+        "件";
+
+
+      if (words.length === 0) {
+
+        startButton.disabled =
+          true;
+
+      } else {
+
+        startButton.disabled =
+          false;
+
+      }
+
+    }
+
+
+    /* ==================================================
+       配列をシャッフル
+    ================================================== */
+
+    function shuffleArray(
+      array
+    ) {
+
+      const result =
+        [...array];
+
+
+      for (
+        let i =
+          result.length - 1;
+        i > 0;
+        i--
+      ) {
+
+        const j =
+          Math.floor(
+            Math.random() *
+            (i + 1)
+          );
+
+
+        [
+          result[i],
+          result[j]
+        ] =
+        [
+          result[j],
+          result[i]
+        ];
+
+      }
+
+
+      return result;
+
+    }
+
+
+    /* ==================================================
+       テスト開始
+    ================================================== */
+
+    function startTest() {
+
+      const candidates =
+        getWordsForTest(
+          selectedTestMode
+        );
+
+
+      if (
+        candidates.length ===
+        0
+      ) {
+
+        alert(
+          "この条件で出題できる単語がありません。"
+        );
+
+
+        return;
+
+      }
+
+
+      let modeLabel =
+        "すべての単語";
+
+
+      if (
+        selectedTestMode ===
+        "review"
+      ) {
+
+        modeLabel =
+          "🧠 もっと覚える";
+
+      }
+
+
+      if (
+        selectedTestMode ===
+        "weak"
+      ) {
+
+        modeLabel =
+          "🫠 まだまだ";
+
+      }
+
+
+      if (
+        selectedTestMode ===
+        "tag"
+      ) {
+
+        const tag =
+          document
+            .getElementById(
+              "testTagSelect"
+            )
+            .value;
+
+
+        modeLabel =
+          "🏷️ " +
+          tag;
+
+      }
+
+
+      testSession = {
+
+        words:
+          shuffleArray(
+            candidates
+          ),
+
+        index:
+          0,
+
+        revealed:
+          false,
+
+        rated:
+          false,
+
+        mode:
+          selectedTestMode,
+
+        modeLabel:
+          modeLabel,
+
+        counts: {
+
+          perfect:
+            0,
+
+          review:
+            0,
+
+          weak:
+            0
+
+        }
+
+      };
+
+
+      showScreen(
+        "testQuestionScreen"
+      );
+
+
+      renderTestQuestion();
+
+    }
+
+
+    /* ==================================================
+       テスト問題表示
+    ================================================== */
+
+    function renderTestQuestion() {
+
+      const currentWord =
+        testSession.words[
+          testSession.index
+        ];
+
+
+      if (!currentWord) {
+
+        finishTest();
+
+        return;
+
+      }
+
+
+      /* 古いデータ対策 */
+
+      if (
+        !currentWord.memoryLevel
+      ) {
+
+        currentWord.memoryLevel =
+          "new";
+
+      }
+
+
+      testSession.revealed =
+        false;
+
+      testSession.rated =
+        false;
+
+
+      /* 進捗 */
+
+      document
+        .getElementById(
+          "testProgress"
+        )
+        .textContent =
+        "問題 " +
+        (
+          testSession.index + 1
+        ) +
+        " / " +
+        testSession.words.length;
+
+
+      /* 韓国語 */
+
+      document
+        .getElementById(
+          "testKoreanWord"
+        )
+        .textContent =
+        currentWord.korean ||
+        "";
+
+
+      /* 韓国語例文 */
+
+      document
+        .getElementById(
+          "testKoreanExample"
+        )
+        .textContent =
+        currentWord.koreanExample ||
+        "";
+
+
+      /* 答え */
+
+      document
+        .getElementById(
+          "testJapaneseMeaning"
+        )
+        .textContent =
+        currentWord.japanese ||
+        "";
+
+
+      document
+        .getElementById(
+          "testJapaneseExample"
+        )
+        .textContent =
+        currentWord.japaneseExample ||
+        "";
+
+
+      document
+        .getElementById(
+          "testEnglishExample"
+        )
+        .textContent =
+        currentWord.englishExample ||
+        "（英訳は登録されていません）";
+
+
+      /* 答えエリア非表示 */
+
+      document
+        .getElementById(
+          "answerArea"
+        )
+        .classList
+        .remove("active");
+
+
+      document
+        .getElementById(
+          "ratingArea"
+        )
+        .classList
+        .remove("active");
+
+
+      document
+        .getElementById(
+          "revealAnswerButton"
+        )
+        .style.display =
+        "block";
+
+
+      /* 評価ボタンリセット */
+
+      resetRatingButtons();
+
+
+      /* 次ボタン非表示 */
+
+      document
+        .getElementById(
+          "nextTestButton"
+        )
+        .classList
+        .remove("active");
+
+
+      /* 次へボタン文言 */
+
+      const isLast =
+        testSession.index ===
+        testSession.words.length - 1;
+
+
+      document
+        .getElementById(
+          "nextTestButton"
+        )
+        .textContent =
+        isLast
+          ? "テスト結果を見る →"
+          : "次の問題 →";
+
+    }
+
+
+    /* ==================================================
+       答えを見る
+    ================================================== */
+
+    function showTestAnswer() {
+
+      if (
+        testSession.revealed
+      ) {
+
+        return;
+
+      }
+
+
+      testSession.revealed =
+        true;
+
+
+      document
+        .getElementById(
+          "answerArea"
+        )
+        .classList
+        .add("active");
+
+
+      document
+        .getElementById(
+          "ratingArea"
+        )
+        .classList
+        .add("active");
+
+
+      document
+        .getElementById(
+          "revealAnswerButton"
+        )
+        .style.display =
+        "none";
+
+    }
+
+
+    /* ==================================================
+       評価ボタン
+    ================================================== */
+
+    function rateCurrentQuestion(
+      level
+    ) {
+
+      if (
+        !testSession.revealed
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        testSession.rated
+      ) {
+
+        return;
+
+      }
+
+
+      const currentWord =
+        testSession.words[
+          testSession.index
+        ];
+
+
+      if (!currentWord) {
+        return;
+      }
+
+
+      /* =========================
+         単語データ更新
+      ========================= */
+
+      currentWord.memoryLevel =
+        level;
+
+
+      const allWords =
+        getWords();
+
+
+      const targetIndex =
+        allWords.findIndex(
+          function(word) {
+
+            return (
+              word.id ===
+              currentWord.id
+            );
+
+          }
+        );
+
+
+      if (
+        targetIndex !==
+        -1
+      ) {
+
+        allWords[
+          targetIndex
+        ].memoryLevel =
+          level;
+
+
+        saveWords(
+          allWords
+        );
+
+      }
+
+
+      /* =========================
+         テスト結果カウント
+      ========================= */
+
+      testSession.counts[
+        level
+      ] += 1;
+
+
+      testSession.rated =
+        true;
+
+
+      /* =========================
+         選択状態
+      ========================= */
+
+      resetRatingButtons();
+
+
+      const selectedButton =
+        getRatingButton(
+          level
+        );
+
+
+      if (selectedButton) {
+
+        selectedButton.classList.add(
+          "selected"
+        );
+
+      }
+
+
+      disableRatingButtons();
+
+
+      /* =========================
+         次へボタン
+      ========================= */
+
+      document
+        .getElementById(
+          "nextTestButton"
+        )
+        .classList
+        .add("active");
+
+    }
+
+
+    /* ==================================================
+       評価ボタン取得
+    ================================================== */
+
+    function getRatingButton(
+      level
+    ) {
+
+      if (
+        level ===
+        "perfect"
+      ) {
+
+        return document
+          .getElementById(
+            "perfectRatingButton"
+          );
+
+      }
+
+
+      if (
+        level ===
+        "review"
+      ) {
+
+        return document
+          .getElementById(
+            "reviewRatingButton"
+          );
+
+      }
+
+
+      if (
+        level ===
+        "weak"
+      ) {
+
+        return document
+          .getElementById(
+            "weakRatingButton"
+          );
+
+      }
+
+
+      return null;
+
+    }
+
+
+    /* ==================================================
+       評価ボタンリセット
+    ================================================== */
+
+    function resetRatingButtons() {
+
+      const buttons =
+        document.querySelectorAll(
+          ".rating-button"
+        );
+
+
+      buttons.forEach(
+        function(button) {
+
+          button.classList.remove(
+            "selected"
+          );
+
+          button.disabled =
+            false;
+
+        }
+      );
+
+    }
+
+
+    /* ==================================================
+       評価ボタン無効化
+    ================================================== */
+
+    function disableRatingButtons() {
+
+      const buttons =
+        document.querySelectorAll(
+          ".rating-button"
+        );
+
+
+      buttons.forEach(
+        function(button) {
+
+          button.disabled =
+            true;
+
+        }
+      );
+
+    }
+
+
+    /* ==================================================
+       次の問題
+    ================================================== */
+
+    function nextTestQuestion() {
+
+      if (
+        !testSession.rated
+      ) {
+
+        alert(
+          "まず「💯 完璧」「🧠 もっと覚える」「🫠 まだまだ」のどれかを選んでください。"
+        );
+
+
+        return;
+
+      }
+
+
+      testSession.index += 1;
+
+
+      if (
+        testSession.index >=
+        testSession.words.length
+      ) {
+
+        finishTest();
+
+        return;
+
+      }
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+
+      renderTestQuestion();
+
+    }
+
+
+    /* ==================================================
+       テスト終了
+    ================================================== */
+
+    function finishTest() {
+
+      const total =
+        testSession.words.length;
+
+
+      document
+        .getElementById(
+          "resultTotal"
+        )
+        .textContent =
+        total +
+        "問終了";
+
+
+      document
+        .getElementById(
+          "resultPerfect"
+        )
+        .textContent =
+        "💯 完璧：" +
+        testSession.counts.perfect +
+        "問";
+
+
+      document
+        .getElementById(
+          "resultReview"
+        )
+        .textContent =
+        "🧠 もっと覚える：" +
+        testSession.counts.review +
+        "問";
+
+
+      document
+        .getElementById(
+          "resultWeak"
+        )
+        .textContent =
+        "🫠 まだまだ：" +
+        testSession.counts.weak +
+        "問";
+
+
+      /* =========================
+         再テストボタン
+      ========================= */
+
+      document
+        .getElementById(
+          "retryWeakButton"
+        )
+        .disabled =
+        testSession.counts.weak ===
+        0;
+
+
+      document
+        .getElementById(
+          "retryReviewButton"
+        )
+        .disabled =
+        testSession.counts.review ===
+        0;
+
+
+      showScreen(
+        "testResultScreen"
+      );
+
+    }
+
+
+    /* ==================================================
+       苦手だけ再テスト
+    ================================================== */
+
+    function startFocusedTest(
+      level
+    ) {
+
+      const words =
+        getWords().filter(
+          function(word) {
+
+            return (
+              word.memoryLevel ===
+              level
+            );
+
+          }
+        );
+
+
+      if (
+        words.length ===
+        0
+      ) {
+
+        alert(
+          "該当する単語がありません。"
+        );
+
+
+        return;
+
+      }
+
+
+      let modeLabel =
+        "";
+
+
+      if (
+        level ===
+        "weak"
+      ) {
+
+        modeLabel =
+          "🫠 まだまだ";
+
+      } else {
+
+        modeLabel =
+          "🧠 もっと覚える";
+
+      }
+
+
+      testSession = {
+
+        words:
+          shuffleArray(
+            words
+          ),
+
+        index:
+          0,
+
+        revealed:
+          false,
+
+        rated:
+          false,
+
+        mode:
+          level,
+
+        modeLabel:
+          modeLabel,
+
+        counts: {
+
+          perfect:
+            0,
+
+          review:
+            0,
+
+          weak:
+            0
+
+        }
+
+      };
+
+
+      showScreen(
+        "testQuestionScreen"
+      );
+
+
+      renderTestQuestion();
+
+    }
+
+
+    /* ==================================================
+       同じ範囲でもう一度
+    ================================================== */
+
+    function restartSameTest() {
+
+      const mode =
+        testSession.mode;
+
+
+      const words =
+        getWordsForTest(
+          mode
+        );
+
+
+      if (
+        words.length ===
+        0
+      ) {
+
+        alert(
+          "現在、この条件で出題できる単語がありません。"
+        );
+
+
+        return;
+
+      }
+
+
+      testSession = {
+
+        words:
+          shuffleArray(
+            words
+          ),
+
+        index:
+          0,
+
+        revealed:
+          false,
+
+        rated:
+          false,
+
+        mode:
+          mode,
+
+        modeLabel:
+          testSession.modeLabel,
+
+        counts: {
+
+          perfect:
+            0,
+
+          review:
+            0,
+
+          weak:
+            0
+
+        }
+
+      };
+
+
+      showScreen(
+        "testQuestionScreen"
+      );
+
+
+      renderTestQuestion();
+
+    }
+
+
+    /* ==================================================
+       テストを途中でやめる
+    ================================================== */
+
+    function exitTest() {
+
+      const shouldExit =
+        confirm(
+          "テストを途中で終了しますか？\n\n今回の途中までの結果はテスト結果には反映されませんが、すでに選択した評価は保存されています。"
+        );
+
+
+      if (!shouldExit) {
+        return;
+      }
+
+
+      showScreen(
+        "testSetupScreen"
       );
 
     }
@@ -1889,7 +4734,12 @@
 
     updateTagSelect();
 
+    updateTestTagSelect();
+
+    updateAvailableTestCount();
+
   </script>
 
 </body>
 </html>
+```
