@@ -23,7 +23,7 @@
     .translation-status{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:14px;line-height:1.5}.translation-status.loading{display:block;background:#f2f4ff;color:#4f5ca8}.translation-status.success{display:block;background:#edf8f0;color:#2c713d}.translation-status.error{display:block;background:#fff0f0;color:#a63838}
     .tag-row{display:flex;gap:10px}.tag-row select{flex:1}.small-button{border:1px solid #ccc;background:#fafafa;border-radius:10px;padding:10px 14px;white-space:nowrap}.small-button:hover{background:#f0f0f0}
     .submit-button,.auth-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:10px;background:#3b5ccc;color:#fff;font-size:18px;font-weight:700}.submit-button:hover,.auth-button:hover{opacity:.9}.auth-button:disabled{opacity:.5;cursor:not-allowed}
-    .message{margin-top:15px;padding:13px 15px;border-radius:10px;display:none;line-height:1.5}.message.success{display:block;background:#edf8f0;color:#2c713d}.message.register-success{font-size:16px;font-weight:700;text-align:center;padding:16px 18px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);animation:registerSuccessIn .25s ease-out}@keyframes registerSuccessIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}.message.register-success.fade-out{animation:registerSuccessOut .45s ease forwards}@keyframes registerSuccessOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-4px)}}.message.error{display:block;background:#fff0f0;color:#a63838}
+    .message{margin-top:15px;padding:13px 15px;border-radius:10px;display:none;line-height:1.5}.message.success{display:block;background:#edf8f0;color:#2c713d}.message.error{display:block;background:#fff0f0;color:#a63838}
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}.modal-overlay.active{display:flex}.modal{width:100%;max-width:460px;background:#fff;border-radius:18px;padding:25px;box-shadow:0 15px 40px rgba(0,0,0,.2)}.modal h3{margin-top:0;line-height:1.5}.modal p{line-height:1.7;color:#555}.duplicate-info{margin:15px 0;padding:14px;background:#f7f7f7;border-radius:10px;line-height:1.7}.duplicate-info strong{color:#333}.modal-buttons{display:grid;gap:10px;margin-top:20px}.modal-button{border:none;border-radius:10px;padding:13px;font-weight:700}.modal-primary{background:#3b5ccc;color:#fff}.modal-secondary{background:#eee;color:#333}
     .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:25px 15px}.auth-card{width:100%;max-width:440px}.auth-card h1{text-align:center;font-size:30px}.auth-subtitle{text-align:center;color:#777;margin:10px 0 25px;line-height:1.6}.auth-switch{text-align:center;margin-top:18px;font-size:14px;color:#777}.auth-link{border:none;background:none;color:#3b5ccc;padding:0;text-decoration:underline}.auth-note{font-size:12px;color:#888;line-height:1.6;margin-top:14px}
     .setup-question{margin:0 0 18px;font-size:18px;font-weight:700}.test-mode-list{display:grid;gap:12px}.test-mode-button{width:100%;text-align:left;border:2px solid #e1e1e1;border-radius:14px;padding:16px;background:#fff}.test-mode-button:hover{border-color:#c7cce9}.test-mode-button.selected{border-color:#5b67c8;background:#f3f5ff}.test-mode-title{display:block;font-size:17px;font-weight:700;margin-bottom:4px}.test-mode-description{display:block;color:#777;font-size:13px;line-height:1.5}.test-tag-area{margin-top:20px;padding-top:20px;border-top:1px solid #eee;display:none}.test-tag-area.active{display:block}.test-start-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:22px;background:#c45454;color:#fff;font-size:18px;font-weight:700}.test-start-button:hover{opacity:.9}.test-start-button:disabled{opacity:.5;cursor:not-allowed}.available-count{margin-top:14px;font-size:14px;color:#777;text-align:center}
@@ -560,24 +560,17 @@ function showMessage(text, type) {
 
 function showRegisterResult(text, type = "success") {
   const message = document.getElementById("registerMessage");
-
   message.textContent = text;
-  message.className = `message ${type} register-success`;
-
+  message.className = `message ${type}`;
   message.scrollIntoView({
     behavior: "smooth",
     block: "center"
   });
 
   window.clearTimeout(showRegisterResult.timer);
-
   showRegisterResult.timer = window.setTimeout(() => {
-    message.classList.add("fade-out");
-
-    window.setTimeout(() => {
-      message.textContent = "";
-      message.className = "message";
-    }, 450);
+    message.textContent = "";
+    message.className = "message";
   }, 3000);
 }
 
