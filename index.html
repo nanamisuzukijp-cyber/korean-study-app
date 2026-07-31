@@ -648,7 +648,7 @@ function showRegisterSuccess(korean) {
   }
 
   message.textContent = "✅「" + korean + "」を登録しました！";
-  message.className = "register-success-message active";
+  message.classList.add("active");
 
   if (registerSuccessTimer) {
     clearTimeout(registerSuccessTimer);
@@ -660,8 +660,8 @@ function showRegisterSuccess(korean) {
   });
 
   registerSuccessTimer = setTimeout(function() {
+    message.classList.remove("active");
     message.textContent = "";
-    message.className = "register-success-message";
   }, 3000);
 }
 
@@ -755,9 +755,19 @@ function saveNewWordToCloud(wordData, allowDuplicate) {
 
     if (error.status === 409) {
       pendingWordData = wordData;
+
       const duplicate = error.data && error.data.duplicate;
-      document.getElementById("duplicateKoreanText").textContent = duplicate && duplicate.korean ? duplicate.korean : wordData.korean;
-      document.getElementById("duplicateJapaneseText").textContent = duplicate && duplicate.japanese ? duplicate.japanese : "";
+
+      document.getElementById("duplicateKoreanText").textContent =
+        duplicate && duplicate.korean
+          ? duplicate.korean
+          : wordData.korean;
+
+      document.getElementById("duplicateJapaneseText").textContent =
+        duplicate && duplicate.japanese
+          ? duplicate.japanese
+          : "";
+
       document.getElementById("duplicateModal").classList.add("active");
       return;
     }
