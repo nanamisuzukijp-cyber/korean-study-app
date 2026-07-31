@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>韓国語 My Study</title>
 
@@ -189,6 +192,62 @@
     }
 
     /* =========================
+       翻訳ボタン
+    ========================= */
+
+    .translate-button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin-top: 10px;
+      background: #5b67c8;
+      color: white;
+      font-weight: bold;
+      transition:
+        opacity 0.15s,
+        transform 0.15s;
+    }
+
+    .translate-button:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .translate-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .translation-status {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .translation-status.loading {
+      display: block;
+      background: #f2f4ff;
+      color: #4f5ca8;
+    }
+
+    .translation-status.success {
+      display: block;
+      background: #edf8f0;
+      color: #2c713d;
+    }
+
+    .translation-status.error {
+      display: block;
+      background: #fff0f0;
+      color: #a63838;
+    }
+
+    /* =========================
        タグ
     ========================= */
 
@@ -317,6 +376,38 @@
       background: #eee;
       color: #333;
     }
+
+    /* =========================
+       スマホ用
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .app {
+        padding:
+          25px 15px 50px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .page-title {
+        font-size: 23px;
+      }
+
+      .form-card {
+        padding: 20px;
+      }
+
+      .tag-row {
+        flex-direction: column;
+      }
+
+      .small-button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
@@ -330,11 +421,15 @@
     ========================= -->
 
     <header>
-      <h1>韓国語 My Study</h1>
+
+      <h1>
+        韓国語 My Study
+      </h1>
 
       <p class="subtitle">
         自分専用の韓国語学習アプリ
       </p>
+
     </header>
 
 
@@ -487,6 +582,36 @@
             placeholder="例：그녀는 항상 옷차림이 단정하다."
           ></textarea>
 
+
+          <!-- 自動翻訳ボタン -->
+
+          <button
+            type="button"
+            id="translateButton"
+            class="translate-button"
+            onclick="translateExample()"
+          >
+            🌐 日本語・英語に自動翻訳
+          </button>
+
+
+          <!-- 翻訳状態 -->
+
+          <div
+            id="translationStatus"
+            class="translation-status"
+          ></div>
+
+
+          <div class="help-text">
+
+            韓国語の例文を入力してから、
+            上のボタンを押してください。<br>
+
+            自動翻訳後も、日本語・英語とも自由に編集できます。
+
+          </div>
+
         </div>
 
 
@@ -512,6 +637,14 @@
             placeholder="例：彼女はいつも服装がきちんとしている。"
           ></textarea>
 
+
+          <div class="help-text">
+
+            DeepLによる自動翻訳後も、
+            自由に修正できます。
+
+          </div>
+
         </div>
 
 
@@ -536,10 +669,8 @@
 
           <div class="help-text">
 
-            現在は手入力できます。<br>
-
-            DeepLによる自動翻訳は、
-            次の段階で安全に連携します。
+            DeepLによる自動翻訳後も、
+            自由に修正できます。
 
           </div>
 
@@ -560,7 +691,6 @@
 
 
           <div class="tag-row">
-
 
             <!-- タグ選択 -->
 
@@ -643,7 +773,6 @@
 
     </section>
 
-
   </div>
 
 
@@ -657,7 +786,6 @@
   >
 
     <div class="modal">
-
 
       <h3>
         この単語はすでに登録されています。
@@ -673,7 +801,6 @@
 
 
       <div class="modal-buttons">
-
 
         <button
           class="modal-button modal-primary"
@@ -698,6 +825,14 @@
 
 
   <script>
+
+    /* ==================================================
+       DeepL中継WorkerのURL
+    ================================================== */
+
+    const TRANSLATION_WORKER_URL =
+      "https://calm-fire-eac1korean-study-translator.nanami-suzuki-jp.workers.dev/";
+
 
     /* ==================================================
        データ保存用のキー
@@ -1033,6 +1168,252 @@
           tag;
 
       }
+
+    }
+
+
+    /* ==================================================
+       DeepL自動翻訳
+    ================================================== */
+
+    async function translateExample() {
+
+      const koreanExample =
+        document
+          .getElementById(
+            "koreanExample"
+          )
+          .value
+          .trim();
+
+
+      /* 入力チェック */
+
+      if (!koreanExample) {
+
+        showTranslationStatus(
+          "韓国語の例文を入力してください。",
+          "error"
+        );
+
+
+        document
+          .getElementById(
+            "koreanExample"
+          )
+          .focus();
+
+
+        return;
+
+      }
+
+
+      const button =
+        document.getElementById(
+          "translateButton"
+        );
+
+
+      /* 翻訳中はボタンを無効化 */
+
+      button.disabled =
+        true;
+
+
+      button.textContent =
+        "🔄 翻訳しています…";
+
+
+      showTranslationStatus(
+        "DeepLで日本語と英語に翻訳しています。",
+        "loading"
+      );
+
+
+      try {
+
+        /* =========================
+           Workerへ送信
+        ========================= */
+
+        const response =
+          await fetch(
+            TRANSLATION_WORKER_URL,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+
+                text:
+                  koreanExample
+
+              })
+
+            }
+          );
+
+
+        /* HTTPエラー */
+
+        if (!response.ok) {
+
+          let errorMessage =
+            "翻訳に失敗しました。";
+
+          try {
+
+            const errorData =
+              await response.json();
+
+            if (
+              errorData &&
+              errorData.error
+            ) {
+
+              errorMessage =
+                errorData.error;
+
+            }
+
+          } catch (jsonError) {
+
+            console.error(
+              "エラー内容の読み込みに失敗しました。",
+              jsonError
+            );
+
+          }
+
+
+          throw new Error(
+            errorMessage
+          );
+
+        }
+
+
+        /* =========================
+           翻訳結果を取得
+        ========================= */
+
+        const data =
+          await response.json();
+
+
+        const japanese =
+          data.japanese || "";
+
+
+        const english =
+          data.english || "";
+
+
+        if (
+          !japanese &&
+          !english
+        ) {
+
+          throw new Error(
+            "翻訳結果を取得できませんでした。"
+          );
+
+        }
+
+
+        /* =========================
+           入力欄へ自動入力
+
+           ここでユーザーが
+           自由に編集できます。
+        ========================= */
+
+        document
+          .getElementById(
+            "japaneseExample"
+          )
+          .value =
+          japanese;
+
+
+        document
+          .getElementById(
+            "englishExample"
+          )
+          .value =
+          english;
+
+
+        /* 成功メッセージ */
+
+        showTranslationStatus(
+          "✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "翻訳エラー:",
+          error
+        );
+
+
+        showTranslationStatus(
+          "❌ " +
+          (
+            error.message ||
+            "翻訳中にエラーが発生しました。"
+          ),
+          "error"
+        );
+
+      } finally {
+
+        /* =========================
+           ボタンを元に戻す
+        ========================= */
+
+        button.disabled =
+          false;
+
+
+        button.textContent =
+          "🌐 日本語・英語に自動翻訳";
+
+      }
+
+    }
+
+
+    /* ==================================================
+       翻訳ステータス表示
+    ================================================== */
+
+    function showTranslationStatus(
+      text,
+      type
+    ) {
+
+      const status =
+        document.getElementById(
+          "translationStatus"
+        );
+
+
+      status.textContent =
+        text;
+
+
+      status.className =
+        "translation-status " +
+        type;
 
     }
 
@@ -1438,6 +1819,22 @@
           "wordMemo"
         )
         .value = "";
+
+
+      /* 翻訳状態もリセット */
+
+      const status =
+        document.getElementById(
+          "translationStatus"
+        );
+
+
+      status.textContent =
+        "";
+
+
+      status.className =
+        "translation-status";
 
     }
 
