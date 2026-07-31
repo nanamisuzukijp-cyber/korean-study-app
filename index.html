@@ -41,7 +41,7 @@
 <section id="authScreen" class="auth-screen">
   <div class="auth-card">
     <h1>例文から覚える韓国語</h1>
-    <p id="authSubtitle" class="auth-subtitle">韓国語学習アプリ</p>
+    <p id="authSubtitle" class="auth-subtitle">自分専用の韓国語学習アプリ</p>
 
     <div id="loginForm">
       <div class="form-group">
@@ -86,7 +86,7 @@
 
   <header>
     <h1>例文から覚える韓国語</h1>
-    <p class="subtitle">例文を中心に韓国語を学ぶ学習アプリ</p>
+    <p class="subtitle">例文を中心に韓国語を学ぶ自分専用の学習アプリ</p>
   </header>
 
   <section id="homeScreen" class="screen active">
@@ -365,7 +365,8 @@ async function enterApp() {
       handleAuthenticationExpired();
       return;
     }
-    alert("クラウドデータの読み込みに失敗しました。\n" + error.message);
+    alert("クラウドデータの読み込みに失敗しました。
+" + error.message);
     throw error;
   }
 
@@ -472,7 +473,8 @@ async function addTag() {
       handleAuthenticationExpired();
       return;
     }
-    alert("タグの保存に失敗しました。\n" + error.message);
+    alert("タグの保存に失敗しました。
+" + error.message);
   }
 }
 
@@ -556,6 +558,15 @@ function showMessage(text, type) {
   message.className = `message ${type}`;
 }
 
+function showRegisterResult(text, type = "success") {
+  showMessage(text, type);
+  const message = document.getElementById("registerMessage");
+  message.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
 function clearRegisterForm() {
   ["koreanWord", "japaneseMeaning", "koreanExample", "japaneseExample", "englishExample", "wordMemo"].forEach((id) => {
     document.getElementById(id).value = "";
@@ -620,7 +631,7 @@ async function saveNewWordToCloud(wordData, allowDuplicate = false) {
     duplicateCheckHandled = false;
     pendingWordData = null;
     clearRegisterForm();
-    showMessage(`「${wordData.korean}」を登録しました！`, "success");
+    showRegisterResult(`✅ 「${wordData.korean}」を登録しました！`, "success");
     updateHomeStatus();
     updateAvailableTestCount();
   } catch (error) {
@@ -636,7 +647,8 @@ async function saveNewWordToCloud(wordData, allowDuplicate = false) {
       document.getElementById("duplicateModal").classList.add("active");
       return;
     }
-    showMessage("登録に失敗しました。\n" + error.message, "error");
+    showMessage("登録に失敗しました。
+" + error.message, "error");
   }
 }
 
@@ -794,7 +806,8 @@ async function rateCurrentQuestion(level) {
       handleAuthenticationExpired();
       return;
     }
-    alert("評価の保存に失敗しました。\n" + error.message);
+    alert("評価の保存に失敗しました。
+" + error.message);
   }
 }
 
@@ -884,7 +897,9 @@ function restartSameTest() {
 }
 
 function exitTest() {
-  const confirmed = confirm("テストを途中で終了しますか？\n\nすでに選択した評価は保存されています。");
+  const confirmed = confirm("テストを途中で終了しますか？
+
+すでに選択した評価は保存されています。");
   if (confirmed) showScreen("testSetupScreen");
 }
 
