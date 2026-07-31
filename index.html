@@ -1045,28 +1045,22 @@ async function addTag() {
   const tag = value.trim();
 
   if (!tag) {
-
     alert("タグ名を入力してください。");
     return;
-
   }
 
   if (tags.includes(tag)) {
-
     alert("そのタグはすでに存在します。");
     return;
-
   }
 
   try {
-
     await apiRequest(
       "/tags",
       {
         method: "POST",
         headers: {
-          "Content-Type":
-            "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           name: tag
@@ -1075,22 +1069,15 @@ async function addTag() {
     );
 
     tags.push(tag);
-
     updateTagSelect();
     updateTestTagSelect();
-
-    document.getElementById(
-      "wordTag"
-    ).value = tag;
+    document.getElementById("wordTag").value = tag;
 
   } catch (error) {
-
     alert(
-      "タグの保存に失敗しました。
-" +
+      "タグの保存に失敗しました。\\n" +
       error.message
     );
-
   }
 }
 
@@ -2432,16 +2419,10 @@ function exitTest() {
 
   if (
     confirm(
-      "テストを途中で終了しますか？
-
-すでに選択した評価は保存されています。"
+      "テストを途中で終了しますか？\\n\\nすでに選択した評価は保存されています。"
     )
   ) {
-
-    showScreen(
-      "testSetupScreen"
-    );
-
+    showScreen("testSetupScreen");
   }
 }
 
