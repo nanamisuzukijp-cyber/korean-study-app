@@ -1,4726 +1,699 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>例文から覚える韓国語</title>
-
-
   <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-
-    body {
-      margin: 0;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Helvetica Neue",
-        "Hiragino Kaku Gothic ProN",
-        "Yu Gothic",
-        sans-serif;
-
-      background: #f7f7f7;
-      color: #333;
-    }
-
-
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-
-
-    button {
-      cursor: pointer;
-    }
-
-
-    .app {
-      max-width: 760px;
-      margin: 0 auto;
-      min-height: 100vh;
-      padding: 30px 20px 60px;
-    }
-
-
-    /* =========================
-       共通
-    ========================= */
-
-    header {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-
-
-    h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-
-    .subtitle {
-      margin-top: 10px;
-      color: #777;
-    }
-
-
-    .screen {
-      display: none;
-    }
-
-
-    .screen.active {
-      display: block;
-    }
-
-
-    .page-title {
-      font-size: 26px;
-      margin: 0 0 25px;
-    }
-
-
-    .back-button {
-      border: none;
-      background: none;
-      padding: 5px 0;
-      margin-bottom: 20px;
-      color: #666;
-    }
-
-
-    .back-button:hover {
-      text-decoration: underline;
-    }
-
-
-    /* =========================
-       トップ画面
-    ========================= */
-
-    .menu {
-      display: grid;
-      gap: 18px;
-    }
-
-
-    .menu-button {
-      width: 100%;
-      border: none;
-      border-radius: 16px;
-      padding: 28px 20px;
-      background: white;
-
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.08);
-
-      font-size: 20px;
-      font-weight: bold;
-
-      transition:
-        transform 0.15s,
-        box-shadow 0.15s;
-    }
-
-
-    .menu-button:hover {
-      transform: translateY(-2px);
-
-      box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.12);
-    }
-
-
-    .register-button {
-      color: #3b5ccc;
-    }
-
-
-    .test-button {
-      color: #c45454;
-    }
-
-
-    .status-card {
-      margin-top: 28px;
-      padding: 20px;
-
-      background: white;
-      border-radius: 16px;
-
-      line-height: 1.7;
-    }
-
-
-    /* =========================
-       登録フォーム
-    ========================= */
-
-    .form-card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.06);
-    }
-
-
-    .form-group {
-      margin-bottom: 22px;
-    }
-
-
-    .form-group label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-
-    .required {
-      color: #d34f4f;
-      font-size: 13px;
-      margin-left: 5px;
-    }
-
-
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-
-      border:
-        1px solid #d8d8d8;
-
-      border-radius: 10px;
-
-      padding:
-        12px 14px;
-
-      background: white;
-
-      outline: none;
-
-      transition:
-        border-color 0.15s;
-    }
-
-
-    input[type="text"]:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #6b7dd8;
-    }
-
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-
-
-    .help-text {
-      margin-top: 7px;
-      font-size: 13px;
-      color: #888;
-      line-height: 1.5;
-    }
-
-
-    /* =========================
-       翻訳
-    ========================= */
-
-    .translate-button {
-      width: 100%;
-
-      border: none;
-      border-radius: 10px;
-
-      padding:
-        13px 16px;
-
-      margin-top: 10px;
-
-      background: #5b67c8;
-      color: white;
-
-      font-weight: bold;
-
-      transition:
-        opacity 0.15s,
-        transform 0.15s;
-    }
-
-
-    .translate-button:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
-    }
-
-
-    .translate-button:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-      transform: none;
-    }
-
-
-    .translation-status {
-      display: none;
-
-      margin-top: 10px;
-      padding: 10px 12px;
-
-      border-radius: 10px;
-
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-
-    .translation-status.loading {
-      display: block;
-
-      background: #f2f4ff;
-      color: #4f5ca8;
-    }
-
-
-    .translation-status.success {
-      display: block;
-
-      background: #edf8f0;
-      color: #2c713d;
-    }
-
-
-    .translation-status.error {
-      display: block;
-
-      background: #fff0f0;
-      color: #a63838;
-    }
-
-
-    /* =========================
-       タグ
-    ========================= */
-
-    .tag-row {
-      display: flex;
-      gap: 10px;
-    }
-
-
-    .tag-row select {
-      flex: 1;
-    }
-
-
-    .small-button {
-      border: 1px solid #ccc;
-
-      background: #fafafa;
-
-      border-radius: 10px;
-
-      padding:
-        10px 14px;
-
-      white-space: nowrap;
-    }
-
-
-    .small-button:hover {
-      background: #f0f0f0;
-    }
-
-
-    /* =========================
-       登録ボタン
-    ========================= */
-
-    .submit-button {
-      width: 100%;
-
-      border: none;
-      border-radius: 12px;
-
-      padding: 16px;
-      margin-top: 10px;
-
-      background: #3b5ccc;
-      color: white;
-
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-
-    .submit-button:hover {
-      opacity: 0.9;
-    }
-
-
-    /* =========================
-       メッセージ
-    ========================= */
-
-    .message {
-      margin-top: 15px;
-      padding: 13px 15px;
-
-      border-radius: 10px;
-
-      display: none;
-
-      line-height: 1.5;
-    }
-
-
-    .message.success {
-      display: block;
-
-      background: #edf8f0;
-      color: #2c713d;
-    }
-
-
-    .message.error {
-      display: block;
-
-      background: #fff0f0;
-      color: #a63838;
-    }
-
-
-    /* =========================
-       モーダル
-    ========================= */
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-
-      background:
-        rgba(0, 0, 0, 0.45);
-
-      display: none;
-
-      align-items: center;
-      justify-content: center;
-
-      padding: 20px;
-
-      z-index: 1000;
-    }
-
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
-
-    .modal {
-      width: 100%;
-      max-width: 460px;
-
-      background: white;
-
-      border-radius: 18px;
-
-      padding: 25px;
-
-      box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.2);
-    }
-
-
-    .modal h3 {
-      margin-top: 0;
-      line-height: 1.5;
-    }
-
-
-    .modal p {
-      line-height: 1.7;
-      color: #555;
-    }
-
-
-    .duplicate-info {
-      margin:
-        15px 0;
-
-      padding:
-        14px;
-
-      background:
-        #f7f7f7;
-
-      border-radius:
-        10px;
-
-      line-height:
-        1.7;
-    }
-
-
-    .duplicate-info strong {
-      color:
-        #333;
-    }
-
-
-    .modal-buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-
-    .modal-button {
-      border: none;
-      border-radius: 10px;
-      padding: 13px;
-      font-weight: bold;
-    }
-
-
-    .modal-primary {
-      background: #3b5ccc;
-      color: white;
-    }
-
-
-    .modal-secondary {
-      background: #eee;
-      color: #333;
-    }
-
-
-    /* =========================
-       テスト開始画面
-    ========================= */
-
-    .test-setup-card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.06);
-    }
-
-
-    .setup-question {
-      margin:
-        0 0 18px;
-
-      font-size:
-        18px;
-
-      font-weight:
-        bold;
-    }
-
-
-    .test-mode-list {
-      display: grid;
-      gap: 12px;
-    }
-
-
-    .test-mode-button {
-      width: 100%;
-
-      text-align: left;
-
-      border:
-        2px solid #e1e1e1;
-
-      border-radius:
-        14px;
-
-      padding:
-        16px;
-
-      background:
-        white;
-
-      transition:
-        border-color 0.15s,
-        background 0.15s;
-    }
-
-
-    .test-mode-button:hover {
-      border-color:
-        #c7cce9;
-    }
-
-
-    .test-mode-button.selected {
-      border-color:
-        #5b67c8;
-
-      background:
-        #f3f5ff;
-    }
-
-
-    .test-mode-title {
-      display:
-        block;
-
-      font-size:
-        17px;
-
-      font-weight:
-        bold;
-
-      margin-bottom:
-        4px;
-    }
-
-
-    .test-mode-description {
-      display:
-        block;
-
-      color:
-        #777;
-
-      font-size:
-        13px;
-
-      line-height:
-        1.5;
-    }
-
-
-    .test-tag-area {
-      margin-top:
-        20px;
-
-      padding-top:
-        20px;
-
-      border-top:
-        1px solid #eee;
-
-      display:
-        none;
-    }
-
-
-    .test-tag-area.active {
-      display:
-        block;
-    }
-
-
-    .test-start-button {
-      width: 100%;
-
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      padding:
-        16px;
-
-      margin-top:
-        22px;
-
-      background:
-        #c45454;
-
-      color:
-        white;
-
-      font-size:
-        18px;
-
-      font-weight:
-        bold;
-    }
-
-
-    .test-start-button:hover {
-      opacity:
-        0.9;
-    }
-
-
-    .test-start-button:disabled {
-      opacity:
-        0.5;
-
-      cursor:
-        not-allowed;
-    }
-
-
-    .available-count {
-      margin-top:
-        14px;
-
-      font-size:
-        14px;
-
-      color:
-        #777;
-
-      text-align:
-        center;
-    }
-
-
-    /* =========================
-       テスト問題画面
-    ========================= */
-
-    .test-progress {
-      text-align:
-        center;
-
-      color:
-        #777;
-
-      font-size:
-        14px;
-
-      margin-bottom:
-        15px;
-    }
-
-
-    .test-card {
-      background:
-        white;
-
-      border-radius:
-        20px;
-
-      padding:
-        28px;
-
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.06);
-    }
-
-
-    .test-section-label {
-      font-size:
-        13px;
-
-      color:
-        #888;
-
-      margin-bottom:
-        8px;
-    }
-
-
-    .test-korean-word {
-      font-size:
-        34px;
-
-      font-weight:
-        bold;
-
-      text-align:
-        center;
-
-      margin:
-        5px 0 30px;
-
-      line-height:
-        1.4;
-
-      word-break:
-        break-word;
-    }
-
-
-    .test-korean-example-box {
-      padding:
-        18px;
-
-      background:
-        #f7f7f7;
-
-      border-radius:
-        14px;
-
-      margin-bottom:
-        24px;
-    }
-
-
-    .test-korean-example {
-      font-size:
-        18px;
-
-      line-height:
-        1.8;
-
-      margin:
-        0;
-
-      white-space:
-        pre-wrap;
-
-      word-break:
-        break-word;
-    }
-
-
-    .reveal-button {
-      width:
-        100%;
-
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      padding:
-        16px;
-
-      background:
-        #5b67c8;
-
-      color:
-        white;
-
-      font-size:
-        17px;
-
-      font-weight:
-        bold;
-    }
-
-
-    .reveal-button:hover {
-      opacity:
-        0.92;
-    }
-
-
-    /* =========================
-       答え
-    ========================= */
-
-    .answer-area {
-      display:
-        none;
-
-      margin-top:
-        25px;
-
-      padding-top:
-        25px;
-
-      border-top:
-        1px solid #e5e5e5;
-    }
-
-
-    .answer-area.active {
-      display:
-        block;
-    }
-
-
-    .answer-block {
-      margin-bottom:
-        22px;
-    }
-
-
-    .answer-block:last-child {
-      margin-bottom:
-        0;
-    }
-
-
-    .answer-label {
-      font-size:
-        13px;
-
-      color:
-        #888;
-
-      margin-bottom:
-        7px;
-    }
-
-
-    .answer-text {
-      margin:
-        0;
-
-      font-size:
-        18px;
-
-      line-height:
-        1.7;
-
-      white-space:
-        pre-wrap;
-
-      word-break:
-        break-word;
-    }
-
-
-    .answer-divider {
-      margin:
-        24px 0;
-
-      border:
-        none;
-
-      border-top:
-        1px solid #eee;
-    }
-
-
-    /* =========================
-       メモ
-    ========================= */
-
-    .test-memo-box {
-      display:
-        none;
-
-      margin-top:
-        20px;
-
-      padding:
-        15px 16px;
-
-      background:
-        #fffaf0;
-
-      border:
-        1px solid #eee0bf;
-
-      border-radius:
-        12px;
-    }
-
-
-    .test-memo-box.active {
-      display:
-        block;
-    }
-
-
-    .test-memo-label {
-      font-size:
-        13px;
-
-      color:
-        #8a6412;
-
-      font-weight:
-        bold;
-
-      margin-bottom:
-        6px;
-    }
-
-
-    .test-memo-text {
-      margin:
-        0;
-
-      color:
-        #5d4b26;
-
-      line-height:
-        1.7;
-
-      white-space:
-        pre-wrap;
-
-      word-break:
-        break-word;
-    }
-
-
-    /* =========================
-       評価
-    ========================= */
-
-    .rating-area {
-      margin-top:
-        28px;
-
-      display:
-        none;
-    }
-
-
-    .rating-area.active {
-      display:
-        block;
-    }
-
-
-    .rating-question {
-      text-align:
-        center;
-
-      font-weight:
-        bold;
-
-      margin:
-        0 0 12px;
-    }
-
-
-    .rating-buttons {
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap:
-        10px;
-    }
-
-
-    .rating-button {
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      padding:
-        14px 8px;
-
-      font-weight:
-        bold;
-
-      line-height:
-        1.4;
-    }
-
-
-    .perfect-button {
-      background:
-        #edf8f0;
-
-      color:
-        #2c713d;
-    }
-
-
-    .review-button {
-      background:
-        #fff6df;
-
-      color:
-        #8a6412;
-    }
-
-
-    .weak-button {
-      background:
-        #fff0f0;
-
-      color:
-        #a63838;
-    }
-
-
-    .rating-button.selected {
-      outline:
-        3px solid #aaa;
-
-      outline-offset:
-        2px;
-    }
-
-
-    .rating-button:disabled {
-      cursor:
-        default;
-
-      opacity:
-        0.7;
-    }
-
-
-    /* =========================
-       次へ
-    ========================= */
-
-    .next-button {
-      width:
-        100%;
-
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      padding:
-        16px;
-
-      margin-top:
-        18px;
-
-      background:
-        #333;
-
-      color:
-        white;
-
-      font-size:
-        17px;
-
-      font-weight:
-        bold;
-
-      display:
-        none;
-    }
-
-
-    .next-button.active {
-      display:
-        block;
-    }
-
-
-    .next-button:hover {
-      opacity:
-        0.9;
-    }
-
-
-    /* =========================
-       テスト結果
-    ========================= */
-
-    .result-card {
-      background:
-        white;
-
-      border-radius:
-        20px;
-
-      padding:
-        28px;
-
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.06);
-
-      text-align:
-        center;
-    }
-
-
-    .result-title {
-      margin:
-        0 0 10px;
-
-      font-size:
-        28px;
-    }
-
-
-    .result-total {
-      color:
-        #777;
-
-      margin-bottom:
-        25px;
-    }
-
-
-    .result-list {
-      display:
-        grid;
-
-      gap:
-        10px;
-
-      margin-bottom:
-        25px;
-    }
-
-
-    .result-item {
-      padding:
-        14px;
-
-      border-radius:
-        12px;
-
-      font-weight:
-        bold;
-    }
-
-
-    .result-perfect {
-      background:
-        #edf8f0;
-
-      color:
-        #2c713d;
-    }
-
-
-    .result-review {
-      background:
-        #fff6df;
-
-      color:
-        #8a6412;
-    }
-
-
-    .result-weak {
-      background:
-        #fff0f0;
-
-      color:
-        #a63838;
-    }
-
-
-    .result-buttons {
-      display:
-        grid;
-
-      gap:
-        10px;
-    }
-
-
-    .result-button {
-      width:
-        100%;
-
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      padding:
-        14px;
-
-      font-weight:
-        bold;
-    }
-
-
-    .result-button.primary {
-      background:
-        #5b67c8;
-
-      color:
-        white;
-    }
-
-
-    .result-button.secondary {
-      background:
-        #eee;
-
-      color:
-        #333;
-    }
-
-
-    .result-button:disabled {
-      opacity:
-        0.45;
-
-      cursor:
-        not-allowed;
-    }
-
-
-    /* =========================
-       スマホ
-    ========================= */
-
-    @media (max-width: 600px) {
-
-      .app {
-        padding:
-          25px 15px 50px;
-      }
-
-
-      h1 {
-        font-size:
-          28px;
-      }
-
-
-      .page-title {
-        font-size:
-          23px;
-      }
-
-
-      .form-card,
-      .test-setup-card,
-      .test-card,
-      .result-card {
-        padding:
-          20px;
-      }
-
-
-      .tag-row {
-        flex-direction:
-          column;
-      }
-
-
-      .small-button {
-        width:
-          100%;
-      }
-
-
-      .test-korean-word {
-        font-size:
-          29px;
-      }
-
-
-      .rating-buttons {
-        grid-template-columns:
-          1fr;
-      }
-
-    }
-
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#f7f7f7;color:#333}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}
+    .app{max-width:760px;margin:0 auto;min-height:100vh;padding:30px 20px 60px}
+    header{text-align:center;margin-bottom:35px}h1{margin:0;font-size:32px}.subtitle{margin-top:10px;color:#777}
+    .screen{display:none}.screen.active{display:block}.page-title{font-size:26px;margin:0 0 25px}
+    .back-button{border:none;background:none;padding:5px 0;margin-bottom:20px;color:#666}.back-button:hover{text-decoration:underline}
+    .menu{display:grid;gap:18px}.menu-button{width:100%;border:none;border-radius:16px;padding:28px 20px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.08);font-size:20px;font-weight:700;transition:.15s}.menu-button:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.12)}.register-button{color:#3b5ccc}.test-button{color:#c45454}
+    .status-card{margin-top:28px;padding:20px;background:#fff;border-radius:16px;line-height:1.7}
+    .form-card,.test-setup-card,.test-card,.result-card{background:#fff;border-radius:18px;padding:25px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+    .form-group{margin-bottom:22px}.form-group label{display:block;font-weight:700;margin-bottom:8px}.required{color:#d34f4f;font-size:13px;margin-left:5px}
+    input[type=text],textarea,select{width:100%;border:1px solid #d8d8d8;border-radius:10px;padding:12px 14px;background:#fff;outline:none;transition:border-color .15s}input[type=text]:focus,textarea:focus,select:focus{border-color:#6b7dd8}textarea{min-height:100px;resize:vertical;line-height:1.6}.help-text{margin-top:7px;font-size:13px;color:#888;line-height:1.5}
+    .translate-button{width:100%;border:none;border-radius:10px;padding:13px 16px;margin-top:10px;background:#5b67c8;color:#fff;font-weight:700}.translate-button:hover{opacity:.92}.translate-button:disabled{cursor:not-allowed;opacity:.6}
+    .translation-status{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;font-size:14px;line-height:1.5}.translation-status.loading{display:block;background:#f2f4ff;color:#4f5ca8}.translation-status.success{display:block;background:#edf8f0;color:#2c713d}.translation-status.error{display:block;background:#fff0f0;color:#a63838}
+    .tag-row{display:flex;gap:10px}.tag-row select{flex:1}.small-button{border:1px solid #ccc;background:#fafafa;border-radius:10px;padding:10px 14px;white-space:nowrap}.small-button:hover{background:#f0f0f0}
+    .submit-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:10px;background:#3b5ccc;color:#fff;font-size:18px;font-weight:700}.submit-button:hover{opacity:.9}
+    .message{margin-top:15px;padding:13px 15px;border-radius:10px;display:none;line-height:1.5}.message.success{display:block;background:#edf8f0;color:#2c713d}.message.error{display:block;background:#fff0f0;color:#a63838}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}.modal-overlay.active{display:flex}.modal{width:100%;max-width:460px;background:#fff;border-radius:18px;padding:25px;box-shadow:0 15px 40px rgba(0,0,0,.2)}.modal h3{margin-top:0;line-height:1.5}.modal p{line-height:1.7;color:#555}.duplicate-info{margin:15px 0;padding:14px;background:#f7f7f7;border-radius:10px;line-height:1.7}.duplicate-info strong{color:#333}.modal-buttons{display:grid;gap:10px;margin-top:20px}.modal-button{border:none;border-radius:10px;padding:13px;font-weight:700}.modal-primary{background:#3b5ccc;color:#fff}.modal-secondary{background:#eee;color:#333}
+    .setup-question{margin:0 0 18px;font-size:18px;font-weight:700}.test-mode-list{display:grid;gap:12px}.test-mode-button{width:100%;text-align:left;border:2px solid #e1e1e1;border-radius:14px;padding:16px;background:#fff}.test-mode-button:hover{border-color:#c7cce9}.test-mode-button.selected{border-color:#5b67c8;background:#f3f5ff}.test-mode-title{display:block;font-size:17px;font-weight:700;margin-bottom:4px}.test-mode-description{display:block;color:#777;font-size:13px;line-height:1.5}.test-tag-area{margin-top:20px;padding-top:20px;border-top:1px solid #eee;display:none}.test-tag-area.active{display:block}.test-start-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:22px;background:#c45454;color:#fff;font-size:18px;font-weight:700}.test-start-button:hover{opacity:.9}.test-start-button:disabled{opacity:.5;cursor:not-allowed}.available-count{margin-top:14px;font-size:14px;color:#777;text-align:center}
+    .test-progress{text-align:center;color:#777;font-size:14px;margin-bottom:15px}.test-section-label{font-size:13px;color:#888;margin-bottom:8px}.test-korean-word{font-size:34px;font-weight:700;text-align:center;margin:5px 0 30px;line-height:1.4;word-break:break-word}.test-korean-example-box{padding:18px;background:#f7f7f7;border-radius:14px;margin-bottom:24px}.test-korean-example{font-size:18px;line-height:1.8;margin:0;white-space:pre-wrap;word-break:break-word}.reveal-button{width:100%;border:none;border-radius:12px;padding:16px;background:#5b67c8;color:#fff;font-size:17px;font-weight:700}.reveal-button:hover{opacity:.92}
+    .answer-area{display:none;margin-top:25px;padding-top:25px;border-top:1px solid #e5e5e5}.answer-area.active{display:block}.answer-block{margin-bottom:22px}.answer-label{font-size:13px;color:#888;margin-bottom:7px}.answer-text{margin:0;font-size:18px;line-height:1.7;white-space:pre-wrap;word-break:break-word}.answer-divider{margin:24px 0;border:none;border-top:1px solid #eee}
+    .test-memo-box{display:none;margin-top:20px;padding:15px 16px;background:#fffaf0;border:1px solid #eee0bf;border-radius:12px}.test-memo-box.active{display:block}.test-memo-label{font-size:13px;color:#8a6412;font-weight:700;margin-bottom:6px}.test-memo-text{margin:0;color:#5d4b26;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+    .rating-area{margin-top:28px;display:none}.rating-area.active{display:block}.rating-question{text-align:center;font-weight:700;margin:0 0 12px}.rating-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.rating-button{border:none;border-radius:12px;padding:14px 8px;font-weight:700;line-height:1.4}.perfect-button{background:#edf8f0;color:#2c713d}.review-button{background:#fff6df;color:#8a6412}.weak-button{background:#fff0f0;color:#a63838}.rating-button.selected{outline:3px solid #aaa;outline-offset:2px}.rating-button:disabled{cursor:default;opacity:.7}
+    .next-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:18px;background:#333;color:#fff;font-size:17px;font-weight:700;display:none}.next-button.active{display:block}.next-button:hover{opacity:.9}
+    .result-title{margin:0 0 10px;font-size:28px}.result-total{color:#777;margin-bottom:25px}.result-list{display:grid;gap:10px;margin-bottom:25px}.result-item{padding:14px;border-radius:12px;font-weight:700}.result-perfect{background:#edf8f0;color:#2c713d}.result-review{background:#fff6df;color:#8a6412}.result-weak{background:#fff0f0;color:#a63838}.result-buttons{display:grid;gap:10px}.result-button{width:100%;border:none;border-radius:12px;padding:14px;font-weight:700}.result-button.primary{background:#5b67c8;color:#fff}.result-button.secondary{background:#eee;color:#333}.result-button:disabled{opacity:.45;cursor:not-allowed}
+    @media(max-width:600px){.app{padding:25px 15px 50px}h1{font-size:28px}.page-title{font-size:23px}.form-card,.test-setup-card,.test-card,.result-card{padding:20px}.tag-row{flex-direction:column}.small-button{width:100%}.test-korean-word{font-size:29px}.rating-buttons{grid-template-columns:1fr}}
   </style>
-
 </head>
-
-
 <body>
-
-  <div class="app">
-
-
-    <!-- =========================
-         ヘッダー
-    ========================= -->
-
-    <header>
-
-      <h1>
-        例文から覚える韓国語
-      </h1>
-
-      <p class="subtitle">
-        自分専用の韓国語学習アプリ
-      </p>
-
-    </header>
-
-
-    <!-- ==================================================
-         トップ画面
-    ================================================== -->
-
-    <section
-      id="homeScreen"
-      class="screen active"
-    >
-
-      <div class="menu">
-
-        <button
-          class="menu-button register-button"
-          onclick="showScreen('registerScreen')"
-        >
-          📝 登録する
-        </button>
-
-
-        <button
-          class="menu-button test-button"
-          onclick="showScreen('testSetupScreen')"
-        >
-          ✏️ テストする
-        </button>
-
-      </div>
-
-
-      <div class="status-card">
-
-        <strong>
-          現在の状態
-        </strong>
-
-        <p id="wordCountText">
-          まだ単語が登録されていません。
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <!-- ==================================================
-         登録画面
-    ================================================== -->
-
-    <section
-      id="registerScreen"
-      class="screen"
-    >
-
-      <button
-        class="back-button"
-        onclick="showScreen('homeScreen')"
-      >
-        ← トップに戻る
-      </button>
-
-
-      <h2 class="page-title">
-        📝 単語・例文を登録する
-      </h2>
-
-
-      <div class="form-card">
-
-
-        <!-- =====================
-             1. 韓国語
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="koreanWord">
-
-            1. 韓国語
-
-            <span class="required">
-              必須
-            </span>
-
-          </label>
-
-
-          <input
-            id="koreanWord"
-            type="text"
-            placeholder="例：단정하다"
-            onblur="checkDuplicateKoreanWord()"
-          >
-
-        </div>
-
-
-        <!-- =====================
-             2. 日本語の意味
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="japaneseMeaning">
-
-            2. 日本語の意味
-
-            <span class="required">
-              必須
-            </span>
-
-          </label>
-
-
-          <input
-            id="japaneseMeaning"
-            type="text"
-            placeholder="例：きちんとしている、端正だ"
-          >
-
-        </div>
-
-
-        <!-- =====================
-             3. 韓国語の例文
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="koreanExample">
-
-            3. 韓国語の例文
-
-            <span class="required">
-              必須
-            </span>
-
-          </label>
-
-
-          <textarea
-            id="koreanExample"
-            placeholder="例：그녀는 항상 옷차림이 단정하다."
-          ></textarea>
-
-
-          <button
-            type="button"
-            id="translateButton"
-            class="translate-button"
-            onclick="translateExample()"
-          >
-            🌐 日本語・英語に自動翻訳
-          </button>
-
-
-          <div
-            id="translationStatus"
-            class="translation-status"
-          ></div>
-
-
-          <div class="help-text">
-
-            韓国語の例文を入力してから、
-            上のボタンを押してください。<br>
-
-            自動翻訳後も、日本語・英語とも自由に編集できます。
-
-          </div>
-
-        </div>
-
-
-        <!-- =====================
-             4. 日本語例文
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="japaneseExample">
-
-            4. 例文の日本語訳
-
-            <span class="required">
-              必須
-            </span>
-
-          </label>
-
-
-          <textarea
-            id="japaneseExample"
-            placeholder="例：彼女はいつも服装がきちんとしている。"
-          ></textarea>
-
-
-          <div class="help-text">
-
-            DeepLによる自動翻訳後も、
-            自由に修正できます。
-
-          </div>
-
-        </div>
-
-
-        <!-- =====================
-             5. 英語例文
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="englishExample">
-
-            5. 例文の英訳
-
-          </label>
-
-
-          <textarea
-            id="englishExample"
-            placeholder="例：She is always neatly dressed."
-          ></textarea>
-
-
-          <div class="help-text">
-
-            DeepLによる自動翻訳後も、
-            自由に修正できます。
-
-          </div>
-
-        </div>
-
-
-        <!-- =====================
-             6. タグ
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="wordTag">
-
-            6. どこで覚えたか
-
-          </label>
-
-
-          <div class="tag-row">
-
-            <select id="wordTag">
-
-              <option value="">
-                タグを選択してください
-              </option>
-
-            </select>
-
-
-            <button
-              type="button"
-              class="small-button"
-              onclick="addTag()"
-            >
-              ＋ 新しいタグ
-            </button>
-
-          </div>
-
-
-          <div class="help-text">
-
-            例：
-            延世大学2級、
-            延世大学3級、
-            日常生活
-
-          </div>
-
-        </div>
-
-
-        <!-- =====================
-             7. メモ
-        ===================== -->
-
-        <div class="form-group">
-
-          <label for="wordMemo">
-
-            7. メモ
-
-          </label>
-
-
-          <textarea
-            id="wordMemo"
-            placeholder="意味の詳細、漢字表記、覚え方など"
-          ></textarea>
-
-        </div>
-
-
-        <!-- =====================
-             登録
-        ===================== -->
-
-        <button
-          type="button"
-          class="submit-button"
-          onclick="registerWord()"
-        >
-          この単語を登録する
-        </button>
-
-
-        <div
-          id="registerMessage"
-          class="message"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ==================================================
-         テスト開始画面
-    ================================================== -->
-
-    <section
-      id="testSetupScreen"
-      class="screen"
-    >
-
-      <button
-        class="back-button"
-        onclick="showScreen('homeScreen')"
-      >
-        ← トップに戻る
-      </button>
-
-
-      <h2 class="page-title">
-        ✏️ テストする
-      </h2>
-
-
-      <div class="test-setup-card">
-
-
-        <p class="setup-question">
-          どの単語から出題しますか？
-        </p>
-
-
-        <div class="test-mode-list">
-
-
-          <button
-            type="button"
-            class="test-mode-button selected"
-            data-mode="all"
-            onclick="selectTestMode('all')"
-          >
-
-            <span class="test-mode-title">
-              📚 すべての単語
-            </span>
-
-            <span class="test-mode-description">
-              登録されているすべての単語からランダムに出題します。
-            </span>
-
-          </button>
-
-
-          <button
-            type="button"
-            class="test-mode-button"
-            data-mode="review"
-            onclick="selectTestMode('review')"
-          >
-
-            <span class="test-mode-title">
-              🧠 もっと覚える
-            </span>
-
-            <span class="test-mode-description">
-              「もっと覚える」と評価した単語だけを出題します。
-            </span>
-
-          </button>
-
-
-          <button
-            type="button"
-            class="test-mode-button"
-            data-mode="weak"
-            onclick="selectTestMode('weak')"
-          >
-
-            <span class="test-mode-title">
-              🫠 まだまだ
-            </span>
-
-            <span class="test-mode-description">
-              「まだまだ」と評価した単語だけを出題します。
-            </span>
-
-          </button>
-
-
-          <button
-            type="button"
-            class="test-mode-button"
-            data-mode="tag"
-            onclick="selectTestMode('tag')"
-          >
-
-            <span class="test-mode-title">
-              🏷️ タグから選ぶ
-            </span>
-
-            <span class="test-mode-description">
-              選択したタグが付いている単語だけを出題します。
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <div
-          id="testTagArea"
-          class="test-tag-area"
-        >
-
-          <label for="testTagSelect">
-            出題するタグ
-          </label>
-
-
-          <select id="testTagSelect">
-
-            <option value="">
-              タグを選択してください
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <p
-          id="availableTestCount"
-          class="available-count"
-        >
-          出題可能な単語：0件
-        </p>
-
-
-        <button
-          id="startTestButton"
-          type="button"
-          class="test-start-button"
-          onclick="startTest()"
-        >
-          テストを始める
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- ==================================================
-         テスト問題画面
-    ================================================== -->
-
-    <section
-      id="testQuestionScreen"
-      class="screen"
-    >
-
-      <button
-        class="back-button"
-        onclick="exitTest()"
-      >
-        ← テストをやめる
-      </button>
-
-
-      <div
-        id="testProgress"
-        class="test-progress"
-      >
-        問題 1 / 1
-      </div>
-
-
-      <div class="test-card">
-
-
-        <div class="test-section-label">
-          韓国語
-        </div>
-
-
-        <div
-          id="testKoreanWord"
-          class="test-korean-word"
-        ></div>
-
-
-        <div class="test-section-label">
-          韓国語の例文
-        </div>
-
-
-        <div class="test-korean-example-box">
-
-          <p
-            id="testKoreanExample"
-            class="test-korean-example"
-          ></p>
-
-        </div>
-
-
-        <button
-          id="revealAnswerButton"
-          type="button"
-          class="reveal-button"
-          onclick="showTestAnswer()"
-        >
-          👁️ 答えを見る
-        </button>
-
-
-        <!-- =====================
-             答え
-        ===================== -->
-
-        <div
-          id="answerArea"
-          class="answer-area"
-        >
-
-
-          <div class="answer-block">
-
-            <div class="answer-label">
-              日本語の意味
-            </div>
-
-
-            <p
-              id="testJapaneseMeaning"
-              class="answer-text"
-            ></p>
-
-          </div>
-
-
-          <hr class="answer-divider">
-
-
-          <div class="answer-block">
-
-            <div class="answer-label">
-              日本語の例文
-            </div>
-
-
-            <p
-              id="testJapaneseExample"
-              class="answer-text"
-            ></p>
-
-          </div>
-
-
-          <div class="answer-block">
-
-            <div class="answer-label">
-              英語の例文
-            </div>
-
-
-            <p
-              id="testEnglishExample"
-              class="answer-text"
-            ></p>
-
-          </div>
-
-
-          <!-- =====================
-               メモ
-          ===================== -->
-
-          <div
-            id="testMemoBox"
-            class="test-memo-box"
-          >
-
-            <div class="test-memo-label">
-              📝 メモ
-            </div>
-
-
-            <p
-              id="testMemoText"
-              class="test-memo-text"
-            ></p>
-
-          </div>
-
-
-          <!-- =====================
-               評価
-          ===================== -->
-
-          <div
-            id="ratingArea"
-            class="rating-area"
-          >
-
-            <p class="rating-question">
-              この単語はどうでしたか？
-            </p>
-
-
-            <div class="rating-buttons">
-
-
-              <button
-                id="perfectRatingButton"
-                type="button"
-                class="rating-button perfect-button"
-                onclick="rateCurrentQuestion('perfect')"
-              >
-                💯 完璧
-              </button>
-
-
-              <button
-                id="reviewRatingButton"
-                type="button"
-                class="rating-button review-button"
-                onclick="rateCurrentQuestion('review')"
-              >
-                🧠 もっと覚える
-              </button>
-
-
-              <button
-                id="weakRatingButton"
-                type="button"
-                class="rating-button weak-button"
-                onclick="rateCurrentQuestion('weak')"
-              >
-                🫠 まだまだ
-              </button>
-
-            </div>
-
-          </div>
-
-
-          <button
-            id="nextTestButton"
-            type="button"
-            class="next-button"
-            onclick="nextTestQuestion()"
-          >
-            次の問題 →
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- ==================================================
-         テスト結果
-    ================================================== -->
-
-    <section
-      id="testResultScreen"
-      class="screen"
-    >
-
-      <button
-        class="back-button"
-        onclick="showScreen('homeScreen')"
-      >
-        ← トップに戻る
-      </button>
-
-
-      <div class="result-card">
-
-
-        <h2 class="result-title">
-          🎉 テスト終了！
-        </h2>
-
-
-        <p
-          id="resultTotal"
-          class="result-total"
-        >
-          0問終了
-        </p>
-
-
-        <div class="result-list">
-
-
-          <div
-            id="resultPerfect"
-            class="result-item result-perfect"
-          >
-            💯 完璧：0問
-          </div>
-
-
-          <div
-            id="resultReview"
-            class="result-item result-review"
-          >
-            🧠 もっと覚える：0問
-          </div>
-
-
-          <div
-            id="resultWeak"
-            class="result-item result-weak"
-          >
-            🫠 まだまだ：0問
-          </div>
-
-        </div>
-
-
-        <div class="result-buttons">
-
-
-          <button
-            id="retryWeakButton"
-            type="button"
-            class="result-button primary"
-            onclick="startFocusedTest('weak')"
-          >
-            🫠「まだまだ」だけもう一度
-          </button>
-
-
-          <button
-            id="retryReviewButton"
-            type="button"
-            class="result-button primary"
-            onclick="startFocusedTest('review')"
-          >
-            🧠「もっと覚える」だけもう一度
-          </button>
-
-
-          <button
-            type="button"
-            class="result-button secondary"
-            onclick="restartSameTest()"
-          >
-            🔄 同じ範囲でもう一度
-          </button>
-
-
-          <button
-            type="button"
-            class="result-button secondary"
-            onclick="showScreen('homeScreen')"
-          >
-            🏠 トップへ戻る
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
-
-
-  <!-- ==================================================
-       重複確認モーダル
-  ================================================== -->
-
-  <div
-    id="duplicateModal"
-    class="modal-overlay"
-  >
-
-    <div class="modal">
-
-
-      <h3>
-        この韓国語はすでに登録されています。
-      </h3>
-
-
-      <p>
-        次の単語がすでに登録されています。
-      </p>
-
-
-      <div class="duplicate-info">
-
-        <strong>
-          韓国語
-        </strong>
-
-        <br>
-
-        <span id="duplicateKoreanText">
-        </span>
-
-
-        <br>
-        <br>
-
-
-        <strong>
-          日本語
-        </strong>
-
-        <br>
-
-        <span id="duplicateJapaneseText">
-        </span>
-
-      </div>
-
-
-      <p>
-        別の単語として登録しますか？
-      </p>
-
-
-      <div class="modal-buttons">
-
-
-        <button
-          class="modal-button modal-primary"
-          onclick="confirmDuplicateRegistration()"
-        >
-          はい
-        </button>
-
-
-        <button
-          class="modal-button modal-secondary"
-          onclick="cancelDuplicateRegistration()"
-        >
-          登録をやめる
-        </button>
-
-      </div>
-
+<div class="app">
+  <header>
+    <h1>例文から覚える韓国語</h1>
+    <p class="subtitle">例文を中心に韓国語を学ぶ自分専用の学習アプリ</p>
+  </header>
+
+  <section id="homeScreen" class="screen active">
+    <div class="menu">
+      <button class="menu-button register-button" onclick="showScreen('registerScreen')">📝 登録する</button>
+      <button class="menu-button test-button" onclick="showScreen('testSetupScreen')">✏️ テストする</button>
     </div>
+    <div class="status-card">
+      <strong>現在の状態</strong>
+      <p id="wordCountText">クラウドから単語を読み込んでいます…</p>
+    </div>
+  </section>
 
+  <section id="registerScreen" class="screen">
+    <button class="back-button" onclick="showScreen('homeScreen')">← トップに戻る</button>
+    <h2 class="page-title">📝 単語・例文を登録する</h2>
+    <div class="form-card">
+      <div class="form-group">
+        <label for="koreanWord">1. 韓国語 <span class="required">必須</span></label>
+        <input id="koreanWord" type="text" placeholder="例：단정하다" oninput="duplicateCheckHandled=false" onblur="checkDuplicateKoreanWord()">
+      </div>
+
+      <div class="form-group">
+        <label for="japaneseMeaning">2. 日本語の意味 <span class="required">必須</span></label>
+        <input id="japaneseMeaning" type="text" placeholder="例：きちんとしている、端正だ">
+      </div>
+
+      <div class="form-group">
+        <label for="koreanExample">3. 韓国語の例文 <span class="required">必須</span></label>
+        <textarea id="koreanExample" placeholder="例：그녀는 항상 옷차림이 단정하다."></textarea>
+        <button type="button" id="translateButton" class="translate-button" onclick="translateExample()">🌐 日本語・英語に自動翻訳</button>
+        <div id="translationStatus" class="translation-status"></div>
+        <div class="help-text">韓国語の例文を入力してから、上のボタンを押してください。<br>自動翻訳後も、日本語・英語とも自由に編集できます。</div>
+      </div>
+
+      <div class="form-group">
+        <label for="japaneseExample">4. 例文の日本語訳 <span class="required">必須</span></label>
+        <textarea id="japaneseExample" placeholder="例：彼女はいつも服装がきちんとしている。"></textarea>
+        <div class="help-text">DeepLによる自動翻訳後も、自由に修正できます。</div>
+      </div>
+
+      <div class="form-group">
+        <label for="englishExample">5. 例文の英訳</label>
+        <textarea id="englishExample" placeholder="例：She is always neatly dressed."></textarea>
+        <div class="help-text">DeepLによる自動翻訳後も、自由に修正できます。</div>
+      </div>
+
+      <div class="form-group">
+        <label for="wordTag">6. どこで覚えたか</label>
+        <div class="tag-row">
+          <select id="wordTag"><option value="">タグを選択してください</option></select>
+          <button type="button" class="small-button" onclick="addTag()">＋ 新しいタグ</button>
+        </div>
+        <div class="help-text">例：延世大学2級、延世大学3級、日常生活</div>
+      </div>
+
+      <div class="form-group">
+        <label for="wordMemo">7. メモ</label>
+        <textarea id="wordMemo" placeholder="意味の詳細、漢字表記、覚え方など"></textarea>
+      </div>
+
+      <button type="button" class="submit-button" onclick="registerWord()">この単語を登録する</button>
+      <div id="registerMessage" class="message"></div>
+    </div>
+  </section>
+
+  <section id="testSetupScreen" class="screen">
+    <button class="back-button" onclick="showScreen('homeScreen')">← トップに戻る</button>
+    <h2 class="page-title">✏️ テストする</h2>
+    <div class="test-setup-card">
+      <p class="setup-question">どの単語から出題しますか？</p>
+      <div class="test-mode-list">
+        <button type="button" class="test-mode-button selected" data-mode="all" onclick="selectTestMode('all')"><span class="test-mode-title">📚 すべての単語</span><span class="test-mode-description">登録されているすべての単語からランダムに出題します。</span></button>
+        <button type="button" class="test-mode-button" data-mode="review" onclick="selectTestMode('review')"><span class="test-mode-title">🧠 もっと覚える</span><span class="test-mode-description">「もっと覚える」と評価した単語だけを出題します。</span></button>
+        <button type="button" class="test-mode-button" data-mode="weak" onclick="selectTestMode('weak')"><span class="test-mode-title">🫠 まだまだ</span><span class="test-mode-description">「まだまだ」と評価した単語だけを出題します。</span></button>
+        <button type="button" class="test-mode-button" data-mode="tag" onclick="selectTestMode('tag')"><span class="test-mode-title">🏷️ タグから選ぶ</span><span class="test-mode-description">選択したタグが付いている単語だけを出題します。</span></button>
+      </div>
+      <div id="testTagArea" class="test-tag-area"><label for="testTagSelect">出題するタグ</label><select id="testTagSelect"><option value="">タグを選択してください</option></select></div>
+      <p id="availableTestCount" class="available-count">出題可能な単語：0件</p>
+      <button id="startTestButton" type="button" class="test-start-button" onclick="startTest()">テストを始める</button>
+    </div>
+  </section>
+
+  <section id="testQuestionScreen" class="screen">
+    <button class="back-button" onclick="exitTest()">← テストをやめる</button>
+    <div id="testProgress" class="test-progress">問題 1 / 1</div>
+    <div class="test-card">
+      <div class="test-section-label">韓国語</div>
+      <div id="testKoreanWord" class="test-korean-word"></div>
+      <div class="test-section-label">韓国語の例文</div>
+      <div class="test-korean-example-box"><p id="testKoreanExample" class="test-korean-example"></p></div>
+      <button id="revealAnswerButton" type="button" class="reveal-button" onclick="showTestAnswer()">👁️ 答えを見る</button>
+
+      <div id="answerArea" class="answer-area">
+        <div class="answer-block"><div class="answer-label">日本語の意味</div><p id="testJapaneseMeaning" class="answer-text"></p></div>
+        <hr class="answer-divider">
+        <div class="answer-block"><div class="answer-label">日本語の例文</div><p id="testJapaneseExample" class="answer-text"></p></div>
+        <div class="answer-block"><div class="answer-label">英語の例文</div><p id="testEnglishExample" class="answer-text"></p></div>
+
+        <div id="testMemoBox" class="test-memo-box"><div class="test-memo-label">📝 メモ</div><p id="testMemoText" class="test-memo-text"></p></div>
+
+        <div id="ratingArea" class="rating-area">
+          <p class="rating-question">この単語はどうでしたか？</p>
+          <div class="rating-buttons">
+            <button id="perfectRatingButton" type="button" class="rating-button perfect-button" onclick="rateCurrentQuestion('perfect')">💯 完璧</button>
+            <button id="reviewRatingButton" type="button" class="rating-button review-button" onclick="rateCurrentQuestion('review')">🧠 もっと覚える</button>
+            <button id="weakRatingButton" type="button" class="rating-button weak-button" onclick="rateCurrentQuestion('weak')">🫠 まだまだ</button>
+          </div>
+        </div>
+
+        <button id="nextTestButton" type="button" class="next-button" onclick="nextTestQuestion()">次の問題 →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="testResultScreen" class="screen">
+    <button class="back-button" onclick="showScreen('homeScreen')">← トップに戻る</button>
+    <div class="result-card">
+      <h2 class="result-title">🎉 テスト終了！</h2>
+      <p id="resultTotal" class="result-total">0問終了</p>
+      <div class="result-list">
+        <div id="resultPerfect" class="result-item result-perfect">💯 完璧：0問</div>
+        <div id="resultReview" class="result-item result-review">🧠 もっと覚える：0問</div>
+        <div id="resultWeak" class="result-item result-weak">🫠 まだまだ：0問</div>
+      </div>
+      <div class="result-buttons">
+        <button id="retryWeakButton" type="button" class="result-button primary" onclick="startFocusedTest('weak')">🫠「まだまだ」だけもう一度</button>
+        <button id="retryReviewButton" type="button" class="result-button primary" onclick="startFocusedTest('review')">🧠「もっと覚える」だけもう一度</button>
+        <button type="button" class="result-button secondary" onclick="restartSameTest()">🔄 同じ範囲でもう一度</button>
+        <button type="button" class="result-button secondary" onclick="showScreen('homeScreen')">🏠 トップへ戻る</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="duplicateModal" class="modal-overlay">
+  <div class="modal">
+    <h3>この韓国語はすでに登録されています。</h3>
+    <p>次の単語がすでに登録されています。</p>
+    <div class="duplicate-info"><strong>韓国語</strong><br><span id="duplicateKoreanText"></span><br><br><strong>日本語</strong><br><span id="duplicateJapaneseText"></span></div>
+    <p>別の単語として登録しますか？</p>
+    <div class="modal-buttons">
+      <button class="modal-button modal-primary" onclick="confirmDuplicateRegistration()">はい</button>
+      <button class="modal-button modal-secondary" onclick="cancelDuplicateRegistration()">登録をやめる</button>
+    </div>
   </div>
+</div>
 
+<script>
+const API_BASE_URL = "https://calm-fire-eac1korean-study-translator.nanami-suzuki-jp.workers.dev";
+const LEGACY_WORD_STORAGE_KEY = "koreanStudyWords";
+const LEGACY_TAG_STORAGE_KEY = "koreanStudyTags";
+const MIGRATION_DONE_KEY = "koreanStudyD1MigrationDone";
 
-  <script>
+let words = [];
+let tags = [];
+let selectedTestMode = "all";
+let duplicateCheckHandled = false;
+let pendingWordData = null;
+let testSession = { words: [], index: 0, revealed: false, rated: false, mode: "all", modeLabel: "", counts: { perfect: 0, review: 0, weak: 0 } };
 
+async function apiRequest(path, options = {}) {
+  const response = await fetch(API_BASE_URL + path, options);
+  const text = await response.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+  if (!response.ok) {
+    const error = new Error(data.error || `APIエラー (${response.status})`);
+    error.status = response.status;
+    error.data = data;
+    throw error;
+  }
+  return data;
+}
 
-    /* ==================================================
-       DeepL Worker
-    ================================================== */
+async function loadCloudData() {
+  const [wordData, tagData] = await Promise.all([
+    apiRequest("/words"),
+    apiRequest("/tags")
+  ]);
+  words = wordData.words || [];
+  tags = (tagData.tags || []).map(tag => tag.name);
+}
 
-    const TRANSLATION_WORKER_URL =
-      "https://calm-fire-eac1korean-study-translator.nanami-suzuki-jp.workers.dev/";
+function getLegacyWords() {
+  const saved = localStorage.getItem(LEGACY_WORD_STORAGE_KEY);
+  if (!saved) return [];
+  try { return JSON.parse(saved); } catch { return []; }
+}
 
+function getLegacyTags() {
+  const saved = localStorage.getItem(LEGACY_TAG_STORAGE_KEY);
+  if (!saved) return [];
+  try { return JSON.parse(saved); } catch { return []; }
+}
 
-    /* ==================================================
-       localStorage
-    ================================================== */
+async function migrateLegacyDataIfNeeded() {
+  if (words.length !== 0) return;
+  if (localStorage.getItem(MIGRATION_DONE_KEY) === "yes") return;
 
-    const WORD_STORAGE_KEY =
-      "koreanStudyWords";
+  const legacyWords = getLegacyWords();
+  const legacyTags = getLegacyTags();
+  if (!legacyWords.length && !legacyTags.length) return;
 
+  const migrate = confirm(
+    `このブラウザに以前登録したデータが ${legacyWords.length}件 あります。\n\nD1へ移行すると、パソコン・スマホなどどの端末からでも使えるようになります。\n\nクラウドへ移行しますか？`
+  );
 
-    const TAG_STORAGE_KEY =
-      "koreanStudyTags";
+  if (!migrate) return;
 
-
-    /* ==================================================
-       単語取得
-    ================================================== */
-
-    function getWords() {
-
-      const saved =
-        localStorage.getItem(
-          WORD_STORAGE_KEY
-        );
-
-
-      if (!saved) {
-        return [];
-      }
-
-
+  for (const tag of legacyTags) {
+    if (!tags.includes(tag)) {
       try {
-
-        return JSON.parse(saved);
-
+        await apiRequest("/tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: tag })
+        });
+        tags.push(tag);
       } catch (error) {
-
-        console.error(
-          "単語データの読み込みに失敗しました。",
-          error
-        );
-
-        return [];
-
+        if (error.status !== 409) throw error;
       }
-
     }
+  }
 
-
-    /* ==================================================
-       単語保存
-    ================================================== */
-
-    function saveWords(words) {
-
-      localStorage.setItem(
-        WORD_STORAGE_KEY,
-        JSON.stringify(words)
-      );
-
-    }
-
-
-    /* ==================================================
-       タグ取得
-    ================================================== */
-
-    function getTags() {
-
-      const saved =
-        localStorage.getItem(
-          TAG_STORAGE_KEY
-        );
-
-
-      if (!saved) {
-        return [];
-      }
-
-
-      try {
-
-        return JSON.parse(saved);
-
-      } catch (error) {
-
-        console.error(
-          "タグデータの読み込みに失敗しました。",
-          error
-        );
-
-        return [];
-
-      }
-
-    }
-
-
-    /* ==================================================
-       タグ保存
-    ================================================== */
-
-    function saveTags(tags) {
-
-      localStorage.setItem(
-        TAG_STORAGE_KEY,
-        JSON.stringify(tags)
-      );
-
-    }
-
-
-    /* ==================================================
-       画面切り替え
-    ================================================== */
-
-    function showScreen(
-      screenId
-    ) {
-
-      const screens =
-        document.querySelectorAll(
-          ".screen"
-        );
-
-
-      screens.forEach(
-        function(screen) {
-
-          screen.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-
-      const target =
-        document.getElementById(
-          screenId
-        );
-
-
-      if (target) {
-
-        target.classList.add(
-          "active"
-        );
-
-      }
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+  for (const word of legacyWords) {
+    try {
+      await apiRequest("/words", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: word.id || crypto.randomUUID(),
+          korean: word.korean || "",
+          japanese: word.japanese || "",
+          koreanExample: word.koreanExample || "",
+          japaneseExample: word.japaneseExample || "",
+          englishExample: word.englishExample || "",
+          tag: word.tag || "",
+          memo: word.memo || "",
+          memoryLevel: word.memoryLevel || "new",
+          createdAt: word.createdAt || new Date().toISOString(),
+          allowDuplicate: true
+        })
       });
-
-
-      updateHomeStatus();
-      updateTagSelect();
-      updateTestTagSelect();
-      updateAvailableTestCount();
-
+    } catch (error) {
+      console.error("移行エラー", word, error);
     }
-
-
-    /* ==================================================
-       登録数
-    ================================================== */
-
-    function updateHomeStatus() {
-
-      const words =
-        getWords();
-
-
-      const count =
-        words.length;
-
-
-      const text =
-        document.getElementById(
-          "wordCountText"
-        );
-
-
-      if (count === 0) {
-
-        text.textContent =
-          "まだ単語が登録されていません。";
-
-      } else {
-
-        text.innerHTML =
-          "現在 <strong>" +
-          count +
-          "件</strong> の単語が登録されています。";
-
-      }
-
-    }
-
-
-    /* ==================================================
-       登録画面のタグ
-    ================================================== */
-
-    function updateTagSelect() {
-
-      const select =
-        document.getElementById(
-          "wordTag"
-        );
-
-
-      if (!select) {
-        return;
-      }
-
-
-      const currentValue =
-        select.value;
-
-
-      const tags =
-        getTags();
-
-
-      select.innerHTML =
-        '<option value="">タグを選択してください</option>';
-
-
-      tags.forEach(
-        function(tag) {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            tag;
-
-
-          option.textContent =
-            tag;
-
-
-          select.appendChild(
-            option
-          );
-
-        }
-      );
-
-
-      if (
-        tags.includes(
-          currentValue
-        )
-      ) {
-
-        select.value =
-          currentValue;
-
-      }
-
-    }
-
-
-    /* ==================================================
-       テスト画面のタグ
-    ================================================== */
-
-    function updateTestTagSelect() {
-
-      const select =
-        document.getElementById(
-          "testTagSelect"
-        );
-
-
-      if (!select) {
-        return;
-      }
-
-
-      const currentValue =
-        select.value;
-
-
-      const tags =
-        getTags();
-
-
-      select.innerHTML =
-        '<option value="">タグを選択してください</option>';
-
-
-      tags.forEach(
-        function(tag) {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            tag;
-
-
-          option.textContent =
-            tag;
-
-
-          select.appendChild(
-            option
-          );
-
-        }
-      );
-
-
-      if (
-        tags.includes(
-          currentValue
-        )
-      ) {
-
-        select.value =
-          currentValue;
-
-      }
-
-    }
-
-
-    /* ==================================================
-       新しいタグ
-    ================================================== */
-
-    function addTag() {
-
-      const newTag =
-        prompt(
-          "新しいタグ名を入力してください。"
-        );
-
-
-      if (newTag === null) {
-        return;
-      }
-
-
-      const tag =
-        newTag.trim();
-
-
-      if (!tag) {
-
-        alert(
-          "タグ名を入力してください。"
-        );
-
-        return;
-
-      }
-
-
-      const tags =
-        getTags();
-
-
-      if (
-        tags.includes(tag)
-      ) {
-
-        alert(
-          "そのタグはすでに存在します。"
-        );
-
-
-        updateTagSelect();
-
-        return;
-
-      }
-
-
-      tags.push(tag);
-
-      saveTags(tags);
-
-      updateTagSelect();
-
-
-      const wordTag =
-        document.getElementById(
-          "wordTag"
-        );
-
-
-      if (wordTag) {
-
-        wordTag.value =
-          tag;
-
-      }
-
-
-      updateTestTagSelect();
-
-    }
-
-
-    /* ==================================================
-       登録済み韓国語を確認
-       「1. 韓国語」から離れた時に実行
-    ================================================== */
-
-    let duplicateCheckHandled =
-      false;
-
-
-    function checkDuplicateKoreanWord() {
-
-      const input =
-        document.getElementById(
-          "koreanWord"
-        );
-
-
-      const korean =
-        input.value.trim();
-
-
-      /* 空なら何もしない */
-
-      if (!korean) {
-        return;
-      }
-
-
-      /* すでに今回チェック済みなら何もしない */
-
-      if (
-        duplicateCheckHandled
-      ) {
-        return;
-      }
-
-
-      const words =
-        getWords();
-
-
-      const duplicate =
-        words.find(
-          function(word) {
-
-            return (
-              word.korean ===
-              korean
-            );
-
-          }
-        );
-
-
-      if (!duplicate) {
-
-        duplicateCheckHandled =
-          true;
-
-        return;
-
-      }
-
-
-      /* =========================
-         既存の単語情報を表示
-      ========================= */
-
-      document
-        .getElementById(
-          "duplicateKoreanText"
-        )
-        .textContent =
-        duplicate.korean;
-
-
-      document
-        .getElementById(
-          "duplicateJapaneseText"
-        )
-        .textContent =
-        duplicate.japanese ||
-        "日本語の意味が登録されていません。";
-
-
-      document
-        .getElementById(
-          "duplicateModal"
-        )
-        .classList
-        .add("active");
-
-    }
-
-
-    /* ==================================================
-       重複しているけど登録を続ける
-    ================================================== */
-
-    function confirmDuplicateRegistration() {
-
-      duplicateCheckHandled =
-        true;
-
-
-      closeDuplicateModal();
-
-    }
-
-
-    /* ==================================================
-       重複登録をやめる
-       韓国語欄だけクリア
-    ================================================== */
-
-    function cancelDuplicateRegistration() {
-
-      const koreanInput =
-        document.getElementById(
-          "koreanWord"
-        );
-
-
-      koreanInput.value =
-        "";
-
-
-      duplicateCheckHandled =
-        false;
-
-
-      closeDuplicateModal();
-
-
-      setTimeout(
-        function() {
-
-          koreanInput.focus();
-
-        },
-        100
-      );
-
-    }
-
-
-    /* ==================================================
-       重複モーダルを閉じる
-    ================================================== */
-
-    function closeDuplicateModal() {
-
-      document
-        .getElementById(
-          "duplicateModal"
-        )
-        .classList
-        .remove("active");
-
-    }
-
-
-    /* ==================================================
-       DeepL自動翻訳
-    ================================================== */
-
-    async function translateExample() {
-
-      const koreanExample =
-        document
-          .getElementById(
-            "koreanExample"
-          )
-          .value
-          .trim();
-
-
-      if (!koreanExample) {
-
-        showTranslationStatus(
-          "韓国語の例文を入力してください。",
-          "error"
-        );
-
-
-        document
-          .getElementById(
-            "koreanExample"
-          )
-          .focus();
-
-
-        return;
-
-      }
-
-
-      const button =
-        document.getElementById(
-          "translateButton"
-        );
-
-
-      button.disabled =
-        true;
-
-
-      button.textContent =
-        "🔄 翻訳しています…";
-
-
-      showTranslationStatus(
-        "DeepLで日本語と英語に翻訳しています。",
-        "loading"
-      );
-
-
-      try {
-
-        const response =
-          await fetch(
-            TRANSLATION_WORKER_URL,
-            {
-
-              method:
-                "POST",
-
-              headers: {
-
-                "Content-Type":
-                  "application/json"
-
-              },
-
-              body:
-                JSON.stringify({
-
-                  text:
-                    koreanExample
-
-                })
-
-            }
-          );
-
-
-        if (!response.ok) {
-
-          let errorMessage =
-            "翻訳に失敗しました。";
-
-
-          try {
-
-            const errorData =
-              await response.json();
-
-
-            if (
-              errorData &&
-              errorData.error
-            ) {
-
-              errorMessage =
-                errorData.error;
-
-            }
-
-          } catch (jsonError) {
-
-            console.error(
-              "エラー内容の読み込みに失敗しました。",
-              jsonError
-            );
-
-          }
-
-
-          throw new Error(
-            errorMessage
-          );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        const japanese =
-          data.japanese || "";
-
-
-        const english =
-          data.english || "";
-
-
-        if (
-          !japanese &&
-          !english
-        ) {
-
-          throw new Error(
-            "翻訳結果を取得できませんでした。"
-          );
-
-        }
-
-
-        document
-          .getElementById(
-            "japaneseExample"
-          )
-          .value =
-          japanese;
-
-
-        document
-          .getElementById(
-            "englishExample"
-          )
-          .value =
-          english;
-
-
-        showTranslationStatus(
-          "✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。",
-          "success"
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "翻訳エラー:",
-          error
-        );
-
-
-        showTranslationStatus(
-          "❌ " +
-          (
-            error.message ||
-            "翻訳中にエラーが発生しました。"
-          ),
-          "error"
-        );
-
-      } finally {
-
-        button.disabled =
-          false;
-
-
-        button.textContent =
-          "🌐 日本語・英語に自動翻訳";
-
-      }
-
-    }
-
-
-    /* ==================================================
-       翻訳メッセージ
-    ================================================== */
-
-    function showTranslationStatus(
-      text,
-      type
-    ) {
-
-      const status =
-        document.getElementById(
-          "translationStatus"
-        );
-
-
-      status.textContent =
-        text;
-
-
-      status.className =
-        "translation-status " +
-        type;
-
-    }
-
-
-    /* ==================================================
-       登録用の一時データ
-    ================================================== */
-
-    let pendingWordData =
-      null;
-
-
-    /* ==================================================
-       単語登録
-    ================================================== */
-
-    function registerWord() {
-
-      const korean =
-        document
-          .getElementById(
-            "koreanWord"
-          )
-          .value
-          .trim();
-
-
-      const japanese =
-        document
-          .getElementById(
-            "japaneseMeaning"
-          )
-          .value
-          .trim();
-
-
-      const koreanExample =
-        document
-          .getElementById(
-            "koreanExample"
-          )
-          .value
-          .trim();
-
-
-      const japaneseExample =
-        document
-          .getElementById(
-            "japaneseExample"
-          )
-          .value
-          .trim();
-
-
-      const englishExample =
-        document
-          .getElementById(
-            "englishExample"
-          )
-          .value
-          .trim();
-
-
-      const tag =
-        document
-          .getElementById(
-            "wordTag"
-          )
-          .value;
-
-
-      const memo =
-        document
-          .getElementById(
-            "wordMemo"
-          )
-          .value
-          .trim();
-
-
-      /* =========================
-         必須チェック
-      ========================= */
-
-      if (!korean) {
-
-        showMessage(
-          "韓国語を入力してください。",
-          "error"
-        );
-
-
-        document
-          .getElementById(
-            "koreanWord"
-          )
-          .focus();
-
-
-        return;
-
-      }
-
-
-      if (!japanese) {
-
-        showMessage(
-          "日本語の意味を入力してください。",
-          "error"
-        );
-
-
-        document
-          .getElementById(
-            "japaneseMeaning"
-          )
-          .focus();
-
-
-        return;
-
-      }
-
-
-      if (!koreanExample) {
-
-        showMessage(
-          "韓国語の例文を入力してください。",
-          "error"
-        );
-
-
-        document
-          .getElementById(
-            "koreanExample"
-          )
-          .focus();
-
-
-        return;
-
-      }
-
-
-      if (!japaneseExample) {
-
-        showMessage(
-          "例文の日本語訳を入力してください。",
-          "error"
-        );
-
-
-        document
-          .getElementById(
-            "japaneseExample"
-          )
-          .focus();
-
-
-        return;
-
-      }
-
-
-      /* =========================
-         データ作成
-      ========================= */
-
-      const wordData = {
-
-        id:
-          Date.now().toString(),
-
-        korean:
-          korean,
-
-        japanese:
-          japanese,
-
-        koreanExample:
-          koreanExample,
-
-        japaneseExample:
-          japaneseExample,
-
-        englishExample:
-          englishExample,
-
-        tag:
-          tag,
-
-        memo:
-          memo,
-
-        createdAt:
-          new Date().toISOString(),
-
-        memoryLevel:
-          "new"
-
-      };
-
-
-      const words =
-        getWords();
-
-
-      /*
-        万一、blurチェックを通っていない場合でも
-        登録時にもう一度重複確認
-      */
-
-      const duplicate =
-        words.find(
-          function(word) {
-
-            return (
-              word.korean ===
-              korean
-            );
-
-          }
-        );
-
-
-      if (
-        duplicate &&
-        !duplicateCheckHandled
-      ) {
-
-        showDuplicateModalForRegistration(
-          duplicate,
-          wordData
-        );
-
-        return;
-
-      }
-
-
-      saveNewWord(
-        wordData
-      );
-
-    }
-
-
-    /* ==================================================
-       登録ボタンから重複モーダルを表示
-    ================================================== */
-
-    function showDuplicateModalForRegistration(
-      duplicate,
-      wordData
-    ) {
-
-      pendingWordData =
-        wordData;
-
-
-      document
-        .getElementById(
-          "duplicateKoreanText"
-        )
-        .textContent =
-        duplicate.korean;
-
-
-      document
-        .getElementById(
-          "duplicateJapaneseText"
-        )
-        .textContent =
-        duplicate.japanese ||
-        "日本語の意味が登録されていません。";
-
-
-      document
-        .getElementById(
-          "duplicateModal"
-        )
-        .classList
-        .add("active");
-
-    }
-
-
-    /* ==================================================
-       重複しているけど登録する
-    ================================================== */
-
-    function confirmDuplicateRegistration() {
-
-      duplicateCheckHandled =
-        true;
-
-
-      closeDuplicateModal();
-
-
-      if (
-        pendingWordData
-      ) {
-
-        const wordData =
-          pendingWordData;
-
-
-        pendingWordData =
-          null;
-
-
-        saveNewWord(
-          wordData
-        );
-
-      }
-
-    }
-
-
-    /* ==================================================
-       重複登録をやめる
-    ================================================== */
-
-    function cancelDuplicateRegistration() {
-
-      const koreanInput =
-        document.getElementById(
-          "koreanWord"
-        );
-
-
-      koreanInput.value =
-        "";
-
-
-      pendingWordData =
-        null;
-
-
-      duplicateCheckHandled =
-        false;
-
-
-      closeDuplicateModal();
-
-
-      setTimeout(
-        function() {
-
-          koreanInput.focus();
-
-        },
-        100
-      );
-
-    }
-
-
-    /* ==================================================
-       単語データ保存
-    ================================================== */
-
-    function saveNewWord(
-      wordData
-    ) {
-
-      const words =
-        getWords();
-
-
-      words.push(
-        wordData
-      );
-
-
-      saveWords(
-        words
-      );
-
-
-      clearRegisterForm();
-
-
-      duplicateCheckHandled =
-        false;
-
-
-      showMessage(
-        "「" +
-        wordData.korean +
-        "」を登録しました！",
-        "success"
-      );
-
-
-      updateHomeStatus();
-      updateAvailableTestCount();
-
-    }
-
-
-    /* ==================================================
-       登録フォーム初期化
-    ================================================== */
-
-    function clearRegisterForm() {
-
-      document
-        .getElementById(
-          "koreanWord"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "japaneseMeaning"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "koreanExample"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "japaneseExample"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "englishExample"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "wordTag"
-        )
-        .value = "";
-
-
-      document
-        .getElementById(
-          "wordMemo"
-        )
-        .value = "";
-
-
-      const status =
-        document.getElementById(
-          "translationStatus"
-        );
-
-
-      status.textContent =
-        "";
-
-
-      status.className =
-        "translation-status";
-
-    }
-
-
-    /* ==================================================
-       登録メッセージ
-    ================================================== */
-
-    function showMessage(
-      text,
-      type
-    ) {
-
-      const message =
-        document.getElementById(
-          "registerMessage"
-        );
-
-
-      message.textContent =
-        text;
-
-
-      message.className =
-        "message " +
-        type;
-
-    }
-
-
-    /* ==================================================
-       テスト状態
-    ================================================== */
-
-    let selectedTestMode =
-      "all";
-
-
-    let testSession = {
-
-      words: [],
-
-      index: 0,
-
-      revealed: false,
-
-      rated: false,
-
-      mode: "all",
-
-      modeLabel: "",
-
-      counts: {
-
-        perfect: 0,
-
-        review: 0,
-
-        weak: 0
-
-      }
-
-    };
-
-
-    /* ==================================================
-       テストモード選択
-    ================================================== */
-
-    function selectTestMode(
-      mode
-    ) {
-
-      selectedTestMode =
-        mode;
-
-
-      const buttons =
-        document.querySelectorAll(
-          ".test-mode-button"
-        );
-
-
-      buttons.forEach(
-        function(button) {
-
-          if (
-            button.dataset.mode ===
-            mode
-          ) {
-
-            button.classList.add(
-              "selected"
-            );
-
-          } else {
-
-            button.classList.remove(
-              "selected"
-            );
-
-          }
-
-        }
-      );
-
-
-      const tagArea =
-        document.getElementById(
-          "testTagArea"
-        );
-
-
-      if (
-        mode === "tag"
-      ) {
-
-        tagArea.classList.add(
-          "active"
-        );
-
-      } else {
-
-        tagArea.classList.remove(
-          "active"
-        );
-
-      }
-
-
-      updateAvailableTestCount();
-
-    }
-
-
-    /* ==================================================
-       テスト候補取得
-    ================================================== */
-
-    function getWordsForTest(
-      mode
-    ) {
-
-      const words =
-        getWords();
-
-
-      if (
-        mode === "all"
-      ) {
-
-        return words;
-
-      }
-
-
-      if (
-        mode === "review"
-      ) {
-
-        return words.filter(
-          function(word) {
-
-            return (
-              word.memoryLevel ===
-              "review"
-            );
-
-          }
-        );
-
-      }
-
-
-      if (
-        mode === "weak"
-      ) {
-
-        return words.filter(
-          function(word) {
-
-            return (
-              word.memoryLevel ===
-              "weak"
-            );
-
-          }
-        );
-
-      }
-
-
-      if (
-        mode === "tag"
-      ) {
-
-        const tag =
-          document
-            .getElementById(
-              "testTagSelect"
-            )
-            .value;
-
-
-        if (!tag) {
-          return [];
-        }
-
-
-        return words.filter(
-          function(word) {
-
-            return (
-              word.tag ===
-              tag
-            );
-
-          }
-        );
-
-      }
-
-
-      return [];
-
-    }
-
-
-    /* ==================================================
-       出題可能数
-    ================================================== */
-
-    function updateAvailableTestCount() {
-
-      const countElement =
-        document.getElementById(
-          "availableTestCount"
-        );
-
-
-      const startButton =
-        document.getElementById(
-          "startTestButton"
-        );
-
-
-      if (!countElement) {
-        return;
-      }
-
-
-      const words =
-        getWordsForTest(
-          selectedTestMode
-        );
-
-
-      countElement.textContent =
-        "出題可能な単語：" +
-        words.length +
-        "件";
-
-
-      startButton.disabled =
-        words.length === 0;
-
-    }
-
-
-    /* ==================================================
-       シャッフル
-    ================================================== */
-
-    function shuffleArray(
-      array
-    ) {
-
-      const result =
-        [...array];
-
-
-      for (
-        let i =
-          result.length - 1;
-
-        i > 0;
-
-        i--
-      ) {
-
-        const j =
-          Math.floor(
-            Math.random() *
-            (i + 1)
-          );
-
-
-        [
-          result[i],
-          result[j]
-        ] =
-        [
-          result[j],
-          result[i]
-        ];
-
-      }
-
-
-      return result;
-
-    }
-
-
-    /* ==================================================
-       テスト開始
-    ================================================== */
-
-    function startTest() {
-
-      const candidates =
-        getWordsForTest(
-          selectedTestMode
-        );
-
-
-      if (
-        candidates.length === 0
-      ) {
-
-        alert(
-          "この条件で出題できる単語がありません。"
-        );
-
-
-        return;
-
-      }
-
-
-      let modeLabel =
-        "📚 すべての単語";
-
-
-      if (
-        selectedTestMode ===
-        "review"
-      ) {
-
-        modeLabel =
-          "🧠 もっと覚える";
-
-      }
-
-
-      if (
-        selectedTestMode ===
-        "weak"
-      ) {
-
-        modeLabel =
-          "🫠 まだまだ";
-
-      }
-
-
-      if (
-        selectedTestMode ===
-        "tag"
-      ) {
-
-        const tag =
-          document
-            .getElementById(
-              "testTagSelect"
-            )
-            .value;
-
-
-        modeLabel =
-          "🏷️ " +
-          tag;
-
-      }
-
-
-      testSession = {
-
-        words:
-          shuffleArray(
-            candidates
-          ),
-
-        index:
-          0,
-
-        revealed:
-          false,
-
-        rated:
-          false,
-
-        mode:
-          selectedTestMode,
-
-        modeLabel:
-          modeLabel,
-
-        counts: {
-
-          perfect:
-            0,
-
-          review:
-            0,
-
-          weak:
-            0
-
-        }
-
-      };
-
-
-      showScreen(
-        "testQuestionScreen"
-      );
-
-
-      renderTestQuestion();
-
-    }
-
-
-    /* ==================================================
-       問題表示
-    ================================================== */
-
-    function renderTestQuestion() {
-
-      const currentWord =
-        testSession.words[
-          testSession.index
-        ];
-
-
-      if (!currentWord) {
-
-        finishTest();
-
-        return;
-
-      }
-
-
-      if (
-        !currentWord.memoryLevel
-      ) {
-
-        currentWord.memoryLevel =
-          "new";
-
-      }
-
-
-      testSession.revealed =
-        false;
-
-
-      testSession.rated =
-        false;
-
-
-      document
-        .getElementById(
-          "testProgress"
-        )
-        .textContent =
-        "問題 " +
-        (
-          testSession.index + 1
-        ) +
-        " / " +
-        testSession.words.length;
-
-
-      document
-        .getElementById(
-          "testKoreanWord"
-        )
-        .textContent =
-        currentWord.korean ||
-        "";
-
-
-      document
-        .getElementById(
-          "testKoreanExample"
-        )
-        .textContent =
-        currentWord.koreanExample ||
-        "";
-
-
-      document
-        .getElementById(
-          "testJapaneseMeaning"
-        )
-        .textContent =
-        currentWord.japanese ||
-        "";
-
-
-      document
-        .getElementById(
-          "testJapaneseExample"
-        )
-        .textContent =
-        currentWord.japaneseExample ||
-        "";
-
-
-      document
-        .getElementById(
-          "testEnglishExample"
-        )
-        .textContent =
-        currentWord.englishExample ||
-        "（英訳は登録されていません）";
-
-
-      /* =========================
-         メモ
-      ========================= */
-
-      const memoBox =
-        document.getElementById(
-          "testMemoBox"
-        );
-
-
-      const memoText =
-        document.getElementById(
-          "testMemoText"
-        );
-
-
-      if (
-        currentWord.memo &&
-        currentWord.memo.trim()
-      ) {
-
-        memoText.textContent =
-          currentWord.memo;
-
-        memoBox.classList.add(
-          "active"
-        );
-
-      } else {
-
-        memoText.textContent =
-          "";
-
-        memoBox.classList.remove(
-          "active"
-        );
-
-      }
-
-
-      /* =========================
-         答えを隠す
-      ========================= */
-
-      document
-        .getElementById(
-          "answerArea"
-        )
-        .classList
-        .remove("active");
-
-
-      document
-        .getElementById(
-          "ratingArea"
-        )
-        .classList
-        .remove("active");
-
-
-      document
-        .getElementById(
-          "revealAnswerButton"
-        )
-        .style.display =
-        "block";
-
-
-      resetRatingButtons();
-
-
-      document
-        .getElementById(
-          "nextTestButton"
-        )
-        .classList
-        .remove("active");
-
-
-      const isLast =
-        testSession.index ===
-        testSession.words.length - 1;
-
-
-      document
-        .getElementById(
-          "nextTestButton"
-        )
-        .textContent =
-        isLast
-          ? "テスト結果を見る →"
-          : "次の問題 →";
-
-    }
-
-
-    /* ==================================================
-       答えを見る
-    ================================================== */
-
-    function showTestAnswer() {
-
-      if (
-        testSession.revealed
-      ) {
-        return;
-      }
-
-
-      testSession.revealed =
-        true;
-
-
-      document
-        .getElementById(
-          "answerArea"
-        )
-        .classList
-        .add("active");
-
-
-      document
-        .getElementById(
-          "ratingArea"
-        )
-        .classList
-        .add("active");
-
-
-      document
-        .getElementById(
-          "revealAnswerButton"
-        )
-        .style.display =
-        "none";
-
-    }
-
-
-    /* ==================================================
-       評価
-    ================================================== */
-
-    function rateCurrentQuestion(
-      level
-    ) {
-
-      if (
-        !testSession.revealed
-      ) {
-        return;
-      }
-
-
-      if (
-        testSession.rated
-      ) {
-        return;
-      }
-
-
-      const currentWord =
-        testSession.words[
-          testSession.index
-        ];
-
-
-      if (!currentWord) {
-        return;
-      }
-
-
-      currentWord.memoryLevel =
-        level;
-
-
-      const allWords =
-        getWords();
-
-
-      const targetIndex =
-        allWords.findIndex(
-          function(word) {
-
-            return (
-              word.id ===
-              currentWord.id
-            );
-
-          }
-        );
-
-
-      if (
-        targetIndex !== -1
-      ) {
-
-        allWords[
-          targetIndex
-        ].memoryLevel =
-          level;
-
-
-        saveWords(
-          allWords
-        );
-
-      }
-
-
-      testSession.counts[
-        level
-      ] += 1;
-
-
-      testSession.rated =
-        true;
-
-
-      resetRatingButtons();
-
-
-      const selectedButton =
-        getRatingButton(
-          level
-        );
-
-
-      if (selectedButton) {
-
-        selectedButton.classList.add(
-          "selected"
-        );
-
-      }
-
-
-      disableRatingButtons();
-
-
-      document
-        .getElementById(
-          "nextTestButton"
-        )
-        .classList
-        .add("active");
-
-    }
-
-
-    /* ==================================================
-       評価ボタン取得
-    ================================================== */
-
-    function getRatingButton(
-      level
-    ) {
-
-      if (
-        level ===
-        "perfect"
-      ) {
-
-        return document.getElementById(
-          "perfectRatingButton"
-        );
-
-      }
-
-
-      if (
-        level ===
-        "review"
-      ) {
-
-        return document.getElementById(
-          "reviewRatingButton"
-        );
-
-      }
-
-
-      if (
-        level ===
-        "weak"
-      ) {
-
-        return document.getElementById(
-          "weakRatingButton"
-        );
-
-      }
-
-
-      return null;
-
-    }
-
-
-    /* ==================================================
-       評価リセット
-    ================================================== */
-
-    function resetRatingButtons() {
-
-      const buttons =
-        document.querySelectorAll(
-          ".rating-button"
-        );
-
-
-      buttons.forEach(
-        function(button) {
-
-          button.classList.remove(
-            "selected"
-          );
-
-          button.disabled =
-            false;
-
-        }
-      );
-
-    }
-
-
-    /* ==================================================
-       評価ボタン無効化
-    ================================================== */
-
-    function disableRatingButtons() {
-
-      const buttons =
-        document.querySelectorAll(
-          ".rating-button"
-        );
-
-
-      buttons.forEach(
-        function(button) {
-
-          button.disabled =
-            true;
-
-        }
-      );
-
-    }
-
-
-    /* ==================================================
-       次の問題
-    ================================================== */
-
-    function nextTestQuestion() {
-
-      if (
-        !testSession.rated
-      ) {
-
-        alert(
-          "まず「💯 完璧」「🧠 もっと覚える」「🫠 まだまだ」のどれかを選んでください。"
-        );
-
-
-        return;
-
-      }
-
-
-      testSession.index += 1;
-
-
-      if (
-        testSession.index >=
-        testSession.words.length
-      ) {
-
-        finishTest();
-
-        return;
-
-      }
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-
-      renderTestQuestion();
-
-    }
-
-
-    /* ==================================================
-       テスト終了
-    ================================================== */
-
-    function finishTest() {
-
-      const total =
-        testSession.words.length;
-
-
-      document
-        .getElementById(
-          "resultTotal"
-        )
-        .textContent =
-        total +
-        "問終了";
-
-
-      document
-        .getElementById(
-          "resultPerfect"
-        )
-        .textContent =
-        "💯 完璧：" +
-        testSession.counts.perfect +
-        "問";
-
-
-      document
-        .getElementById(
-          "resultReview"
-        )
-        .textContent =
-        "🧠 もっと覚える：" +
-        testSession.counts.review +
-        "問";
-
-
-      document
-        .getElementById(
-          "resultWeak"
-        )
-        .textContent =
-        "🫠 まだまだ：" +
-        testSession.counts.weak +
-        "問";
-
-
-      document
-        .getElementById(
-          "retryWeakButton"
-        )
-        .disabled =
-        testSession.counts.weak === 0;
-
-
-      document
-        .getElementById(
-          "retryReviewButton"
-        )
-        .disabled =
-        testSession.counts.review === 0;
-
-
-      showScreen(
-        "testResultScreen"
-      );
-
-    }
-
-
-    /* ==================================================
-       苦手だけ再テスト
-    ================================================== */
-
-    function startFocusedTest(
-      level
-    ) {
-
-      const words =
-        getWords().filter(
-          function(word) {
-
-            return (
-              word.memoryLevel ===
-              level
-            );
-
-          }
-        );
-
-
-      if (
-        words.length === 0
-      ) {
-
-        alert(
-          "該当する単語がありません。"
-        );
-
-
-        return;
-
-      }
-
-
-      const modeLabel =
-        level === "weak"
-          ? "🫠 まだまだ"
-          : "🧠 もっと覚える";
-
-
-      testSession = {
-
-        words:
-          shuffleArray(
-            words
-          ),
-
-        index:
-          0,
-
-        revealed:
-          false,
-
-        rated:
-          false,
-
-        mode:
-          level,
-
-        modeLabel:
-          modeLabel,
-
-        counts: {
-
-          perfect:
-            0,
-
-          review:
-            0,
-
-          weak:
-            0
-
-        }
-
-      };
-
-
-      showScreen(
-        "testQuestionScreen"
-      );
-
-
-      renderTestQuestion();
-
-    }
-
-
-    /* ==================================================
-       同じ範囲でもう一度
-    ================================================== */
-
-    function restartSameTest() {
-
-      const mode =
-        testSession.mode;
-
-
-      const words =
-        getWordsForTest(
-          mode
-        );
-
-
-      if (
-        words.length === 0
-      ) {
-
-        alert(
-          "現在、この条件で出題できる単語がありません。"
-        );
-
-
-        return;
-
-      }
-
-
-      testSession = {
-
-        words:
-          shuffleArray(
-            words
-          ),
-
-        index:
-          0,
-
-        revealed:
-          false,
-
-        rated:
-          false,
-
-        mode:
-          mode,
-
-        modeLabel:
-          testSession.modeLabel,
-
-        counts: {
-
-          perfect:
-            0,
-
-          review:
-            0,
-
-          weak:
-            0
-
-        }
-
-      };
-
-
-      showScreen(
-        "testQuestionScreen"
-      );
-
-
-      renderTestQuestion();
-
-    }
-
-
-    /* ==================================================
-       テスト途中終了
-    ================================================== */
-
-    function exitTest() {
-
-      const shouldExit =
-        confirm(
-          "テストを途中で終了しますか？\n\nすでに選択した評価は保存されています。"
-        );
-
-
-      if (!shouldExit) {
-        return;
-      }
-
-
-      showScreen(
-        "testSetupScreen"
-      );
-
-    }
-
-
-    /* ==================================================
-       初期化
-    ================================================== */
-
-    updateHomeStatus();
-
+  }
+
+  localStorage.setItem(MIGRATION_DONE_KEY, "yes");
+  await loadCloudData();
+  alert("以前のデータをクラウドへ移行しました！");
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  updateHomeStatus();
+  updateTagSelect();
+  updateTestTagSelect();
+  updateAvailableTestCount();
+}
+
+function updateHomeStatus() {
+  const text = document.getElementById("wordCountText");
+  if (words.length === 0) {
+    text.textContent = "まだ単語が登録されていません。";
+  } else {
+    text.innerHTML = `現在 <strong>${words.length}件</strong> の単語が登録されています。`;
+  }
+}
+
+function updateTagSelect() {
+  const select = document.getElementById("wordTag");
+  if (!select) return;
+  const current = select.value;
+  select.innerHTML = '<option value="">タグを選択してください</option>';
+  tags.forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag;
+    option.textContent = tag;
+    select.appendChild(option);
+  });
+  if (tags.includes(current)) select.value = current;
+}
+
+function updateTestTagSelect() {
+  const select = document.getElementById("testTagSelect");
+  if (!select) return;
+  const current = select.value;
+  select.innerHTML = '<option value="">タグを選択してください</option>';
+  tags.forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag;
+    option.textContent = tag;
+    select.appendChild(option);
+  });
+  if (tags.includes(current)) select.value = current;
+}
+
+async function addTag() {
+  const newTag = prompt("新しいタグ名を入力してください。");
+  if (newTag === null) return;
+  const tag = newTag.trim();
+  if (!tag) {
+    alert("タグ名を入力してください。");
+    return;
+  }
+  if (tags.includes(tag)) {
+    alert("そのタグはすでに存在します。");
     updateTagSelect();
-
+    return;
+  }
+  try {
+    await apiRequest("/tags", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: tag })
+    });
+    tags.push(tag);
+    updateTagSelect();
     updateTestTagSelect();
+    document.getElementById("wordTag").value = tag;
+  } catch (error) {
+    if (error.status === 409) alert("そのタグはすでに存在します。");
+    else alert("タグの保存に失敗しました。\n" + error.message);
+  }
+}
 
+async function checkDuplicateKoreanWord() {
+  const korean = document.getElementById("koreanWord").value.trim();
+  if (!korean || duplicateCheckHandled) return;
+  const duplicate = words.find(word => word.korean === korean);
+  if (!duplicate) return;
+  document.getElementById("duplicateKoreanText").textContent = duplicate.korean;
+  document.getElementById("duplicateJapaneseText").textContent = duplicate.japanese || "日本語の意味が登録されていません。";
+  document.getElementById("duplicateModal").classList.add("active");
+}
+
+function closeDuplicateModal() {
+  document.getElementById("duplicateModal").classList.remove("active");
+}
+
+function confirmDuplicateRegistration() {
+  duplicateCheckHandled = true;
+  closeDuplicateModal();
+  if (pendingWordData) {
+    const data = pendingWordData;
+    pendingWordData = null;
+    saveNewWordToCloud(data, true);
+  }
+}
+
+function cancelDuplicateRegistration() {
+  document.getElementById("koreanWord").value = "";
+  duplicateCheckHandled = false;
+  pendingWordData = null;
+  closeDuplicateModal();
+  setTimeout(() => document.getElementById("koreanWord").focus(), 100);
+}
+
+async function translateExample() {
+  const koreanExample = document.getElementById("koreanExample").value.trim();
+  if (!koreanExample) {
+    showTranslationStatus("韓国語の例文を入力してください。", "error");
+    document.getElementById("koreanExample").focus();
+    return;
+  }
+  const button = document.getElementById("translateButton");
+  button.disabled = true;
+  button.textContent = "🔄 翻訳しています…";
+  showTranslationStatus("DeepLで日本語と英語に翻訳しています。", "loading");
+  try {
+    const data = await apiRequest("/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: koreanExample })
+    });
+    document.getElementById("japaneseExample").value = data.japanese || "";
+    document.getElementById("englishExample").value = data.english || "";
+    showTranslationStatus("✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。", "success");
+  } catch (error) {
+    console.error(error);
+    showTranslationStatus("❌ " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "🌐 日本語・英語に自動翻訳";
+  }
+}
+
+function showTranslationStatus(text, type) {
+  const status = document.getElementById("translationStatus");
+  status.textContent = text;
+  status.className = "translation-status " + type;
+}
+
+function showMessage(text, type) {
+  const message = document.getElementById("registerMessage");
+  message.textContent = text;
+  message.className = "message " + type;
+}
+
+function clearRegisterForm() {
+  document.getElementById("koreanWord").value = "";
+  document.getElementById("japaneseMeaning").value = "";
+  document.getElementById("koreanExample").value = "";
+  document.getElementById("japaneseExample").value = "";
+  document.getElementById("englishExample").value = "";
+  document.getElementById("wordTag").value = "";
+  document.getElementById("wordMemo").value = "";
+  const status = document.getElementById("translationStatus");
+  status.textContent = "";
+  status.className = "translation-status";
+}
+
+async function registerWord() {
+  const wordData = {
+    id: crypto.randomUUID(),
+    korean: document.getElementById("koreanWord").value.trim(),
+    japanese: document.getElementById("japaneseMeaning").value.trim(),
+    koreanExample: document.getElementById("koreanExample").value.trim(),
+    japaneseExample: document.getElementById("japaneseExample").value.trim(),
+    englishExample: document.getElementById("englishExample").value.trim(),
+    tag: document.getElementById("wordTag").value,
+    memo: document.getElementById("wordMemo").value.trim(),
+    createdAt: new Date().toISOString(),
+    memoryLevel: "new"
+  };
+
+  if (!wordData.korean) { showMessage("韓国語を入力してください。", "error"); document.getElementById("koreanWord").focus(); return; }
+  if (!wordData.japanese) { showMessage("日本語の意味を入力してください。", "error"); document.getElementById("japaneseMeaning").focus(); return; }
+  if (!wordData.koreanExample) { showMessage("韓国語の例文を入力してください。", "error"); document.getElementById("koreanExample").focus(); return; }
+  if (!wordData.japaneseExample) { showMessage("例文の日本語訳を入力してください。", "error"); document.getElementById("japaneseExample").focus(); return; }
+
+  if (!duplicateCheckHandled && words.some(word => word.korean === wordData.korean)) {
+    const duplicate = words.find(word => word.korean === wordData.korean);
+    pendingWordData = wordData;
+    document.getElementById("duplicateKoreanText").textContent = duplicate.korean;
+    document.getElementById("duplicateJapaneseText").textContent = duplicate.japanese || "日本語の意味が登録されていません。";
+    document.getElementById("duplicateModal").classList.add("active");
+    return;
+  }
+
+  await saveNewWordToCloud(wordData, duplicateCheckHandled);
+}
+
+async function saveNewWordToCloud(wordData, allowDuplicate = false) {
+  try {
+    const data = await apiRequest("/words", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...wordData, allowDuplicate })
+    });
+    words.push(data.word);
+    duplicateCheckHandled = false;
+    pendingWordData = null;
+    clearRegisterForm();
+    showMessage(`「${wordData.korean}」を登録しました！`, "success");
+    updateHomeStatus();
     updateAvailableTestCount();
+  } catch (error) {
+    if (error.status === 409 && error.data?.duplicate) {
+      pendingWordData = wordData;
+      document.getElementById("duplicateKoreanText").textContent = error.data.duplicate.korean;
+      document.getElementById("duplicateJapaneseText").textContent = error.data.duplicate.japanese || "日本語の意味が登録されていません。";
+      document.getElementById("duplicateModal").classList.add("active");
+      return;
+    }
+    showMessage("登録に失敗しました。" + "\n" + error.message, "error");
+  }
+}
 
-  </script>
+function selectTestMode(mode) {
+  selectedTestMode = mode;
+  document.querySelectorAll(".test-mode-button").forEach(button => button.classList.toggle("selected", button.dataset.mode === mode));
+  document.getElementById("testTagArea").classList.toggle("active", mode === "tag");
+  updateAvailableTestCount();
+}
 
+function getWordsForTest(mode) {
+  if (mode === "all") return [...words];
+  if (mode === "review") return words.filter(word => word.memoryLevel === "review");
+  if (mode === "weak") return words.filter(word => word.memoryLevel === "weak");
+  if (mode === "tag") {
+    const tag = document.getElementById("testTagSelect").value;
+    if (!tag) return [];
+    return words.filter(word => word.tag === tag);
+  }
+  return [];
+}
+
+function updateAvailableTestCount() {
+  const count = getWordsForTest(selectedTestMode).length;
+  document.getElementById("availableTestCount").textContent = "出題可能な単語：" + count + "件";
+  document.getElementById("startTestButton").disabled = count === 0;
+}
+
+function shuffleArray(array) {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function startTest() {
+  const candidates = getWordsForTest(selectedTestMode);
+  if (!candidates.length) { alert("この条件で出題できる単語がありません。"); return; }
+  let modeLabel = "📚 すべての単語";
+  if (selectedTestMode === "review") modeLabel = "🧠 もっと覚える";
+  if (selectedTestMode === "weak") modeLabel = "🫠 まだまだ";
+  if (selectedTestMode === "tag") modeLabel = "🏷️ " + document.getElementById("testTagSelect").value;
+  testSession = { words: shuffleArray(candidates), index: 0, revealed: false, rated: false, mode: selectedTestMode, modeLabel, counts: { perfect: 0, review: 0, weak: 0 } };
+  showScreen("testQuestionScreen");
+  renderTestQuestion();
+}
+
+function renderTestQuestion() {
+  const currentWord = testSession.words[testSession.index];
+  if (!currentWord) return finishTest();
+  testSession.revealed = false;
+  testSession.rated = false;
+  document.getElementById("testProgress").textContent = `問題 ${testSession.index + 1} / ${testSession.words.length}`;
+  document.getElementById("testKoreanWord").textContent = currentWord.korean || "";
+  document.getElementById("testKoreanExample").textContent = currentWord.koreanExample || "";
+  document.getElementById("testJapaneseMeaning").textContent = currentWord.japanese || "";
+  document.getElementById("testJapaneseExample").textContent = currentWord.japaneseExample || "";
+  document.getElementById("testEnglishExample").textContent = currentWord.englishExample || "（英訳は登録されていません）";
+
+  const memoBox = document.getElementById("testMemoBox");
+  if (currentWord.memo && currentWord.memo.trim()) {
+    document.getElementById("testMemoText").textContent = currentWord.memo;
+    memoBox.classList.add("active");
+  } else {
+    document.getElementById("testMemoText").textContent = "";
+    memoBox.classList.remove("active");
+  }
+
+  document.getElementById("answerArea").classList.remove("active");
+  document.getElementById("ratingArea").classList.remove("active");
+  document.getElementById("revealAnswerButton").style.display = "block";
+  resetRatingButtons();
+  document.getElementById("nextTestButton").classList.remove("active");
+  document.getElementById("nextTestButton").textContent = testSession.index === testSession.words.length - 1 ? "テスト結果を見る →" : "次の問題 →";
+}
+
+function showTestAnswer() {
+  if (testSession.revealed) return;
+  testSession.revealed = true;
+  document.getElementById("answerArea").classList.add("active");
+  document.getElementById("ratingArea").classList.add("active");
+  document.getElementById("revealAnswerButton").style.display = "none";
+}
+
+async function rateCurrentQuestion(level) {
+  if (!testSession.revealed || testSession.rated) return;
+  const currentWord = testSession.words[testSession.index];
+  if (!currentWord) return;
+  const buttons = document.querySelectorAll(".rating-button");
+  buttons.forEach(button => button.disabled = true);
+  try {
+    await apiRequest(`/words/${encodeURIComponent(currentWord.id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memoryLevel: level })
+    });
+    currentWord.memoryLevel = level;
+    const localIndex = words.findIndex(word => word.id === currentWord.id);
+    if (localIndex !== -1) words[localIndex].memoryLevel = level;
+    testSession.counts[level] += 1;
+    testSession.rated = true;
+    resetRatingButtons();
+    const selected = getRatingButton(level);
+    if (selected) selected.classList.add("selected");
+    disableRatingButtons();
+    document.getElementById("nextTestButton").classList.add("active");
+  } catch (error) {
+    buttons.forEach(button => button.disabled = false);
+    alert("評価の保存に失敗しました。\n" + error.message);
+  }
+}
+
+function getRatingButton(level) {
+  if (level === "perfect") return document.getElementById("perfectRatingButton");
+  if (level === "review") return document.getElementById("reviewRatingButton");
+  if (level === "weak") return document.getElementById("weakRatingButton");
+  return null;
+}
+
+function resetRatingButtons() {
+  document.querySelectorAll(".rating-button").forEach(button => { button.classList.remove("selected"); button.disabled = false; });
+}
+
+function disableRatingButtons() {
+  document.querySelectorAll(".rating-button").forEach(button => button.disabled = true);
+}
+
+function nextTestQuestion() {
+  if (!testSession.rated) { alert("まず評価を選んでください。"); return; }
+  testSession.index += 1;
+  if (testSession.index >= testSession.words.length) return finishTest();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  renderTestQuestion();
+}
+
+function finishTest() {
+  document.getElementById("resultTotal").textContent = testSession.words.length + "問終了";
+  document.getElementById("resultPerfect").textContent = "💯 完璧：" + testSession.counts.perfect + "問";
+  document.getElementById("resultReview").textContent = "🧠 もっと覚える：" + testSession.counts.review + "問";
+  document.getElementById("resultWeak").textContent = "🫠 まだまだ：" + testSession.counts.weak + "問";
+  document.getElementById("retryWeakButton").disabled = testSession.counts.weak === 0;
+  document.getElementById("retryReviewButton").disabled = testSession.counts.review === 0;
+  showScreen("testResultScreen");
+}
+
+function startFocusedTest(level) {
+  const candidates = words.filter(word => word.memoryLevel === level);
+  if (!candidates.length) { alert("該当する単語がありません。"); return; }
+  testSession = { words: shuffleArray(candidates), index: 0, revealed: false, rated: false, mode: level, modeLabel: level === "weak" ? "🫠 まだまだ" : "🧠 もっと覚える", counts: { perfect: 0, review: 0, weak: 0 } };
+  showScreen("testQuestionScreen");
+  renderTestQuestion();
+}
+
+function restartSameTest() {
+  const candidates = getWordsForTest(testSession.mode);
+  if (!candidates.length) { alert("現在、この条件で出題できる単語がありません。"); return; }
+  testSession = { words: shuffleArray(candidates), index: 0, revealed: false, rated: false, mode: testSession.mode, modeLabel: testSession.modeLabel, counts: { perfect: 0, review: 0, weak: 0 } };
+  showScreen("testQuestionScreen");
+  renderTestQuestion();
+}
+
+function exitTest() {
+  if (!confirm("テストを途中で終了しますか？\n\nすでに選択した評価は保存されています。")) return;
+  showScreen("testSetupScreen");
+}
+
+async function initializeApp() {
+  try {
+    document.getElementById("wordCountText").textContent = "クラウドから単語を読み込んでいます…";
+    await loadCloudData();
+    await migrateLegacyDataIfNeeded();
+    updateHomeStatus();
+    updateTagSelect();
+    updateTestTagSelect();
+    updateAvailableTestCount();
+  } catch (error) {
+    console.error(error);
+    document.getElementById("wordCountText").textContent = "クラウドからデータを読み込めませんでした。";
+    alert("クラウドデータの読み込みに失敗しました。\n" + error.message);
+  }
+}
+
+initializeApp();
+</script>
 </body>
-
 </html>
