@@ -654,9 +654,11 @@ function showRegisterSuccess(korean) {
     clearTimeout(registerSuccessTimer);
   }
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
+  requestAnimationFrame(function() {
+    message.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   });
 
   registerSuccessTimer = setTimeout(function() {
