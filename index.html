@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -8,7 +10,8 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>韓国語 My Study</title>
+  <title>例文から覚える韓国語</title>
+
 
   <style>
 
@@ -16,8 +19,10 @@
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -25,9 +30,11 @@
         "Hiragino Kaku Gothic ProN",
         "Yu Gothic",
         sans-serif;
+
       background: #f7f7f7;
       color: #333;
     }
+
 
     button,
     input,
@@ -36,9 +43,11 @@
       font: inherit;
     }
 
+
     button {
       cursor: pointer;
     }
+
 
     .app {
       max-width: 760px;
@@ -46,6 +55,7 @@
       min-height: 100vh;
       padding: 30px 20px 60px;
     }
+
 
     /* =========================
        共通
@@ -56,28 +66,34 @@
       margin-bottom: 35px;
     }
 
+
     h1 {
       margin: 0;
       font-size: 32px;
     }
+
 
     .subtitle {
       margin-top: 10px;
       color: #777;
     }
 
+
     .screen {
       display: none;
     }
+
 
     .screen.active {
       display: block;
     }
 
+
     .page-title {
       font-size: 26px;
       margin: 0 0 25px;
     }
+
 
     .back-button {
       border: none;
@@ -87,9 +103,11 @@
       color: #666;
     }
 
+
     .back-button:hover {
       text-decoration: underline;
     }
+
 
     /* =========================
        トップ画面
@@ -100,42 +118,54 @@
       gap: 18px;
     }
 
+
     .menu-button {
       width: 100%;
       border: none;
       border-radius: 16px;
       padding: 28px 20px;
       background: white;
+
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.08);
+
       font-size: 20px;
       font-weight: bold;
+
       transition:
         transform 0.15s,
         box-shadow 0.15s;
     }
 
+
     .menu-button:hover {
       transform: translateY(-2px);
+
       box-shadow:
         0 6px 16px rgba(0, 0, 0, 0.12);
     }
+
 
     .register-button {
       color: #3b5ccc;
     }
 
+
     .test-button {
       color: #c45454;
     }
 
+
     .status-card {
       margin-top: 28px;
       padding: 20px;
+
       background: white;
       border-radius: 16px;
+
       line-height: 1.7;
     }
+
 
     /* =========================
        登録フォーム
@@ -145,13 +175,16 @@
       background: white;
       border-radius: 18px;
       padding: 25px;
+
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
+
     .form-group {
       margin-bottom: 22px;
     }
+
 
     .form-group label {
       display: block;
@@ -159,23 +192,35 @@
       margin-bottom: 8px;
     }
 
+
     .required {
       color: #d34f4f;
       font-size: 13px;
       margin-left: 5px;
     }
 
+
     input[type="text"],
     textarea,
     select {
       width: 100%;
-      border: 1px solid #d8d8d8;
+
+      border:
+        1px solid #d8d8d8;
+
       border-radius: 10px;
-      padding: 12px 14px;
+
+      padding:
+        12px 14px;
+
       background: white;
+
       outline: none;
-      transition: border-color 0.15s;
+
+      transition:
+        border-color 0.15s;
     }
+
 
     input[type="text"]:focus,
     textarea:focus,
@@ -183,11 +228,13 @@
       border-color: #6b7dd8;
     }
 
+
     textarea {
       min-height: 100px;
       resize: vertical;
       line-height: 1.6;
     }
+
 
     .help-text {
       margin-top: 7px;
@@ -196,28 +243,38 @@
       line-height: 1.5;
     }
 
+
     /* =========================
        翻訳
     ========================= */
 
     .translate-button {
       width: 100%;
+
       border: none;
       border-radius: 10px;
-      padding: 13px 16px;
+
+      padding:
+        13px 16px;
+
       margin-top: 10px;
+
       background: #5b67c8;
       color: white;
+
       font-weight: bold;
+
       transition:
         opacity 0.15s,
         transform 0.15s;
     }
 
+
     .translate-button:hover {
       opacity: 0.92;
       transform: translateY(-1px);
     }
+
 
     .translate-button:disabled {
       cursor: not-allowed;
@@ -225,32 +282,43 @@
       transform: none;
     }
 
+
     .translation-status {
       display: none;
+
       margin-top: 10px;
       padding: 10px 12px;
+
       border-radius: 10px;
+
       font-size: 14px;
       line-height: 1.5;
     }
 
+
     .translation-status.loading {
       display: block;
+
       background: #f2f4ff;
       color: #4f5ca8;
     }
 
+
     .translation-status.success {
       display: block;
+
       background: #edf8f0;
       color: #2c713d;
     }
 
+
     .translation-status.error {
       display: block;
+
       background: #fff0f0;
       color: #a63838;
     }
+
 
     /* =========================
        タグ
@@ -261,21 +329,30 @@
       gap: 10px;
     }
 
+
     .tag-row select {
       flex: 1;
     }
 
+
     .small-button {
       border: 1px solid #ccc;
+
       background: #fafafa;
+
       border-radius: 10px;
-      padding: 10px 14px;
+
+      padding:
+        10px 14px;
+
       white-space: nowrap;
     }
+
 
     .small-button:hover {
       background: #f0f0f0;
     }
+
 
     /* =========================
        登録ボタン
@@ -283,19 +360,25 @@
 
     .submit-button {
       width: 100%;
+
       border: none;
       border-radius: 12px;
+
       padding: 16px;
       margin-top: 10px;
+
       background: #3b5ccc;
       color: white;
+
       font-size: 18px;
       font-weight: bold;
     }
 
+
     .submit-button:hover {
       opacity: 0.9;
     }
+
 
     /* =========================
        メッセージ
@@ -304,22 +387,30 @@
     .message {
       margin-top: 15px;
       padding: 13px 15px;
+
       border-radius: 10px;
+
       display: none;
+
       line-height: 1.5;
     }
 
+
     .message.success {
       display: block;
+
       background: #edf8f0;
       color: #2c713d;
     }
 
+
     .message.error {
       display: block;
+
       background: #fff0f0;
       color: #a63838;
     }
+
 
     /* =========================
        モーダル
@@ -328,43 +419,83 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
+
+      background:
+        rgba(0, 0, 0, 0.45);
+
       display: none;
+
       align-items: center;
       justify-content: center;
+
       padding: 20px;
+
       z-index: 1000;
     }
+
 
     .modal-overlay.active {
       display: flex;
     }
 
+
     .modal {
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
+
       background: white;
+
       border-radius: 18px;
+
       padding: 25px;
+
       box-shadow:
         0 15px 40px rgba(0, 0, 0, 0.2);
     }
+
 
     .modal h3 {
       margin-top: 0;
       line-height: 1.5;
     }
 
+
     .modal p {
       line-height: 1.7;
       color: #555;
     }
+
+
+    .duplicate-info {
+      margin:
+        15px 0;
+
+      padding:
+        14px;
+
+      background:
+        #f7f7f7;
+
+      border-radius:
+        10px;
+
+      line-height:
+        1.7;
+    }
+
+
+    .duplicate-info strong {
+      color:
+        #333;
+    }
+
 
     .modal-buttons {
       display: grid;
       gap: 10px;
       margin-top: 20px;
     }
+
 
     .modal-button {
       border: none;
@@ -373,15 +504,18 @@
       font-weight: bold;
     }
 
+
     .modal-primary {
       background: #3b5ccc;
       color: white;
     }
 
+
     .modal-secondary {
       background: #eee;
       color: #333;
     }
+
 
     /* =========================
        テスト開始画面
@@ -391,362 +525,753 @@
       background: white;
       border-radius: 18px;
       padding: 25px;
+
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
+
     .setup-question {
-      margin: 0 0 18px;
-      font-size: 18px;
-      font-weight: bold;
+      margin:
+        0 0 18px;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
     }
+
 
     .test-mode-list {
       display: grid;
       gap: 12px;
     }
 
+
     .test-mode-button {
       width: 100%;
+
       text-align: left;
-      border: 2px solid #e1e1e1;
-      border-radius: 14px;
-      padding: 16px;
-      background: white;
+
+      border:
+        2px solid #e1e1e1;
+
+      border-radius:
+        14px;
+
+      padding:
+        16px;
+
+      background:
+        white;
+
       transition:
         border-color 0.15s,
         background 0.15s;
     }
 
+
     .test-mode-button:hover {
-      border-color: #c7cce9;
+      border-color:
+        #c7cce9;
     }
+
 
     .test-mode-button.selected {
-      border-color: #5b67c8;
-      background: #f3f5ff;
+      border-color:
+        #5b67c8;
+
+      background:
+        #f3f5ff;
     }
+
 
     .test-mode-title {
-      display: block;
-      font-size: 17px;
-      font-weight: bold;
-      margin-bottom: 4px;
+      display:
+        block;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        4px;
     }
+
 
     .test-mode-description {
-      display: block;
-      color: #777;
-      font-size: 13px;
-      line-height: 1.5;
+      display:
+        block;
+
+      color:
+        #777;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.5;
     }
+
 
     .test-tag-area {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      display: none;
+      margin-top:
+        20px;
+
+      padding-top:
+        20px;
+
+      border-top:
+        1px solid #eee;
+
+      display:
+        none;
     }
 
+
     .test-tag-area.active {
-      display: block;
+      display:
+        block;
     }
+
 
     .test-start-button {
       width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 22px;
-      background: #c45454;
-      color: white;
-      font-size: 18px;
-      font-weight: bold;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      margin-top:
+        22px;
+
+      background:
+        #c45454;
+
+      color:
+        white;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
     }
+
 
     .test-start-button:hover {
-      opacity: 0.9;
+      opacity:
+        0.9;
     }
+
 
     .test-start-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+      opacity:
+        0.5;
+
+      cursor:
+        not-allowed;
     }
 
+
     .available-count {
-      margin-top: 14px;
-      font-size: 14px;
-      color: #777;
-      text-align: center;
+      margin-top:
+        14px;
+
+      font-size:
+        14px;
+
+      color:
+        #777;
+
+      text-align:
+        center;
     }
+
 
     /* =========================
        テスト問題画面
     ========================= */
 
     .test-progress {
-      text-align: center;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 15px;
+      text-align:
+        center;
+
+      color:
+        #777;
+
+      font-size:
+        14px;
+
+      margin-bottom:
+        15px;
     }
 
+
     .test-card {
-      background: white;
-      border-radius: 20px;
-      padding: 28px;
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
+
     .test-section-label {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 8px;
+      font-size:
+        13px;
+
+      color:
+        #888;
+
+      margin-bottom:
+        8px;
     }
+
 
     .test-korean-word {
-      font-size: 34px;
-      font-weight: bold;
-      text-align: center;
-      margin: 5px 0 30px;
-      line-height: 1.4;
-      word-break: break-word;
+      font-size:
+        34px;
+
+      font-weight:
+        bold;
+
+      text-align:
+        center;
+
+      margin:
+        5px 0 30px;
+
+      line-height:
+        1.4;
+
+      word-break:
+        break-word;
     }
+
 
     .test-korean-example-box {
-      padding: 18px;
-      background: #f7f7f7;
-      border-radius: 14px;
-      margin-bottom: 24px;
+      padding:
+        18px;
+
+      background:
+        #f7f7f7;
+
+      border-radius:
+        14px;
+
+      margin-bottom:
+        24px;
     }
+
 
     .test-korean-example {
-      font-size: 18px;
-      line-height: 1.8;
-      margin: 0;
-      white-space: pre-wrap;
-      word-break: break-word;
+      font-size:
+        18px;
+
+      line-height:
+        1.8;
+
+      margin:
+        0;
+
+      white-space:
+        pre-wrap;
+
+      word-break:
+        break-word;
     }
+
 
     .reveal-button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      background: #5b67c8;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      background:
+        #5b67c8;
+
+      color:
+        white;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
     }
 
+
     .reveal-button:hover {
-      opacity: 0.92;
+      opacity:
+        0.92;
     }
+
 
     /* =========================
        答え
     ========================= */
 
     .answer-area {
-      display: none;
-      margin-top: 25px;
-      padding-top: 25px;
-      border-top: 1px solid #e5e5e5;
+      display:
+        none;
+
+      margin-top:
+        25px;
+
+      padding-top:
+        25px;
+
+      border-top:
+        1px solid #e5e5e5;
     }
+
 
     .answer-area.active {
-      display: block;
+      display:
+        block;
     }
+
 
     .answer-block {
-      margin-bottom: 22px;
+      margin-bottom:
+        22px;
     }
+
 
     .answer-block:last-child {
-      margin-bottom: 0;
+      margin-bottom:
+        0;
     }
+
 
     .answer-label {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 7px;
+      font-size:
+        13px;
+
+      color:
+        #888;
+
+      margin-bottom:
+        7px;
     }
+
 
     .answer-text {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-word;
+      margin:
+        0;
+
+      font-size:
+        18px;
+
+      line-height:
+        1.7;
+
+      white-space:
+        pre-wrap;
+
+      word-break:
+        break-word;
     }
 
+
     .answer-divider {
-      margin: 24px 0;
-      border: none;
-      border-top: 1px solid #eee;
+      margin:
+        24px 0;
+
+      border:
+        none;
+
+      border-top:
+        1px solid #eee;
     }
+
+
+    /* =========================
+       メモ
+    ========================= */
+
+    .test-memo-box {
+      display:
+        none;
+
+      margin-top:
+        20px;
+
+      padding:
+        15px 16px;
+
+      background:
+        #fffaf0;
+
+      border:
+        1px solid #eee0bf;
+
+      border-radius:
+        12px;
+    }
+
+
+    .test-memo-box.active {
+      display:
+        block;
+    }
+
+
+    .test-memo-label {
+      font-size:
+        13px;
+
+      color:
+        #8a6412;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        6px;
+    }
+
+
+    .test-memo-text {
+      margin:
+        0;
+
+      color:
+        #5d4b26;
+
+      line-height:
+        1.7;
+
+      white-space:
+        pre-wrap;
+
+      word-break:
+        break-word;
+    }
+
 
     /* =========================
        評価
     ========================= */
 
     .rating-area {
-      margin-top: 28px;
-      display: none;
+      margin-top:
+        28px;
+
+      display:
+        none;
     }
+
 
     .rating-area.active {
-      display: block;
+      display:
+        block;
     }
+
 
     .rating-question {
-      text-align: center;
-      font-weight: bold;
-      margin: 0 0 12px;
+      text-align:
+        center;
+
+      font-weight:
+        bold;
+
+      margin:
+        0 0 12px;
     }
+
 
     .rating-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap:
+        10px;
     }
+
 
     .rating-button {
-      border: none;
-      border-radius: 12px;
-      padding: 14px 8px;
-      font-weight: bold;
-      line-height: 1.4;
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        14px 8px;
+
+      font-weight:
+        bold;
+
+      line-height:
+        1.4;
     }
+
 
     .perfect-button {
-      background: #edf8f0;
-      color: #2c713d;
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
     }
+
 
     .review-button {
-      background: #fff6df;
-      color: #8a6412;
+      background:
+        #fff6df;
+
+      color:
+        #8a6412;
     }
+
 
     .weak-button {
-      background: #fff0f0;
-      color: #a63838;
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
     }
+
 
     .rating-button.selected {
-      outline: 3px solid #aaa;
-      outline-offset: 2px;
+      outline:
+        3px solid #aaa;
+
+      outline-offset:
+        2px;
     }
 
+
     .rating-button:disabled {
-      cursor: default;
-      opacity: 0.7;
+      cursor:
+        default;
+
+      opacity:
+        0.7;
     }
+
 
     /* =========================
        次へ
     ========================= */
 
     .next-button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 18px;
-      background: #333;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      display: none;
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        16px;
+
+      margin-top:
+        18px;
+
+      background:
+        #333;
+
+      color:
+        white;
+
+      font-size:
+        17px;
+
+      font-weight:
+        bold;
+
+      display:
+        none;
     }
+
 
     .next-button.active {
-      display: block;
+      display:
+        block;
     }
 
+
     .next-button:hover {
-      opacity: 0.9;
+      opacity:
+        0.9;
     }
+
 
     /* =========================
        テスト結果
     ========================= */
 
     .result-card {
-      background: white;
-      border-radius: 20px;
-      padding: 28px;
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.06);
-      text-align: center;
+
+      text-align:
+        center;
     }
+
 
     .result-title {
-      margin: 0 0 10px;
-      font-size: 28px;
+      margin:
+        0 0 10px;
+
+      font-size:
+        28px;
     }
+
 
     .result-total {
-      color: #777;
-      margin-bottom: 25px;
+      color:
+        #777;
+
+      margin-bottom:
+        25px;
     }
+
 
     .result-list {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 25px;
+      display:
+        grid;
+
+      gap:
+        10px;
+
+      margin-bottom:
+        25px;
     }
+
 
     .result-item {
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: bold;
+      padding:
+        14px;
+
+      border-radius:
+        12px;
+
+      font-weight:
+        bold;
     }
+
 
     .result-perfect {
-      background: #edf8f0;
-      color: #2c713d;
+      background:
+        #edf8f0;
+
+      color:
+        #2c713d;
     }
+
 
     .result-review {
-      background: #fff6df;
-      color: #8a6412;
+      background:
+        #fff6df;
+
+      color:
+        #8a6412;
     }
+
 
     .result-weak {
-      background: #fff0f0;
-      color: #a63838;
+      background:
+        #fff0f0;
+
+      color:
+        #a63838;
     }
+
 
     .result-buttons {
-      display: grid;
-      gap: 10px;
+      display:
+        grid;
+
+      gap:
+        10px;
     }
+
 
     .result-button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-weight: bold;
+      width:
+        100%;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      padding:
+        14px;
+
+      font-weight:
+        bold;
     }
+
 
     .result-button.primary {
-      background: #5b67c8;
-      color: white;
+      background:
+        #5b67c8;
+
+      color:
+        white;
     }
+
 
     .result-button.secondary {
-      background: #eee;
-      color: #333;
+      background:
+        #eee;
+
+      color:
+        #333;
     }
 
+
     .result-button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
+      opacity:
+        0.45;
+
+      cursor:
+        not-allowed;
     }
+
 
     /* =========================
        スマホ
@@ -755,43 +1280,59 @@
     @media (max-width: 600px) {
 
       .app {
-        padding: 25px 15px 50px;
+        padding:
+          25px 15px 50px;
       }
+
 
       h1 {
-        font-size: 28px;
+        font-size:
+          28px;
       }
 
+
       .page-title {
-        font-size: 23px;
+        font-size:
+          23px;
       }
+
 
       .form-card,
       .test-setup-card,
       .test-card,
       .result-card {
-        padding: 20px;
+        padding:
+          20px;
       }
+
 
       .tag-row {
-        flex-direction: column;
+        flex-direction:
+          column;
       }
+
 
       .small-button {
-        width: 100%;
+        width:
+          100%;
       }
+
 
       .test-korean-word {
-        font-size: 29px;
+        font-size:
+          29px;
       }
 
+
       .rating-buttons {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
 
     }
 
   </style>
+
 </head>
 
 
@@ -807,7 +1348,7 @@
     <header>
 
       <h1>
-        韓国語 My Study
+        例文から覚える韓国語
       </h1>
 
       <p class="subtitle">
@@ -886,6 +1427,10 @@
       <div class="form-card">
 
 
+        <!-- =====================
+             1. 韓国語
+        ===================== -->
+
         <div class="form-group">
 
           <label for="koreanWord">
@@ -903,10 +1448,15 @@
             id="koreanWord"
             type="text"
             placeholder="例：단정하다"
+            onblur="checkDuplicateKoreanWord()"
           >
 
         </div>
 
+
+        <!-- =====================
+             2. 日本語の意味
+        ===================== -->
 
         <div class="form-group">
 
@@ -929,6 +1479,10 @@
 
         </div>
 
+
+        <!-- =====================
+             3. 韓国語の例文
+        ===================== -->
 
         <div class="form-group">
 
@@ -977,6 +1531,10 @@
         </div>
 
 
+        <!-- =====================
+             4. 日本語例文
+        ===================== -->
+
         <div class="form-group">
 
           <label for="japaneseExample">
@@ -1006,6 +1564,10 @@
         </div>
 
 
+        <!-- =====================
+             5. 英語例文
+        ===================== -->
+
         <div class="form-group">
 
           <label for="englishExample">
@@ -1030,6 +1592,10 @@
 
         </div>
 
+
+        <!-- =====================
+             6. タグ
+        ===================== -->
 
         <div class="form-group">
 
@@ -1074,6 +1640,10 @@
         </div>
 
 
+        <!-- =====================
+             7. メモ
+        ===================== -->
+
         <div class="form-group">
 
           <label for="wordMemo">
@@ -1090,6 +1660,10 @@
 
         </div>
 
+
+        <!-- =====================
+             登録
+        ===================== -->
 
         <button
           type="button"
@@ -1133,6 +1707,7 @@
 
 
       <div class="test-setup-card">
+
 
         <p class="setup-question">
           どの単語から出題しますか？
@@ -1323,16 +1898,22 @@
         </button>
 
 
+        <!-- =====================
+             答え
+        ===================== -->
+
         <div
           id="answerArea"
           class="answer-area"
         >
+
 
           <div class="answer-block">
 
             <div class="answer-label">
               日本語の意味
             </div>
+
 
             <p
               id="testJapaneseMeaning"
@@ -1351,6 +1932,7 @@
               日本語の例文
             </div>
 
+
             <p
               id="testJapaneseExample"
               class="answer-text"
@@ -1365,6 +1947,7 @@
               英語の例文
             </div>
 
+
             <p
               id="testEnglishExample"
               class="answer-text"
@@ -1372,6 +1955,32 @@
 
           </div>
 
+
+          <!-- =====================
+               メモ
+          ===================== -->
+
+          <div
+            id="testMemoBox"
+            class="test-memo-box"
+          >
+
+            <div class="test-memo-label">
+              📝 メモ
+            </div>
+
+
+            <p
+              id="testMemoText"
+              class="test-memo-text"
+            ></p>
+
+          </div>
+
+
+          <!-- =====================
+               評価
+          ===================== -->
 
           <div
             id="ratingArea"
@@ -1384,6 +1993,7 @@
 
 
             <div class="rating-buttons">
+
 
               <button
                 id="perfectRatingButton"
@@ -1454,6 +2064,7 @@
 
       <div class="result-card">
 
+
         <h2 class="result-title">
           🎉 テスト終了！
         </h2>
@@ -1468,6 +2079,7 @@
 
 
         <div class="result-list">
+
 
           <div
             id="resultPerfect"
@@ -1496,6 +2108,7 @@
 
 
         <div class="result-buttons">
+
 
           <button
             id="retryWeakButton"
@@ -1554,32 +2167,64 @@
 
     <div class="modal">
 
+
       <h3>
-        この単語はすでに登録されています。
+        この韓国語はすでに登録されています。
       </h3>
 
 
-      <p id="duplicateWordText"></p>
+      <p>
+        次の単語がすでに登録されています。
+      </p>
+
+
+      <div class="duplicate-info">
+
+        <strong>
+          韓国語
+        </strong>
+
+        <br>
+
+        <span id="duplicateKoreanText">
+        </span>
+
+
+        <br>
+        <br>
+
+
+        <strong>
+          日本語
+        </strong>
+
+        <br>
+
+        <span id="duplicateJapaneseText">
+        </span>
+
+      </div>
 
 
       <p>
-        別の単語として新しく登録しますか？
+        別の単語として登録しますか？
       </p>
 
 
       <div class="modal-buttons">
 
+
         <button
           class="modal-button modal-primary"
           onclick="confirmDuplicateRegistration()"
         >
-          はい、別の単語として登録する
+          はい
         </button>
 
 
         <button
           class="modal-button modal-secondary"
-          onclick="closeDuplicateModal()"
+          onclick="cancelDuplicateRegistration()"
         >
           登録をやめる
         </button>
@@ -1593,8 +2238,9 @@
 
   <script>
 
+
     /* ==================================================
-       DeepL中継Worker
+       DeepL Worker
     ================================================== */
 
     const TRANSLATION_WORKER_URL =
@@ -1607,6 +2253,7 @@
 
     const WORD_STORAGE_KEY =
       "koreanStudyWords";
+
 
     const TAG_STORAGE_KEY =
       "koreanStudyTags";
@@ -1714,7 +2361,9 @@
        画面切り替え
     ================================================== */
 
-    function showScreen(screenId) {
+    function showScreen(
+      screenId
+    ) {
 
       const screens =
         document.querySelectorAll(
@@ -2014,6 +2663,168 @@
 
 
     /* ==================================================
+       登録済み韓国語を確認
+       「1. 韓国語」から離れた時に実行
+    ================================================== */
+
+    let duplicateCheckHandled =
+      false;
+
+
+    function checkDuplicateKoreanWord() {
+
+      const input =
+        document.getElementById(
+          "koreanWord"
+        );
+
+
+      const korean =
+        input.value.trim();
+
+
+      /* 空なら何もしない */
+
+      if (!korean) {
+        return;
+      }
+
+
+      /* すでに今回チェック済みなら何もしない */
+
+      if (
+        duplicateCheckHandled
+      ) {
+        return;
+      }
+
+
+      const words =
+        getWords();
+
+
+      const duplicate =
+        words.find(
+          function(word) {
+
+            return (
+              word.korean ===
+              korean
+            );
+
+          }
+        );
+
+
+      if (!duplicate) {
+
+        duplicateCheckHandled =
+          true;
+
+        return;
+
+      }
+
+
+      /* =========================
+         既存の単語情報を表示
+      ========================= */
+
+      document
+        .getElementById(
+          "duplicateKoreanText"
+        )
+        .textContent =
+        duplicate.korean;
+
+
+      document
+        .getElementById(
+          "duplicateJapaneseText"
+        )
+        .textContent =
+        duplicate.japanese ||
+        "日本語の意味が登録されていません。";
+
+
+      document
+        .getElementById(
+          "duplicateModal"
+        )
+        .classList
+        .add("active");
+
+    }
+
+
+    /* ==================================================
+       重複しているけど登録を続ける
+    ================================================== */
+
+    function confirmDuplicateRegistration() {
+
+      duplicateCheckHandled =
+        true;
+
+
+      closeDuplicateModal();
+
+    }
+
+
+    /* ==================================================
+       重複登録をやめる
+       韓国語欄だけクリア
+    ================================================== */
+
+    function cancelDuplicateRegistration() {
+
+      const koreanInput =
+        document.getElementById(
+          "koreanWord"
+        );
+
+
+      koreanInput.value =
+        "";
+
+
+      duplicateCheckHandled =
+        false;
+
+
+      closeDuplicateModal();
+
+
+      setTimeout(
+        function() {
+
+          koreanInput.focus();
+
+        },
+        100
+      );
+
+    }
+
+
+    /* ==================================================
+       重複モーダルを閉じる
+    ================================================== */
+
+    function closeDuplicateModal() {
+
+      document
+        .getElementById(
+          "duplicateModal"
+        )
+        .classList
+        .remove("active");
+
+    }
+
+
+    /* ==================================================
        DeepL自動翻訳
     ================================================== */
 
@@ -2074,17 +2885,25 @@
           await fetch(
             TRANSLATION_WORKER_URL,
             {
-              method: "POST",
+
+              method:
+                "POST",
 
               headers: {
+
                 "Content-Type":
                   "application/json"
+
               },
 
-              body: JSON.stringify({
-                text:
-                  koreanExample
-              })
+              body:
+                JSON.stringify({
+
+                  text:
+                    koreanExample
+
+                })
+
             }
           );
 
@@ -2232,7 +3051,7 @@
 
 
     /* ==================================================
-       重複登録用
+       登録用の一時データ
     ================================================== */
 
     let pendingWordData =
@@ -2306,6 +3125,10 @@
           .value
           .trim();
 
+
+      /* =========================
+         必須チェック
+      ========================= */
 
       if (!korean) {
 
@@ -2387,6 +3210,10 @@
       }
 
 
+      /* =========================
+         データ作成
+      ========================= */
+
       const wordData = {
 
         id:
@@ -2426,6 +3253,11 @@
         getWords();
 
 
+      /*
+        万一、blurチェックを通っていない場合でも
+        登録時にもう一度重複確認
+      */
+
       const duplicate =
         words.find(
           function(word) {
@@ -2439,29 +3271,15 @@
         );
 
 
-      if (duplicate) {
+      if (
+        duplicate &&
+        !duplicateCheckHandled
+      ) {
 
-        pendingWordData =
-          wordData;
-
-
-        document
-          .getElementById(
-            "duplicateWordText"
-          )
-          .textContent =
-          "「" +
-          korean +
-          "」";
-
-
-        document
-          .getElementById(
-            "duplicateModal"
-          )
-          .classList
-          .add("active");
-
+        showDuplicateModalForRegistration(
+          duplicate,
+          wordData
+        );
 
         return;
 
@@ -2476,56 +3294,120 @@
 
 
     /* ==================================================
-       重複して登録
+       登録ボタンから重複モーダルを表示
     ================================================== */
 
-    function confirmDuplicateRegistration() {
-
-      if (!pendingWordData) {
-        return;
-      }
-
-
-      const wordData =
-        pendingWordData;
-
+    function showDuplicateModalForRegistration(
+      duplicate,
+      wordData
+    ) {
 
       pendingWordData =
-        null;
+        wordData;
 
 
-      closeDuplicateModal();
+      document
+        .getElementById(
+          "duplicateKoreanText"
+        )
+        .textContent =
+        duplicate.korean;
 
 
-      saveNewWord(
-        wordData
-      );
+      document
+        .getElementById(
+          "duplicateJapaneseText"
+        )
+        .textContent =
+        duplicate.japanese ||
+        "日本語の意味が登録されていません。";
 
-    }
-
-
-    /* ==================================================
-       モーダル閉じる
-    ================================================== */
-
-    function closeDuplicateModal() {
 
       document
         .getElementById(
           "duplicateModal"
         )
         .classList
-        .remove("active");
-
-
-      pendingWordData =
-        null;
+        .add("active");
 
     }
 
 
     /* ==================================================
-       実際に保存
+       重複しているけど登録する
+    ================================================== */
+
+    function confirmDuplicateRegistration() {
+
+      duplicateCheckHandled =
+        true;
+
+
+      closeDuplicateModal();
+
+
+      if (
+        pendingWordData
+      ) {
+
+        const wordData =
+          pendingWordData;
+
+
+        pendingWordData =
+          null;
+
+
+        saveNewWord(
+          wordData
+        );
+
+      }
+
+    }
+
+
+    /* ==================================================
+       重複登録をやめる
+    ================================================== */
+
+    function cancelDuplicateRegistration() {
+
+      const koreanInput =
+        document.getElementById(
+          "koreanWord"
+        );
+
+
+      koreanInput.value =
+        "";
+
+
+      pendingWordData =
+        null;
+
+
+      duplicateCheckHandled =
+        false;
+
+
+      closeDuplicateModal();
+
+
+      setTimeout(
+        function() {
+
+          koreanInput.focus();
+
+        },
+        100
+      );
+
+    }
+
+
+    /* ==================================================
+       単語データ保存
     ================================================== */
 
     function saveNewWord(
@@ -2547,6 +3429,10 @@
 
 
       clearRegisterForm();
+
+
+      duplicateCheckHandled =
+        false;
 
 
       showMessage(
@@ -2696,7 +3582,7 @@
 
 
     /* ==================================================
-       テストモード
+       テストモード選択
     ================================================== */
 
     function selectTestMode(
@@ -2914,7 +3800,9 @@
       for (
         let i =
           result.length - 1;
+
         i > 0;
+
         i--
       ) {
 
@@ -2955,8 +3843,7 @@
 
 
       if (
-        candidates.length ===
-        0
+        candidates.length === 0
       ) {
 
         alert(
@@ -3022,11 +3909,14 @@
             candidates
           ),
 
-        index: 0,
+        index:
+          0,
 
-        revealed: false,
+        revealed:
+          false,
 
-        rated: false,
+        rated:
+          false,
 
         mode:
           selectedTestMode,
@@ -3036,11 +3926,14 @@
 
         counts: {
 
-          perfect: 0,
+          perfect:
+            0,
 
-          review: 0,
+          review:
+            0,
 
-          weak: 0
+          weak:
+            0
 
         }
 
@@ -3153,6 +4046,50 @@
         currentWord.englishExample ||
         "（英訳は登録されていません）";
 
+
+      /* =========================
+         メモ
+      ========================= */
+
+      const memoBox =
+        document.getElementById(
+          "testMemoBox"
+        );
+
+
+      const memoText =
+        document.getElementById(
+          "testMemoText"
+        );
+
+
+      if (
+        currentWord.memo &&
+        currentWord.memo.trim()
+      ) {
+
+        memoText.textContent =
+          currentWord.memo;
+
+        memoBox.classList.add(
+          "active"
+        );
+
+      } else {
+
+        memoText.textContent =
+          "";
+
+        memoBox.classList.remove(
+          "active"
+        );
+
+      }
+
+
+      /* =========================
+         答えを隠す
+      ========================= */
 
       document
         .getElementById(
@@ -3627,11 +4564,14 @@
             words
           ),
 
-        index: 0,
+        index:
+          0,
 
-        revealed: false,
+        revealed:
+          false,
 
-        rated: false,
+        rated:
+          false,
 
         mode:
           level,
@@ -3641,11 +4581,14 @@
 
         counts: {
 
-          perfect: 0,
+          perfect:
+            0,
 
-          review: 0,
+          review:
+            0,
 
-          weak: 0
+          weak:
+            0
 
         }
 
@@ -3699,11 +4642,14 @@
             words
           ),
 
-        index: 0,
+        index:
+          0,
 
-        revealed: false,
+        revealed:
+          false,
 
-        rated: false,
+        rated:
+          false,
 
         mode:
           mode,
@@ -3713,11 +4659,14 @@
 
         counts: {
 
-          perfect: 0,
+          perfect:
+            0,
 
-          review: 0,
+          review:
+            0,
 
-          weak: 0
+          weak:
+            0
 
         }
 
@@ -3735,7 +4684,7 @@
 
 
     /* ==================================================
-       テスト終了
+       テスト途中終了
     ================================================== */
 
     function exitTest() {
@@ -3773,4 +4722,5 @@
   </script>
 
 </body>
+
 </html>
