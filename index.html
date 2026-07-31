@@ -162,75 +162,2296 @@
 <div id="duplicateModal" class="modal-overlay"><div class="modal"><h3>この韓国語はすでに登録されています。</h3><p>次の単語がすでに登録されています。</p><div class="duplicate-info"><strong>韓国語</strong><br><span id="duplicateKoreanText"></span><br><br><strong>日本語</strong><br><span id="duplicateJapaneseText"></span></div><p>別の単語として登録しますか？</p><div class="modal-buttons"><button class="modal-button modal-primary" onclick="confirmDuplicateRegistration()">はい</button><button class="modal-button modal-secondary" onclick="cancelDuplicateRegistration()">登録をやめる</button></div></div></div>
 
 <script>
-const API_BASE_URL="https://calm-fire-eac1korean-study-translator.nanami-suzuki-jp.workers.dev";
-const LEGACY_WORD_STORAGE_KEY="koreanStudyWords";
-const LEGACY_TAG_STORAGE_KEY="koreanStudyTags";
-const MIGRATION_DONE_KEY="koreanStudyD1MigrationDone";
-let words=[],tags=[],currentUser=null,selectedTestMode="all",duplicateCheckHandled=false,pendingWordData=null;
-let testSession={words:[],index:0,revealed:false,rated:false,mode:"all",modeLabel:"",counts:{perfect:0,review:0,weak:0}};
+const API_BASE_URL = "https://calm-fire-eac1korean-study-translator.nanami-suzuki-jp.workers.dev";
+const AUTH_TOKEN_KEY = "koreanStudyAuthToken";
+const LEGACY_WORD_STORAGE_KEY = "koreanStudyWords";
+const LEGACY_TAG_STORAGE_KEY = "koreanStudyTags";
+const LEGACY_MIGRATION_KEY = "koreanStudyD1MigrationDone";
 
-async function apiRequest(path,options={}){const response=await fetch(API_BASE_URL+path,{...options,credentials:"include"});const text=await response.text();let data={};try{data=text?JSON.parse(text):{}}catch{data={raw:text}}if(!response.ok){const error=new Error(data.error||`APIエラー (${response.status})`);error.status=response.status;error.data=data;throw error}return data}
+let words = [];
+let tags = [];
+let currentUser = null;
+let selectedTestMode = "all";
+let duplicateCheckHandled = false;
+let pendingWordData = null;
 
-function showLoginForm(){document.getElementById("loginForm").style.display="block";document.getElementById("registerForm").style.display="none";clearAuthMessages()}
-function showRegisterForm(){document.getElementById("loginForm").style.display="none";document.getElementById("registerForm").style.display="block";clearAuthMessages()}
-function clearAuthMessages(){["loginMessage","registerMessage"].forEach(id=>{const el=document.getElementById(id);el.textContent="";el.className="message"})}
-function showAuthMessage(id,text,type="error"){const el=document.getElementById(id);el.textContent=text;el.className="message "+type}
+let testSession = {
+  words: [],
+  index: 0,
+  revealed: false,
+  rated: false,
+  mode: "all",
+  modeLabel: "",
+  counts: {
+    perfect: 0,
+    review: 0,
+    weak: 0
+  }
+};
 
-async function login(){const button=document.getElementById("loginButton");const email=document.getElementById("loginEmail").value.trim();const password=document.getElementById("loginPassword").value;if(!email||!password){showAuthMessage("loginMessage","メールアドレスとパスワードを入力してください。");return}button.disabled=true;button.textContent="ログインしています…";try{const data=await apiRequest("/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});currentUser=data.user;await enterApp()}catch(error){showAuthMessage("loginMessage",error.message)}finally{button.disabled=false;button.textContent="ログイン"}}
+/* ==================================================
+   API
+================================================== */
 
-async function registerAccount(){const button=document.getElementById("registerButton");const email=document.getElementById("registerEmail").value.trim();const password=document.getElementById("registerPassword").value;const confirm=document.getElementById("registerPasswordConfirm").value;if(!email||!password||!confirm){showAuthMessage("registerMessage","必要な項目を入力してください。");return}if(password!==confirm){showAuthMessage("registerMessage","パスワードが一致しません。");return}if(password.length<8){showAuthMessage("registerMessage","パスワードは8文字以上にしてください。");return}button.disabled=true;button.textContent="アカウントを作成しています…";try{const data=await apiRequest("/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});currentUser=data.user;await enterApp();alert("アカウントを作成しました！") }catch(error){showAuthMessage("registerMessage",error.message)}finally{button.disabled=false;button.textContent="アカウントを作成"}}
+async function apiRequest(path, options = {}) {
 
-async function logout(){try{await apiRequest("/auth/logout",{method:"POST"})}catch(error){console.error(error)}currentUser=null;document.getElementById("app").classList.remove("active");document.getElementById("authScreen").style.display="flex";showLoginForm();document.getElementById("loginPassword").value=""}
+  const token =
+    localStorage.getItem(AUTH_TOKEN_KEY);
 
-async function enterApp(){document.getElementById("authScreen").style.display="none";document.getElementById("app").classList.add("active");document.getElementById("userEmailText").textContent=currentUser?.email||"";await loadCloudData();await migrateLegacyDataIfNeeded();updateHomeStatus();updateTagSelect();updateTestTagSelect();updateAvailableTestCount();showScreen("homeScreen")}
+  const headers = {
+    ...(options.headers || {})
+  };
 
-async function checkAuth(){try{const data=await apiRequest("/auth/me");if(data.authenticated){currentUser=data.user;await enterApp();return} }catch(error){}document.getElementById("authScreen").style.display="flex";document.getElementById("app").classList.remove("active")}
+  if (token) {
+    headers.Authorization =
+      `Bearer ${token}`;
+  }
 
-async function loadCloudData(){const [wordData,tagData]=await Promise.all([apiRequest("/words"),apiRequest("/tags")]);words=wordData.words||[];tags=(tagData.tags||[]).map(tag=>tag.name)}
-function getLegacyWords(){const saved=localStorage.getItem(LEGACY_WORD_STORAGE_KEY);if(!saved)return[];try{return JSON.parse(saved)}catch{return[]}}
-function getLegacyTags(){const saved=localStorage.getItem(LEGACY_TAG_STORAGE_KEY);if(!saved)return[];try{return JSON.parse(saved)}catch{return[]}}
+  const response = await fetch(
+    API_BASE_URL + path,
+    {
+      ...options,
+      headers,
+      credentials: "omit",
+      cache: "no-store"
+    }
+  );
 
-async function migrateLegacyDataIfNeeded(){if(words.length||localStorage.getItem(MIGRATION_DONE_KEY)==="yes")return;const legacyWords=getLegacyWords(),legacyTags=getLegacyTags();if(!legacyWords.length&&!legacyTags.length)return;const migrate=confirm(`このブラウザに以前登録したデータが ${legacyWords.length}件 あります。\n\nクラウドへ移行しますか？\n\n「はい」を押すと、このアカウントの単語帳として保存されます。`);if(!migrate)return;for(const tag of legacyTags){if(tags.includes(tag))continue;try{await apiRequest("/tags",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:tag})});tags.push(tag)}catch(error){if(error.status!==409)console.error(error)}}for(const word of legacyWords){try{const data=await apiRequest("/words",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:word.id||crypto.randomUUID(),korean:word.korean||"",japanese:word.japanese||"",koreanExample:word.koreanExample||"",japaneseExample:word.japaneseExample||"",englishExample:word.englishExample||"",tag:word.tag||"",memo:word.memo||"",memoryLevel:word.memoryLevel||"new",createdAt:word.createdAt||new Date().toISOString(),allowDuplicate:true})});if(data.word)words.push(data.word)}catch(error){console.error("移行エラー",word,error)}}localStorage.setItem(MIGRATION_DONE_KEY,"yes");alert("以前のデータをこのアカウントへ移行しました！")}
+  const text = await response.text();
 
-function showScreen(screenId){document.querySelectorAll(".screen").forEach(screen=>screen.classList.remove("active"));const target=document.getElementById(screenId);if(target)target.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});updateHomeStatus();updateTagSelect();updateTestTagSelect();updateAvailableTestCount()}
-function updateHomeStatus(){const text=document.getElementById("wordCountText");if(!words.length)text.textContent="まだ単語が登録されていません。";else text.innerHTML=`現在 <strong>${words.length}件</strong> の単語が登録されています。`}
-function updateTagSelect(){const select=document.getElementById("wordTag");if(!select)return;const current=select.value;select.innerHTML='<option value="">タグを選択してください</option>';tags.forEach(tag=>{const option=document.createElement("option");option.value=tag;option.textContent=tag;select.appendChild(option)});if(tags.includes(current))select.value=current}
-function updateTestTagSelect(){const select=document.getElementById("testTagSelect");if(!select)return;const current=select.value;select.innerHTML='<option value="">タグを選択してください</option>';tags.forEach(tag=>{const option=document.createElement("option");option.value=tag;option.textContent=tag;select.appendChild(option)});if(tags.includes(current))select.value=current}
+  let data = {};
 
-async function addTag(){const value=prompt("新しいタグ名を入力してください。");if(value===null)return;const tag=value.trim();if(!tag){alert("タグ名を入力してください。");return}if(tags.includes(tag)){alert("そのタグはすでに存在します。");return}try{await apiRequest("/tags",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:tag})});tags.push(tag);updateTagSelect();updateTestTagSelect();document.getElementById("wordTag").value=tag}catch(error){alert(error.message)}}
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = {
+      raw: text
+    };
+  }
 
-async function checkDuplicateKoreanWord(){const korean=document.getElementById("koreanWord").value.trim();if(!korean||duplicateCheckHandled)return;const duplicate=words.find(word=>word.korean===korean);if(!duplicate)return;document.getElementById("duplicateKoreanText").textContent=duplicate.korean;document.getElementById("duplicateJapaneseText").textContent=duplicate.japanese||"日本語の意味が登録されていません。";document.getElementById("duplicateModal").classList.add("active")}
-function closeDuplicateModal(){document.getElementById("duplicateModal").classList.remove("active")}
-function confirmDuplicateRegistration(){duplicateCheckHandled=true;closeDuplicateModal();if(pendingWordData){const data=pendingWordData;pendingWordData=null;saveNewWordToCloud(data,true)}}
-function cancelDuplicateRegistration(){document.getElementById("koreanWord").value="";duplicateCheckHandled=false;pendingWordData=null;closeDuplicateModal();setTimeout(()=>document.getElementById("koreanWord").focus(),100)}
+  if (!response.ok) {
+    const error = new Error(
+      data.error ||
+      `APIエラー (${response.status})`
+    );
 
-async function translateExample(){const text=document.getElementById("koreanExample").value.trim();if(!text){showTranslationStatus("韓国語の例文を入力してください。","error");return}const button=document.getElementById("translateButton");button.disabled=true;button.textContent="🔄 翻訳しています…";showTranslationStatus("DeepLで日本語と英語に翻訳しています。","loading");try{const data=await apiRequest("/translate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});document.getElementById("japaneseExample").value=data.japanese||"";document.getElementById("englishExample").value=data.english||"";showTranslationStatus("✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。","success")}catch(error){showTranslationStatus("❌ "+error.message,"error")}finally{button.disabled=false;button.textContent="🌐 日本語・英語に自動翻訳"}}
-function showTranslationStatus(text,type){const status=document.getElementById("translationStatus");status.textContent=text;status.className="translation-status "+type}
-function showMessage(text,type){const message=document.getElementById("registerMessage");message.textContent=text;message.className="message "+type}
-function clearRegisterForm(){["koreanWord","japaneseMeaning","koreanExample","japaneseExample","englishExample","wordMemo"].forEach(id=>document.getElementById(id).value="");document.getElementById("wordTag").value="";document.getElementById("translationStatus").textContent="";document.getElementById("translationStatus").className="translation-status"}
+    error.status =
+      response.status;
 
-async function registerWord(){const wordData={id:crypto.randomUUID(),korean:document.getElementById("koreanWord").value.trim(),japanese:document.getElementById("japaneseMeaning").value.trim(),koreanExample:document.getElementById("koreanExample").value.trim(),japaneseExample:document.getElementById("japaneseExample").value.trim(),englishExample:document.getElementById("englishExample").value.trim(),tag:document.getElementById("wordTag").value,memo:document.getElementById("wordMemo").value.trim(),createdAt:new Date().toISOString(),memoryLevel:"new"};if(!wordData.korean){showMessage("韓国語を入力してください。","error");return}if(!wordData.japanese){showMessage("日本語の意味を入力してください。","error");return}if(!wordData.koreanExample){showMessage("韓国語の例文を入力してください。","error");return}if(!wordData.japaneseExample){showMessage("例文の日本語訳を入力してください。","error");return}if(!duplicateCheckHandled&&words.some(word=>word.korean===wordData.korean)){const duplicate=words.find(word=>word.korean===wordData.korean);pendingWordData=wordData;document.getElementById("duplicateKoreanText").textContent=duplicate.korean;document.getElementById("duplicateJapaneseText").textContent=duplicate.japanese||"日本語の意味が登録されていません。";document.getElementById("duplicateModal").classList.add("active");return}await saveNewWordToCloud(wordData,duplicateCheckHandled)}
-async function saveNewWordToCloud(wordData,allowDuplicate=false){try{const data=await apiRequest("/words",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...wordData,allowDuplicate})});if(data.word)words.push(data.word);duplicateCheckHandled=false;pendingWordData=null;clearRegisterForm();showMessage(`「${wordData.korean}」を登録しました！`,"success");updateHomeStatus();updateAvailableTestCount()}catch(error){if(error.status===409){pendingWordData=wordData;const duplicate=error.data?.duplicate;document.getElementById("duplicateKoreanText").textContent=duplicate?.korean||wordData.korean;document.getElementById("duplicateJapaneseText").textContent=duplicate?.japanese||"";document.getElementById("duplicateModal").classList.add("active")}else showMessage("登録に失敗しました。\n"+error.message,"error")}}
+    error.data = data;
 
-function selectTestMode(mode){selectedTestMode=mode;document.querySelectorAll(".test-mode-button").forEach(button=>button.classList.toggle("selected",button.dataset.mode===mode));document.getElementById("testTagArea").classList.toggle("active",mode==="tag");updateAvailableTestCount()}
-function getWordsForTest(mode){if(mode==="all")return[...words];if(mode==="review")return words.filter(word=>word.memoryLevel==="review");if(mode==="weak")return words.filter(word=>word.memoryLevel==="weak");if(mode==="tag"){const tag=document.getElementById("testTagSelect").value;return tag?words.filter(word=>word.tag===tag):[]}return[]}
-function updateAvailableTestCount(){const count=getWordsForTest(selectedTestMode).length;document.getElementById("availableTestCount").textContent="出題可能な単語："+count+"件";document.getElementById("startTestButton").disabled=count===0}
-function shuffleArray(array){const result=[...array];for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}return result}
-function startTest(){const candidates=getWordsForTest(selectedTestMode);if(!candidates.length){alert("この条件で出題できる単語がありません。");return}let modeLabel="📚 すべての単語";if(selectedTestMode==="review")modeLabel="🧠 もっと覚える";if(selectedTestMode==="weak")modeLabel="🫠 まだまだ";if(selectedTestMode==="tag")modeLabel="🏷️ "+document.getElementById("testTagSelect").value;testSession={words:shuffleArray(candidates),index:0,revealed:false,rated:false,mode:selectedTestMode,modeLabel,counts:{perfect:0,review:0,weak:0}};showScreen("testQuestionScreen");renderTestQuestion()}
-function renderTestQuestion(){const word=testSession.words[testSession.index];if(!word)return finishTest();testSession.revealed=false;testSession.rated=false;document.getElementById("testProgress").textContent=`問題 ${testSession.index+1} / ${testSession.words.length}`;document.getElementById("testKoreanWord").textContent=word.korean||"";document.getElementById("testKoreanExample").textContent=word.koreanExample||"";document.getElementById("testJapaneseMeaning").textContent=word.japanese||"";document.getElementById("testJapaneseExample").textContent=word.japaneseExample||"";document.getElementById("testEnglishExample").textContent=word.englishExample||"（英訳は登録されていません）";const memoBox=document.getElementById("testMemoBox");if(word.memo&&word.memo.trim()){document.getElementById("testMemoText").textContent=word.memo;memoBox.classList.add("active")}else{document.getElementById("testMemoText").textContent="";memoBox.classList.remove("active")}document.getElementById("answerArea").classList.remove("active");document.getElementById("ratingArea").classList.remove("active");document.getElementById("revealAnswerButton").style.display="block";document.getElementById("speakButton").style.display="block";resetRatingButtons();document.getElementById("nextTestButton").classList.remove("active");document.getElementById("nextTestButton").textContent=testSession.index===testSession.words.length-1?"テスト結果を見る →":"次の問題 →"}
-function speakKoreanExample(){const text=document.getElementById("testKoreanExample").textContent.trim();if(!text)return;if(!("speechSynthesis" in window)||!("SpeechSynthesisUtterance" in window)){alert("このブラウザでは読み上げ機能を利用できません。");return}window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.lang="ko-KR";const voices=window.speechSynthesis.getVoices();const koreanVoice=voices.find(voice=>voice.lang&&voice.lang.toLowerCase().startsWith("ko"));if(koreanVoice)utterance.voice=koreanVoice;window.speechSynthesis.speak(utterance)}
-function showTestAnswer(){if(testSession.revealed)return;testSession.revealed=true;document.getElementById("answerArea").classList.add("active");document.getElementById("ratingArea").classList.add("active");document.getElementById("revealAnswerButton").style.display="none"}
-async function rateCurrentQuestion(level){if(!testSession.revealed||testSession.rated)return;const word=testSession.words[testSession.index];const buttons=document.querySelectorAll(".rating-button");buttons.forEach(button=>button.disabled=true);try{await apiRequest(`/words/${encodeURIComponent(word.id)}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({memoryLevel:level})});word.memoryLevel=level;const i=words.findIndex(item=>item.id===word.id);if(i!==-1)words[i].memoryLevel=level;testSession.counts[level]+=1;testSession.rated=true;resetRatingButtons();getRatingButton(level).classList.add("selected");disableRatingButtons();document.getElementById("nextTestButton").classList.add("active")}catch(error){buttons.forEach(button=>button.disabled=false);alert("評価の保存に失敗しました。\n"+error.message)}}
-function getRatingButton(level){if(level==="perfect")return document.getElementById("perfectRatingButton");if(level==="review")return document.getElementById("reviewRatingButton");return document.getElementById("weakRatingButton")}
-function resetRatingButtons(){document.querySelectorAll(".rating-button").forEach(button=>{button.classList.remove("selected");button.disabled=false})}
-function disableRatingButtons(){document.querySelectorAll(".rating-button").forEach(button=>button.disabled=true)}
-function nextTestQuestion(){if(!testSession.rated){alert("まず評価を選んでください。");return}testSession.index++;if(testSession.index>=testSession.words.length)return finishTest();window.scrollTo({top:0,behavior:"smooth"});renderTestQuestion()}
-function finishTest(){document.getElementById("resultTotal").textContent=testSession.words.length+"問終了";document.getElementById("resultPerfect").textContent="💯 完璧："+testSession.counts.perfect+"問";document.getElementById("resultReview").textContent="🧠 もっと覚える："+testSession.counts.review+"問";document.getElementById("resultWeak").textContent="🫠 まだまだ："+testSession.counts.weak+"問";document.getElementById("retryWeakButton").disabled=testSession.counts.weak===0;document.getElementById("retryReviewButton").disabled=testSession.counts.review===0;showScreen("testResultScreen")}
-function startFocusedTest(level){const candidates=words.filter(word=>word.memoryLevel===level);if(!candidates.length){alert("該当する単語がありません。");return}testSession={words:shuffleArray(candidates),index:0,revealed:false,rated:false,mode:level,modeLabel:level==="weak"?"🫠 まだまだ":"🧠 もっと覚える",counts:{perfect:0,review:0,weak:0}};showScreen("testQuestionScreen");renderTestQuestion()}
-function restartSameTest(){const candidates=getWordsForTest(testSession.mode);if(!candidates.length){alert("現在、この条件で出題できる単語がありません。");return}testSession={words:shuffleArray(candidates),index:0,revealed:false,rated:false,mode:testSession.mode,modeLabel:testSession.modeLabel,counts:{perfect:0,review:0,weak:0}};showScreen("testQuestionScreen");renderTestQuestion()}
-function exitTest(){if(confirm("テストを途中で終了しますか？\n\nすでに選択した評価は保存されています。"))showScreen("testSetupScreen")}
+    throw error;
+  }
 
-window.speechSynthesis?.addEventListener("voiceschanged",()=>{});
+  return data;
+}
+
+
+/* ==================================================
+   認証画面
+================================================== */
+
+function showLoginForm() {
+
+  document
+    .getElementById("loginForm")
+    .style.display = "block";
+
+  document
+    .getElementById("registerForm")
+    .style.display = "none";
+
+  clearAuthMessages();
+}
+
+
+function showRegisterForm() {
+
+  document
+    .getElementById("loginForm")
+    .style.display = "none";
+
+  document
+    .getElementById("registerForm")
+    .style.display = "block";
+
+  clearAuthMessages();
+}
+
+
+function clearAuthMessages() {
+
+  [
+    "loginMessage",
+    "registerMessage"
+  ].forEach(
+    function(id) {
+
+      const element =
+        document.getElementById(id);
+
+      element.textContent = "";
+      element.className = "message";
+
+    }
+  );
+}
+
+
+function showAuthMessage(
+  id,
+  text,
+  type = "error"
+) {
+
+  const element =
+    document.getElementById(id);
+
+  element.textContent = text;
+  element.className =
+    "message " + type;
+}
+
+
+/* ==================================================
+   ログイン
+================================================== */
+
+async function login() {
+
+  const button =
+    document.getElementById(
+      "loginButton"
+    );
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+  if (!email || !password) {
+
+    showAuthMessage(
+      "loginMessage",
+      "メールアドレスとパスワードを入力してください。"
+    );
+
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent =
+    "ログインしています…";
+
+  try {
+
+    const data =
+      await apiRequest(
+        "/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      );
+
+    localStorage.setItem(
+      AUTH_TOKEN_KEY,
+      data.token
+    );
+
+    currentUser =
+      data.user;
+
+    await enterApp();
+
+  } catch (error) {
+
+    localStorage.removeItem(
+      AUTH_TOKEN_KEY
+    );
+
+    showAuthMessage(
+      "loginMessage",
+      error.message
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "ログイン";
+
+  }
+}
+
+
+/* ==================================================
+   新規登録
+================================================== */
+
+async function registerAccount() {
+
+  const button =
+    document.getElementById(
+      "registerButton"
+    );
+
+  const email =
+    document
+      .getElementById("registerEmail")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("registerPassword")
+      .value;
+
+  const confirmation =
+    document
+      .getElementById(
+        "registerPasswordConfirm"
+      )
+      .value;
+
+  if (
+    !email ||
+    !password ||
+    !confirmation
+  ) {
+
+    showAuthMessage(
+      "registerMessage",
+      "必要な項目を入力してください。"
+    );
+
+    return;
+  }
+
+  if (
+    password !== confirmation
+  ) {
+
+    showAuthMessage(
+      "registerMessage",
+      "パスワードが一致しません。"
+    );
+
+    return;
+  }
+
+  if (
+    password.length < 8
+  ) {
+
+    showAuthMessage(
+      "registerMessage",
+      "パスワードは8文字以上にしてください。"
+    );
+
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent =
+    "アカウントを作成しています…";
+
+  try {
+
+    const data =
+      await apiRequest(
+        "/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      );
+
+    localStorage.setItem(
+      AUTH_TOKEN_KEY,
+      data.token
+    );
+
+    currentUser =
+      data.user;
+
+    await enterApp();
+
+    alert(
+      "アカウントを作成しました！"
+    );
+
+  } catch (error) {
+
+    showAuthMessage(
+      "registerMessage",
+      error.message
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent =
+      "アカウントを作成";
+
+  }
+}
+
+
+/* ==================================================
+   ログアウト
+================================================== */
+
+async function logout() {
+
+  try {
+
+    await apiRequest(
+      "/auth/logout",
+      {
+        method: "POST"
+      }
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+  localStorage.removeItem(
+    AUTH_TOKEN_KEY
+  );
+
+  currentUser = null;
+  words = [];
+  tags = [];
+
+  document
+    .getElementById("app")
+    .classList
+    .remove("active");
+
+  document
+    .getElementById("authScreen")
+    .style.display = "flex";
+
+  document
+    .getElementById("loginPassword")
+    .value = "";
+
+  showLoginForm();
+}
+
+
+/* ==================================================
+   認証確認
+================================================== */
+
+async function checkAuth() {
+
+  const token =
+    localStorage.getItem(
+      AUTH_TOKEN_KEY
+    );
+
+  if (!token) {
+
+    showAuthScreen();
+    return;
+
+  }
+
+  try {
+
+    const data =
+      await apiRequest(
+        "/auth/me"
+      );
+
+    if (
+      data.authenticated
+    ) {
+
+      currentUser =
+        data.user;
+
+      await enterApp();
+      return;
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "認証確認エラー:",
+      error
+    );
+
+  }
+
+  localStorage.removeItem(
+    AUTH_TOKEN_KEY
+  );
+
+  showAuthScreen();
+}
+
+
+function showAuthScreen() {
+
+  document
+    .getElementById("authScreen")
+    .style.display = "flex";
+
+  document
+    .getElementById("app")
+    .classList
+    .remove("active");
+}
+
+
+/* ==================================================
+   アプリへ入る
+================================================== */
+
+async function enterApp() {
+
+  document
+    .getElementById("authScreen")
+    .style.display = "none";
+
+  document
+    .getElementById("app")
+    .classList
+    .add("active");
+
+  document
+    .getElementById("userEmailText")
+    .textContent =
+      currentUser?.email || "";
+
+  try {
+
+    await loadCloudData();
+
+  } catch (error) {
+
+    if (error.status === 401) {
+
+      localStorage.removeItem(
+        AUTH_TOKEN_KEY
+      );
+
+      currentUser = null;
+      showAuthScreen();
+      showAuthMessage(
+        "loginMessage",
+        "ログインが期限切れです。もう一度ログインしてください。"
+      );
+      return;
+
+    }
+
+    throw error;
+
+  }
+
+  await migrateLegacyDataIfNeeded();
+
+  updateHomeStatus();
+  updateTagSelect();
+  updateTestTagSelect();
+  updateAvailableTestCount();
+
+  showScreen("homeScreen");
+}
+
+
+/* ==================================================
+   クラウドデータ
+================================================== */
+
+async function loadCloudData() {
+
+  const results =
+    await Promise.all([
+      apiRequest("/words"),
+      apiRequest("/tags")
+    ]);
+
+  words =
+    results[0].words || [];
+
+  tags =
+    (results[1].tags || [])
+      .map(tag => tag.name);
+}
+
+
+/* ==================================================
+   以前のlocalStorageデータ取得
+================================================== */
+
+function getLegacyWords() {
+
+  const saved =
+    localStorage.getItem(
+      LEGACY_WORD_STORAGE_KEY
+    );
+
+  if (!saved) return [];
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return [];
+  }
+}
+
+
+function getLegacyTags() {
+
+  const saved =
+    localStorage.getItem(
+      LEGACY_TAG_STORAGE_KEY
+    );
+
+  if (!saved) return [];
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return [];
+  }
+}
+
+
+/* ==================================================
+   以前のデータ移行
+================================================== */
+
+async function migrateLegacyDataIfNeeded() {
+
+  if (localStorage.getItem(
+    LEGACY_MIGRATION_KEY
+  ) === "yes") {
+    return;
+  }
+
+  if (words.length > 0) {
+    localStorage.setItem(
+      LEGACY_MIGRATION_KEY,
+      "yes"
+    );
+    return;
+  }
+
+  const legacyWords =
+    getLegacyWords();
+
+  const legacyTags =
+    getLegacyTags();
+
+  if (
+    !legacyWords.length &&
+    !legacyTags.length
+  ) {
+    return;
+  }
+
+  const shouldMigrate =
+    confirm(
+      `このブラウザに以前登録したデータが ${legacyWords.length}件 あります。
+
+クラウドへ移行しますか？
+
+「OK」を押すと、このアカウントの単語帳として保存されます。`
+    );
+
+  if (!shouldMigrate) {
+    return;
+  }
+
+  for (
+    const tag of legacyTags
+  ) {
+
+    if (tags.includes(tag)) {
+      continue;
+    }
+
+    try {
+
+      await apiRequest(
+        "/tags",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            name: tag
+          })
+        }
+      );
+
+      tags.push(tag);
+
+    } catch (error) {
+
+      if (error.status !== 409) {
+        console.error(
+          "タグ移行エラー:",
+          error
+        );
+      }
+
+    }
+  }
+
+  for (
+    const word of legacyWords
+  ) {
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/words",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body: JSON.stringify({
+              id:
+                word.id ||
+                crypto.randomUUID(),
+              korean:
+                word.korean || "",
+              japanese:
+                word.japanese || "",
+              koreanExample:
+                word.koreanExample || "",
+              japaneseExample:
+                word.japaneseExample || "",
+              englishExample:
+                word.englishExample || "",
+              tag:
+                word.tag || "",
+              memo:
+                word.memo || "",
+              memoryLevel:
+                word.memoryLevel || "new",
+              createdAt:
+                word.createdAt ||
+                new Date().toISOString(),
+              allowDuplicate:
+                true
+            })
+          }
+        );
+
+      if (data.word) {
+        words.push(data.word);
+      }
+
+    } catch (error) {
+
+      console.error(
+        "単語移行エラー:",
+        word,
+        error
+      );
+
+    }
+  }
+
+  localStorage.setItem(
+    LEGACY_MIGRATION_KEY,
+    "yes"
+  );
+
+  alert(
+    "以前のデータをこのアカウントへ移行しました！"
+  );
+}
+
+
+/* ==================================================
+   画面切り替え
+================================================== */
+
+function showScreen(screenId) {
+
+  document
+    .querySelectorAll(".screen")
+    .forEach(
+      screen =>
+        screen.classList.remove("active")
+    );
+
+  const target =
+    document.getElementById(screenId);
+
+  if (target) {
+    target.classList.add("active");
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  updateHomeStatus();
+  updateTagSelect();
+  updateTestTagSelect();
+  updateAvailableTestCount();
+}
+
+
+/* ==================================================
+   ホーム状態
+================================================== */
+
+function updateHomeStatus() {
+
+  const text =
+    document.getElementById(
+      "wordCountText"
+    );
+
+  if (words.length === 0) {
+
+    text.textContent =
+      "まだ単語が登録されていません。";
+
+  } else {
+
+    text.innerHTML =
+      "現在 <strong>" +
+      words.length +
+      "件</strong> の単語が登録されています。";
+
+  }
+}
+
+
+/* ==================================================
+   タグ
+================================================== */
+
+function updateTagSelect() {
+
+  const select =
+    document.getElementById(
+      "wordTag"
+    );
+
+  if (!select) return;
+
+  const current =
+    select.value;
+
+  select.innerHTML =
+    '<option value="">タグを選択してください</option>';
+
+  tags.forEach(
+    tag => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = tag;
+      option.textContent = tag;
+
+      select.appendChild(option);
+
+    }
+  );
+
+  if (tags.includes(current)) {
+    select.value = current;
+  }
+}
+
+
+function updateTestTagSelect() {
+
+  const select =
+    document.getElementById(
+      "testTagSelect"
+    );
+
+  if (!select) return;
+
+  const current =
+    select.value;
+
+  select.innerHTML =
+    '<option value="">タグを選択してください</option>';
+
+  tags.forEach(
+    tag => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = tag;
+      option.textContent = tag;
+
+      select.appendChild(option);
+
+    }
+  );
+
+  if (tags.includes(current)) {
+    select.value = current;
+  }
+}
+
+
+async function addTag() {
+
+  const value =
+    prompt(
+      "新しいタグ名を入力してください。"
+    );
+
+  if (value === null) return;
+
+  const tag = value.trim();
+
+  if (!tag) {
+
+    alert("タグ名を入力してください。");
+    return;
+
+  }
+
+  if (tags.includes(tag)) {
+
+    alert("そのタグはすでに存在します。");
+    return;
+
+  }
+
+  try {
+
+    await apiRequest(
+      "/tags",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+        body: JSON.stringify({
+          name: tag
+        })
+      }
+    );
+
+    tags.push(tag);
+
+    updateTagSelect();
+    updateTestTagSelect();
+
+    document.getElementById(
+      "wordTag"
+    ).value = tag;
+
+  } catch (error) {
+
+    alert(
+      "タグの保存に失敗しました。
+" +
+      error.message
+    );
+
+  }
+}
+
+
+/* ==================================================
+   重複確認
+================================================== */
+
+function checkDuplicateKoreanWord() {
+
+  const korean =
+    document
+      .getElementById("koreanWord")
+      .value
+      .trim();
+
+  if (
+    !korean ||
+    duplicateCheckHandled
+  ) {
+    return;
+  }
+
+  const duplicate =
+    words.find(
+      word =>
+        word.korean === korean
+    );
+
+  if (!duplicate) return;
+
+  document
+    .getElementById(
+      "duplicateKoreanText"
+    )
+    .textContent =
+      duplicate.korean;
+
+  document
+    .getElementById(
+      "duplicateJapaneseText"
+    )
+    .textContent =
+      duplicate.japanese ||
+      "日本語の意味が登録されていません。";
+
+  document
+    .getElementById(
+      "duplicateModal"
+    )
+    .classList
+    .add("active");
+}
+
+
+function closeDuplicateModal() {
+
+  document
+    .getElementById(
+      "duplicateModal"
+    )
+    .classList
+    .remove("active");
+}
+
+
+function confirmDuplicateRegistration() {
+
+  duplicateCheckHandled = true;
+  closeDuplicateModal();
+
+  if (pendingWordData) {
+
+    const data =
+      pendingWordData;
+
+    pendingWordData = null;
+
+    saveNewWordToCloud(
+      data,
+      true
+    );
+
+  }
+}
+
+
+function cancelDuplicateRegistration() {
+
+  document
+    .getElementById(
+      "koreanWord"
+    )
+    .value = "";
+
+  duplicateCheckHandled = false;
+  pendingWordData = null;
+
+  closeDuplicateModal();
+
+  setTimeout(
+    () =>
+      document
+        .getElementById("koreanWord")
+        .focus(),
+    100
+  );
+}
+
+
+/* ==================================================
+   DeepL
+================================================== */
+
+async function translateExample() {
+
+  const text =
+    document
+      .getElementById("koreanExample")
+      .value
+      .trim();
+
+  if (!text) {
+
+    showTranslationStatus(
+      "韓国語の例文を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+  const button =
+    document.getElementById(
+      "translateButton"
+    );
+
+  button.disabled = true;
+  button.textContent =
+    "🔄 翻訳しています…";
+
+  showTranslationStatus(
+    "DeepLで日本語と英語に翻訳しています。",
+    "loading"
+  );
+
+  try {
+
+    const data =
+      await apiRequest(
+        "/translate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            text
+          })
+        }
+      );
+
+    document
+      .getElementById(
+        "japaneseExample"
+      )
+      .value =
+        data.japanese || "";
+
+    document
+      .getElementById(
+        "englishExample"
+      )
+      .value =
+        data.english || "";
+
+    showTranslationStatus(
+      "✅ 日本語訳と英訳を生成しました。内容は自由に編集できます。",
+      "success"
+    );
+
+  } catch (error) {
+
+    if (error.status === 401) {
+
+      handleAuthenticationExpired();
+      return;
+
+    }
+
+    showTranslationStatus(
+      "❌ " + error.message,
+      "error"
+    );
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent =
+      "🌐 日本語・英語に自動翻訳";
+
+  }
+}
+
+
+function showTranslationStatus(
+  text,
+  type
+) {
+
+  const status =
+    document.getElementById(
+      "translationStatus"
+    );
+
+  status.textContent = text;
+  status.className =
+    "translation-status " +
+    type;
+}
+
+
+/* ==================================================
+   単語登録
+================================================== */
+
+function showMessage(
+  text,
+  type
+) {
+
+  const message =
+    document.getElementById(
+      "registerMessage"
+    );
+
+  message.textContent = text;
+  message.className =
+    "message " + type;
+}
+
+
+function clearRegisterForm() {
+
+  [
+    "koreanWord",
+    "japaneseMeaning",
+    "koreanExample",
+    "japaneseExample",
+    "englishExample",
+    "wordMemo"
+  ].forEach(
+    id =>
+      document.getElementById(id).value = ""
+  );
+
+  document.getElementById(
+    "wordTag"
+  ).value = "";
+
+  document.getElementById(
+    "translationStatus"
+  ).textContent = "";
+
+  document.getElementById(
+    "translationStatus"
+  ).className =
+    "translation-status";
+}
+
+
+async function registerWord() {
+
+  const wordData = {
+
+    id:
+      crypto.randomUUID(),
+
+    korean:
+      document
+        .getElementById("koreanWord")
+        .value
+        .trim(),
+
+    japanese:
+      document
+        .getElementById("japaneseMeaning")
+        .value
+        .trim(),
+
+    koreanExample:
+      document
+        .getElementById("koreanExample")
+        .value
+        .trim(),
+
+    japaneseExample:
+      document
+        .getElementById("japaneseExample")
+        .value
+        .trim(),
+
+    englishExample:
+      document
+        .getElementById("englishExample")
+        .value
+        .trim(),
+
+    tag:
+      document
+        .getElementById("wordTag")
+        .value,
+
+    memo:
+      document
+        .getElementById("wordMemo")
+        .value
+        .trim(),
+
+    createdAt:
+      new Date().toISOString(),
+
+    memoryLevel:
+      "new"
+
+  };
+
+
+  if (!wordData.korean) {
+
+    showMessage(
+      "韓国語を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (!wordData.japanese) {
+
+    showMessage(
+      "日本語の意味を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (!wordData.koreanExample) {
+
+    showMessage(
+      "韓国語の例文を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (!wordData.japaneseExample) {
+
+    showMessage(
+      "例文の日本語訳を入力してください。",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (
+    !duplicateCheckHandled &&
+    words.some(
+      word =>
+        word.korean ===
+        wordData.korean
+    )
+  ) {
+
+    const duplicate =
+      words.find(
+        word =>
+          word.korean ===
+          wordData.korean
+      );
+
+    pendingWordData =
+      wordData;
+
+    document
+      .getElementById(
+        "duplicateKoreanText"
+      )
+      .textContent =
+        duplicate.korean;
+
+    document
+      .getElementById(
+        "duplicateJapaneseText"
+      )
+      .textContent =
+        duplicate.japanese ||
+        "日本語の意味が登録されていません。";
+
+    document
+      .getElementById(
+        "duplicateModal"
+      )
+      .classList
+      .add("active");
+
+    return;
+  }
+
+
+  await saveNewWordToCloud(
+    wordData,
+    duplicateCheckHandled
+  );
+}
+
+
+async function saveNewWordToCloud(
+  wordData,
+  allowDuplicate = false
+) {
+
+  try {
+
+    const data =
+      await apiRequest(
+        "/words",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify({
+            ...wordData,
+            allowDuplicate
+          })
+        }
+      );
+
+    if (data.word) {
+      words.push(data.word);
+    }
+
+    duplicateCheckHandled =
+      false;
+
+    pendingWordData = null;
+
+    clearRegisterForm();
+
+    showMessage(
+      `「${wordData.korean}」を登録しました！`,
+      "success"
+    );
+
+    updateHomeStatus();
+    updateAvailableTestCount();
+
+  } catch (error) {
+
+    if (error.status === 401) {
+
+      handleAuthenticationExpired();
+      return;
+
+    }
+
+    if (error.status === 409) {
+
+      pendingWordData =
+        wordData;
+
+      const duplicate =
+        error.data?.duplicate;
+
+      document
+        .getElementById(
+          "duplicateKoreanText"
+        )
+        .textContent =
+          duplicate?.korean ||
+          wordData.korean;
+
+      document
+        .getElementById(
+          "duplicateJapaneseText"
+        )
+        .textContent =
+          duplicate?.japanese || "";
+
+      document
+        .getElementById(
+          "duplicateModal"
+        )
+        .classList
+        .add("active");
+
+      return;
+    }
+
+    showMessage(
+      "登録に失敗しました。
+" +
+      error.message,
+      "error"
+    );
+  }
+}
+
+
+/* ==================================================
+   認証期限切れ
+================================================== */
+
+function handleAuthenticationExpired() {
+
+  localStorage.removeItem(
+    AUTH_TOKEN_KEY
+  );
+
+  currentUser = null;
+  words = [];
+  tags = [];
+
+  showAuthScreen();
+  showLoginForm();
+
+  showAuthMessage(
+    "loginMessage",
+    "ログインの有効期限が切れました。もう一度ログインしてください。"
+  );
+}
+
+
+/* ==================================================
+   テスト
+================================================== */
+
+function selectTestMode(mode) {
+
+  selectedTestMode = mode;
+
+  document
+    .querySelectorAll(
+      ".test-mode-button"
+    )
+    .forEach(
+      button =>
+        button.classList.toggle(
+          "selected",
+          button.dataset.mode === mode
+        )
+    );
+
+  document
+    .getElementById(
+      "testTagArea"
+    )
+    .classList.toggle(
+      "active",
+      mode === "tag"
+    );
+
+  updateAvailableTestCount();
+}
+
+
+function getWordsForTest(mode) {
+
+  if (mode === "all") {
+    return [...words];
+  }
+
+  if (mode === "review") {
+    return words.filter(
+      word =>
+        word.memoryLevel ===
+        "review"
+    );
+  }
+
+  if (mode === "weak") {
+    return words.filter(
+      word =>
+        word.memoryLevel ===
+        "weak"
+    );
+  }
+
+  if (mode === "tag") {
+
+    const tag =
+      document
+        .getElementById(
+          "testTagSelect"
+        )
+        .value;
+
+    return tag
+      ? words.filter(
+          word =>
+            word.tag === tag
+        )
+      : [];
+  }
+
+  return [];
+}
+
+
+function updateAvailableTestCount() {
+
+  const count =
+    getWordsForTest(
+      selectedTestMode
+    ).length;
+
+  document
+    .getElementById(
+      "availableTestCount"
+    )
+    .textContent =
+      "出題可能な単語：" +
+      count +
+      "件";
+
+  document
+    .getElementById(
+      "startTestButton"
+    )
+    .disabled =
+      count === 0;
+}
+
+
+function shuffleArray(array) {
+
+  const result =
+    [...array];
+
+  for (
+    let i =
+      result.length - 1;
+    i > 0;
+    i--
+  ) {
+
+    const j =
+      Math.floor(
+        Math.random() *
+        (i + 1)
+      );
+
+    [
+      result[i],
+      result[j]
+    ] = [
+      result[j],
+      result[i]
+    ];
+  }
+
+  return result;
+}
+
+
+function startTest() {
+
+  const candidates =
+    getWordsForTest(
+      selectedTestMode
+    );
+
+  if (!candidates.length) {
+
+    alert(
+      "この条件で出題できる単語がありません。"
+    );
+
+    return;
+  }
+
+  let modeLabel =
+    "📚 すべての単語";
+
+  if (
+    selectedTestMode ===
+    "review"
+  ) {
+    modeLabel =
+      "🧠 もっと覚える";
+  }
+
+  if (
+    selectedTestMode ===
+    "weak"
+  ) {
+    modeLabel =
+      "🫠 まだまだ";
+  }
+
+  if (
+    selectedTestMode ===
+    "tag"
+  ) {
+    modeLabel =
+      "🏷️ " +
+      document
+        .getElementById(
+          "testTagSelect"
+        )
+        .value;
+  }
+
+  testSession = {
+
+    words:
+      shuffleArray(
+        candidates
+      ),
+
+    index: 0,
+    revealed: false,
+    rated: false,
+    mode: selectedTestMode,
+    modeLabel,
+
+    counts: {
+      perfect: 0,
+      review: 0,
+      weak: 0
+    }
+  };
+
+  showScreen(
+    "testQuestionScreen"
+  );
+
+  renderTestQuestion();
+}
+
+
+function renderTestQuestion() {
+
+  const word =
+    testSession.words[
+      testSession.index
+    ];
+
+  if (!word) {
+    finishTest();
+    return;
+  }
+
+  testSession.revealed = false;
+  testSession.rated = false;
+
+  document
+    .getElementById(
+      "testProgress"
+    )
+    .textContent =
+      `問題 ${
+        testSession.index + 1
+      } / ${
+        testSession.words.length
+      }`;
+
+  document
+    .getElementById(
+      "testKoreanWord"
+    )
+    .textContent =
+      word.korean || "";
+
+  document
+    .getElementById(
+      "testKoreanExample"
+    )
+    .textContent =
+      word.koreanExample || "";
+
+  document
+    .getElementById(
+      "testJapaneseMeaning"
+    )
+    .textContent =
+      word.japanese || "";
+
+  document
+    .getElementById(
+      "testJapaneseExample"
+    )
+    .textContent =
+      word.japaneseExample || "";
+
+  document
+    .getElementById(
+      "testEnglishExample"
+    )
+    .textContent =
+      word.englishExample ||
+      "（英訳は登録されていません）";
+
+  const memoBox =
+    document.getElementById(
+      "testMemoBox"
+    );
+
+  if (
+    word.memo &&
+    word.memo.trim()
+  ) {
+
+    document
+      .getElementById(
+        "testMemoText"
+      )
+      .textContent =
+        word.memo;
+
+    memoBox.classList.add(
+      "active"
+    );
+
+  } else {
+
+    document
+      .getElementById(
+        "testMemoText"
+      )
+      .textContent = "";
+
+    memoBox.classList.remove(
+      "active"
+    );
+  }
+
+  document
+    .getElementById(
+      "answerArea"
+    )
+    .classList
+    .remove("active");
+
+  document
+    .getElementById(
+      "ratingArea"
+    )
+    .classList
+    .remove("active");
+
+  document
+    .getElementById(
+      "revealAnswerButton"
+    )
+    .style.display = "block";
+
+  document
+    .getElementById(
+      "speakButton"
+    )
+    .style.display = "block";
+
+  resetRatingButtons();
+
+  document
+    .getElementById(
+      "nextTestButton"
+    )
+    .classList
+    .remove("active");
+
+  document
+    .getElementById(
+      "nextTestButton"
+    )
+    .textContent =
+      testSession.index ===
+      testSession.words.length - 1
+        ? "テスト結果を見る →"
+        : "次の問題 →";
+}
+
+
+/* ==================================================
+   韓国語読み上げ
+================================================== */
+
+function speakKoreanExample() {
+
+  const text =
+    document
+      .getElementById(
+        "testKoreanExample"
+      )
+      .textContent
+      .trim();
+
+  if (!text) return;
+
+  if (
+    !("speechSynthesis" in window) ||
+    !("SpeechSynthesisUtterance" in window)
+  ) {
+
+    alert(
+      "このブラウザでは読み上げ機能を利用できません。"
+    );
+
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+  utterance.lang = "ko-KR";
+
+  const voices =
+    window.speechSynthesis
+      .getVoices();
+
+  const koreanVoice =
+    voices.find(
+      voice =>
+        voice.lang &&
+        voice.lang
+          .toLowerCase()
+          .startsWith("ko")
+    );
+
+  if (koreanVoice) {
+    utterance.voice =
+      koreanVoice;
+  }
+
+  utterance.rate = 0.9;
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
+
+
+/* ==================================================
+   答えを見る
+================================================== */
+
+function showTestAnswer() {
+
+  if (testSession.revealed) {
+    return;
+  }
+
+  testSession.revealed =
+    true;
+
+  document
+    .getElementById(
+      "answerArea"
+    )
+    .classList
+    .add("active");
+
+  document
+    .getElementById(
+      "ratingArea"
+    )
+    .classList
+    .add("active");
+
+  document
+    .getElementById(
+      "revealAnswerButton"
+    )
+    .style.display =
+      "none";
+}
+
+
+/* ==================================================
+   評価
+================================================== */
+
+async function rateCurrentQuestion(
+  level
+) {
+
+  if (
+    !testSession.revealed ||
+    testSession.rated
+  ) {
+    return;
+  }
+
+  const word =
+    testSession.words[
+      testSession.index
+    ];
+
+  const buttons =
+    document.querySelectorAll(
+      ".rating-button"
+    );
+
+  buttons.forEach(
+    button =>
+      button.disabled = true
+  );
+
+  try {
+
+    await apiRequest(
+      `/words/${encodeURIComponent(
+        word.id
+      )}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+        body: JSON.stringify({
+          memoryLevel: level
+        })
+      }
+    );
+
+    word.memoryLevel =
+      level;
+
+    const index =
+      words.findIndex(
+        item =>
+          item.id ===
+          word.id
+      );
+
+    if (index !== -1) {
+      words[index].memoryLevel =
+        level;
+    }
+
+    testSession.counts[
+      level
+    ] += 1;
+
+    testSession.rated =
+      true;
+
+    resetRatingButtons();
+
+    getRatingButton(
+      level
+    ).classList.add(
+      "selected"
+    );
+
+    disableRatingButtons();
+
+    document
+      .getElementById(
+        "nextTestButton"
+      )
+      .classList
+      .add("active");
+
+  } catch (error) {
+
+    buttons.forEach(
+      button =>
+        button.disabled = false
+    );
+
+    if (error.status === 401) {
+
+      handleAuthenticationExpired();
+      return;
+
+    }
+
+    alert(
+      "評価の保存に失敗しました。
+" +
+      error.message
+    );
+  }
+}
+
+
+function getRatingButton(level) {
+
+  if (
+    level === "perfect"
+  ) {
+    return document.getElementById(
+      "perfectRatingButton"
+    );
+  }
+
+  if (
+    level === "review"
+  ) {
+    return document.getElementById(
+      "reviewRatingButton"
+    );
+  }
+
+  return document.getElementById(
+    "weakRatingButton"
+  );
+}
+
+
+function resetRatingButtons() {
+
+  document
+    .querySelectorAll(
+      ".rating-button"
+    )
+    .forEach(
+      button => {
+        button.classList.remove(
+          "selected"
+        );
+        button.disabled = false;
+      }
+    );
+}
+
+
+function disableRatingButtons() {
+
+  document
+    .querySelectorAll(
+      ".rating-button"
+    )
+    .forEach(
+      button =>
+        button.disabled = true
+    );
+}
+
+
+function nextTestQuestion() {
+
+  if (!testSession.rated) {
+
+    alert(
+      "まず評価を選んでください。"
+    );
+
+    return;
+  }
+
+  testSession.index += 1;
+
+  if (
+    testSession.index >=
+    testSession.words.length
+  ) {
+
+    finishTest();
+    return;
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+  renderTestQuestion();
+}
+
+
+function finishTest() {
+
+  document
+    .getElementById(
+      "resultTotal"
+    )
+    .textContent =
+      testSession.words.length +
+      "問終了";
+
+  document
+    .getElementById(
+      "resultPerfect"
+    )
+    .textContent =
+      "💯 完璧：" +
+      testSession.counts.perfect +
+      "問";
+
+  document
+    .getElementById(
+      "resultReview"
+    )
+    .textContent =
+      "🧠 もっと覚える：" +
+      testSession.counts.review +
+      "問";
+
+  document
+    .getElementById(
+      "resultWeak"
+    )
+    .textContent =
+      "🫠 まだまだ：" +
+      testSession.counts.weak +
+      "問";
+
+  document
+    .getElementById(
+      "retryWeakButton"
+    )
+    .disabled =
+      testSession.counts.weak === 0;
+
+  document
+    .getElementById(
+      "retryReviewButton"
+    )
+    .disabled =
+      testSession.counts.review === 0;
+
+  showScreen(
+    "testResultScreen"
+  );
+}
+
+
+function startFocusedTest(level) {
+
+  const candidates =
+    words.filter(
+      word =>
+        word.memoryLevel ===
+        level
+    );
+
+  if (!candidates.length) {
+
+    alert(
+      "該当する単語がありません。"
+    );
+
+    return;
+  }
+
+  testSession = {
+
+    words:
+      shuffleArray(
+        candidates
+      ),
+
+    index: 0,
+    revealed: false,
+    rated: false,
+    mode: level,
+    modeLabel:
+      level === "weak"
+        ? "🫠 まだまだ"
+        : "🧠 もっと覚える",
+
+    counts: {
+      perfect: 0,
+      review: 0,
+      weak: 0
+    }
+  };
+
+  showScreen(
+    "testQuestionScreen"
+  );
+
+  renderTestQuestion();
+}
+
+
+function restartSameTest() {
+
+  const candidates =
+    getWordsForTest(
+      testSession.mode
+    );
+
+  if (!candidates.length) {
+
+    alert(
+      "現在、この条件で出題できる単語がありません。"
+    );
+
+    return;
+  }
+
+  testSession = {
+
+    words:
+      shuffleArray(
+        candidates
+      ),
+
+    index: 0,
+    revealed: false,
+    rated: false,
+    mode: testSession.mode,
+    modeLabel:
+      testSession.modeLabel,
+
+    counts: {
+      perfect: 0,
+      review: 0,
+      weak: 0
+    }
+  };
+
+  showScreen(
+    "testQuestionScreen"
+  );
+
+  renderTestQuestion();
+}
+
+
+function exitTest() {
+
+  if (
+    confirm(
+      "テストを途中で終了しますか？
+
+すでに選択した評価は保存されています。"
+    )
+  ) {
+
+    showScreen(
+      "testSetupScreen"
+    );
+
+  }
+}
+
+
+/* ==================================================
+   初期化
+================================================== */
+
 checkAuth();
 </script>
 </body>
