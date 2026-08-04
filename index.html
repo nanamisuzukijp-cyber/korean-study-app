@@ -933,19 +933,43 @@ function startTest() {
     modeLabel = "🏷️ " + document.getElementById("testTagSelect").value;
   }
 
-  testSession = {
-    words: shuffleArray(candidates),
+const shuffled = shuffleArray(candidates);
+
+let questionCount = shuffled.length;
+
+if(shuffled.length >= 20){
+
+    questionCount = Number(
+        document.getElementById("testQuestionCount").value
+    );
+
+}
+
+testSession = {
+
+    words: shuffled.slice(0, questionCount),
+
     index: 0,
+
     revealed: false,
+
     rated: false,
+
     mode: selectedTestMode,
+
     modeLabel: modeLabel,
+
     counts: {
-      perfect: 0,
-      review: 0,
-      weak: 0
+
+        perfect: 0,
+
+        review: 0,
+
+        weak: 0
+
     }
-  };
+
+};
 
   showScreen("testQuestionScreen");
   renderTestQuestion();
