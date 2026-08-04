@@ -848,6 +848,49 @@ function getWordsForTest(mode) {
   return [];
 }
 
+  function updateQuestionCountSelect(count){
+
+    const area = document.getElementById("testCountArea");
+    const select = document.getElementById("testQuestionCount");
+
+    select.innerHTML = "";
+
+    if(count < 20){
+
+        area.classList.remove("active");
+        return;
+
+    }
+
+    area.classList.add("active");
+
+    const options = [];
+
+    if(count >= 20) options.push(10);
+    if(count >= 30) options.push(20);
+    if(count >= 40) options.push(30);
+    if(count >= 50) options.push(40);
+    if(count >= 50) options.push(50);
+
+    options.forEach(function(value){
+
+        const option = document.createElement("option");
+
+        option.value = value;
+        option.textContent = value + "問";
+
+        select.appendChild(option);
+
+    });
+
+    const allOption = document.createElement("option");
+
+    allOption.value = count;
+    allOption.textContent = "全件（" + count + "問）";
+
+    select.appendChild(allOption);
+
+}
 function updateAvailableTestCount() {
 
     const count = getWordsForTest(selectedTestMode).length;
