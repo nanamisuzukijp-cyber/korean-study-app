@@ -922,18 +922,24 @@ function updateAvailableTestCount() {
     document.getElementById("startTestButton").disabled =
         count === 0;
 
+    const select = document.getElementById("testQuestionCount");
+
+    const saved = localStorage.getItem("testQuestionCount");
+
+    if(saved && select.querySelector('option[value="' + saved + '"]')){
+        select.value = saved;
+    }
+
+    select.onchange = function(){
+
+        localStorage.setItem(
+            "testQuestionCount",
+            this.value
+        );
+
+    };
 }
-
-select.onchange = function(){
-
-    localStorage.setItem(
-        "testQuestionCount",
-        this.value
-    );
-
-};
-}
-
+  
 function shuffleArray(array) {
   const result = array.slice();
 
