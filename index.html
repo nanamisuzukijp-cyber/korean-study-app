@@ -849,9 +849,17 @@ function getWordsForTest(mode) {
 }
 
 function updateAvailableTestCount() {
-  const count = getWordsForTest(selectedTestMode).length;
-  document.getElementById("availableTestCount").textContent = "出題可能な単語：" + count + "件";
-  document.getElementById("startTestButton").disabled = count === 0;
+
+    const count = getWordsForTest(selectedTestMode).length;
+
+    updateQuestionCountSelect(count);
+
+    document.getElementById("availableTestCount").textContent =
+        "出題可能な単語：" + count + "件";
+
+    document.getElementById("startTestButton").disabled =
+        count === 0;
+
 }
 
 function shuffleArray(array) {
