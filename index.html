@@ -824,7 +824,6 @@ function selectTestMode(mode) {
 
   const tagSelect = document.getElementById("testTagSelect");
   
-  // タグ変更時に件数を即座に再計算するイベントを設定
   tagSelect.onchange = function() {
     updateAvailableTestCount();
   };
@@ -867,31 +866,26 @@ function updateQuestionCountSelect(count) {
 
   select.innerHTML = "";
 
-  if (count < 20) {
+  // 10件未満の場合は出題数選択を非表示
+  if (count < 10) {
     area.classList.remove("active");
     return;
   }
 
   area.classList.add("active");
 
-  const options = [];
-
-  if (count >= 20) options.push(10);
-  if (count >= 30) options.push(20);
-  if (count >= 40) options.push(30);
-  if (count >= 50) options.push(40);
-  if (count >= 50) options.push(50);
-
-  options.forEach(function(value) {
+  // 10件刻みで選択肢を追加（上限は全件数未満まで）
+  for (let i = 10; i < count; i += 10) {
     const option = document.createElement("option");
-    option.value = value;
-    option.textContent = value + "問";
+    option.value = i;
+    option.textContent = i + "件";
     select.appendChild(option);
-  });
+  }
 
+  // 最後に「全件（○件）」を追加
   const allOption = document.createElement("option");
   allOption.value = count;
-  allOption.textContent = "全件（" + count + "問）";
+  allOption.textContent = "全件（" + count + "件）";
   select.appendChild(allOption);
 }
 
@@ -908,7 +902,7 @@ function updateAvailableTestCount() {
   const select = document.getElementById("testQuestionCount");
   if (select) {
     const saved = localStorage.getItem("testQuestionCount");
-    if (saved) {
+    if (saved && Array.from(select.options).some(opt => opt.value === saved)) {
       select.value = saved;
     }
 
@@ -949,7 +943,7 @@ function startTest() {
   const shuffled = shuffleArray(candidates);
   let questionCount = shuffled.length;
 
-  if (shuffled.length >= 20) {
+  if (shuffled.length >= 10) {
     questionCount = Number(document.getElementById("testQuestionCount").value);
   }
 
