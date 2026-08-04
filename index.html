@@ -28,19 +28,21 @@
     .auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:25px 15px}.auth-card{width:100%;max-width:440px}.auth-card h1{text-align:center;font-size:30px}.auth-subtitle{text-align:center;color:#777;margin:10px 0 25px;line-height:1.6}.auth-switch{text-align:center;margin-top:18px;font-size:14px;color:#777}.auth-link{border:none;background:none;color:#3b5ccc;padding:0;text-decoration:underline}.auth-note{font-size:12px;color:#888;line-height:1.6;margin-top:14px}
     .setup-question{margin:0 0 18px;font-size:18px;font-weight:700}.test-mode-list{display:grid;gap:12px}.test-mode-button{width:100%;text-align:left;border:2px solid #e1e1e1;border-radius:14px;padding:16px;background:#fff}.test-mode-button:hover{border-color:#c7cce9}.test-mode-button.selected{border-color:#5b67c8;background:#f3f5ff}.test-mode-title{display:block;font-size:17px;font-weight:700;margin-bottom:4px}.test-mode-description{display:block;color:#777;font-size:13px;line-height:1.5}.test-tag-area{margin-top:20px;padding-top:20px;border-top:1px solid #eee;display:none}.test-tag-area.active{display:block}
     .test-count-area{
-      margin-top:20px;
-      padding-top:20px;
-      border-top:1px solid #eee;
-      display:none;
-    }
-    .test-count-area.active{
-      display:block;
-    }
-    .test-count-area label{
-      display:block;
-      font-weight:700;
-      margin-bottom:8px;
-    }
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid #eee;
+    display:none;
+}
+
+.test-count-area.active{
+    display:block;
+}
+
+.test-count-area label{
+    display:block;
+    font-weight:700;
+    margin-bottom:8px;
+}
     .test-start-button{width:100%;border:none;border-radius:12px;padding:16px;margin-top:22px;background:#c45454;color:#fff;font-size:18px;font-weight:700}.test-start-button:hover{opacity:.9}.test-start-button:disabled{opacity:.5;cursor:not-allowed}.available-count{margin-top:14px;font-size:14px;color:#777;text-align:center}
     .test-progress{text-align:center;color:#777;font-size:14px;margin-bottom:15px}.test-section-label{font-size:13px;color:#888;margin-bottom:8px}.test-korean-word{font-size:34px;font-weight:700;text-align:center;margin:5px 0 30px;line-height:1.4;word-break:break-word}.test-korean-example-box{padding:18px;background:#f7f7f7;border-radius:14px;margin-bottom:12px}.test-korean-example{font-size:18px;line-height:1.8;margin:0;white-space:pre-wrap;word-break:break-word}.speak-button{width:100%;border:1px solid #d8d8d8;border-radius:10px;padding:11px;background:#fff;margin-bottom:18px;font-weight:700;color:#555}.speak-button:hover{background:#f6f6f6}.reveal-button{width:100%;border:none;border-radius:12px;padding:16px;background:#5b67c8;color:#fff;font-size:17px;font-weight:700}.reveal-button:hover{opacity:.92}
     .answer-area{display:none;margin-top:25px;padding-top:25px;border-top:1px solid #e5e5e5}.answer-area.active{display:block}.answer-block{margin-bottom:22px}.answer-label{font-size:13px;color:#888;margin-bottom:7px}.answer-text{margin:0;font-size:18px;line-height:1.7;white-space:pre-wrap;word-break:break-word}.answer-divider{margin:24px 0;border:none;border-top:1px solid #eee}
@@ -817,7 +819,16 @@ function selectTestMode(mode) {
     button.classList.toggle("selected", button.dataset.mode === mode);
   });
 
-  document.getElementById("testTagArea").classList.toggle("active", mode === "tag");
+  const tagArea = document.getElementById("testTagArea");
+  tagArea.classList.toggle("active", mode === "tag");
+
+  const tagSelect = document.getElementById("testTagSelect");
+  
+  // タグ変更時に件数を即座に再計算するイベントを設定
+  tagSelect.onchange = function() {
+    updateAvailableTestCount();
+  };
+
   updateAvailableTestCount();
 }
 
@@ -839,11 +850,11 @@ function getWordsForTest(mode) {
   }
 
   if (mode === "tag") {
-    const tag = document.getElementById("testTagSelect").value;
+    const tag = document.getElementById("testTagSelect").value.trim();
     if (!tag) return [];
 
     return words.filter(function(word) {
-      return word.tag === tag;
+      return (word.tag || "").trim() === tag;
     });
   }
 
@@ -856,25 +867,31 @@ function updateQuestionCountSelect(count) {
 
   select.innerHTML = "";
 
-  if (count <= 0) {
+  if (count < 20) {
     area.classList.remove("active");
     return;
   }
 
   area.classList.add("active");
 
-  // 10件単位で、総数未満のものを追加
-  for (let i = 10; i < count; i += 10) {
-    const option = document.createElement("option");
-    option.value = i;
-    option.textContent = i + "件";
-    select.appendChild(option);
-  }
+  const options = [];
 
-  // 最後に「全件（count件）」を追加
+  if (count >= 20) options.push(10);
+  if (count >= 30) options.push(20);
+  if (count >= 40) options.push(30);
+  if (count >= 50) options.push(40);
+  if (count >= 50) options.push(50);
+
+  options.forEach(function(value) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value + "問";
+    select.appendChild(option);
+  });
+
   const allOption = document.createElement("option");
   allOption.value = count;
-  allOption.textContent = count + "件（全件）";
+  allOption.textContent = "全件（" + count + "問）";
   select.appendChild(allOption);
 }
 
@@ -891,7 +908,7 @@ function updateAvailableTestCount() {
   const select = document.getElementById("testQuestionCount");
   if (select) {
     const saved = localStorage.getItem("testQuestionCount");
-    if (saved && Array.from(select.options).some(opt => opt.value === saved)) {
+    if (saved) {
       select.value = saved;
     }
 
@@ -932,9 +949,8 @@ function startTest() {
   const shuffled = shuffleArray(candidates);
   let questionCount = shuffled.length;
 
-  const countSelect = document.getElementById("testQuestionCount");
-  if (countSelect && countSelect.value) {
-    questionCount = Number(countSelect.value);
+  if (shuffled.length >= 20) {
+    questionCount = Number(document.getElementById("testQuestionCount").value);
   }
 
   testSession = {
