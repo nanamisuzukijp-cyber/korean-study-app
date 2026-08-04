@@ -142,21 +142,21 @@
         <button type="button" class="test-mode-button" data-mode="weak" onclick="selectTestMode('weak')"><span class="test-mode-title">🫠 まだまだ</span><span class="test-mode-description">「まだまだ」と評価した単語だけを出題します。</span></button>
         <button type="button" class="test-mode-button" data-mode="tag" onclick="selectTestMode('tag')"><span class="test-mode-title">🏷️ タグから選ぶ</span><span class="test-mode-description">選択したタグが付いている単語だけを出題します。</span></button>
       </div>
-<div id="testTagArea" class="test-tag-area">
-  <label for="testTagSelect">出題するタグ</label>
-  <select id="testTagSelect">
-    <option value="">タグを選択してください</option>
-  </select>
-</div>
+      <div id="testTagArea" class="test-tag-area">
+        <label for="testTagSelect">出題するタグ</label>
+        <select id="testTagSelect">
+          <option value="">タグを選択してください</option>
+        </select>
+      </div>
 
-<div id="testCountArea" class="test-count-area">
-  <label for="testQuestionCount">出題数</label>
-  <select id="testQuestionCount"></select>
-</div>
+      <div id="testCountArea" class="test-count-area">
+        <label for="testQuestionCount">出題数</label>
+        <select id="testQuestionCount"></select>
+      </div>
 
-<p id="availableTestCount" class="available-count">
-  出題可能な単語：0件
-</p>
+      <p id="availableTestCount" class="available-count">
+        出題可能な単語：0件
+      </p>
       <button id="startTestButton" type="button" class="test-start-button" onclick="startTest()">テストを始める</button>
     </div>
   </section>
@@ -264,8 +264,10 @@ function showAuthScreen() {
 function clearAuthMessages() {
   ["loginMessage", "registerMessage"].forEach(function(id) {
     const element = document.getElementById(id);
-    element.textContent = "";
-    element.className = "message";
+    if (element) {
+      element.textContent = "";
+      element.className = "message";
+    }
   });
 }
 
@@ -283,8 +285,10 @@ function showRegisterForm() {
 
 function showAuthMessage(id, text, type) {
   const element = document.getElementById(id);
-  element.textContent = text;
-  element.className = "message " + (type || "error");
+  if (element) {
+    element.textContent = text;
+    element.className = "message " + (type || "error");
+  }
 }
 
 function login() {
@@ -848,98 +852,63 @@ function getWordsForTest(mode) {
   return [];
 }
 
-  function updateQuestionCountSelect(count){
+function updateQuestionCountSelect(count) {
+  const area = document.getElementById("testCountArea");
+  const select = document.getElementById("testQuestionCount");
 
-    const area = document.getElementById("testCountArea");
-    const select = document.getElementById("testQuestionCount");
+  select.innerHTML = "";
 
-    select.innerHTML = "";
+  if (count < 20) {
+    area.classList.remove("active");
+    return;
+  }
 
-    if(count < 20){
+  area.classList.add("active");
 
-        area.classList.remove("active");
-        return;
+  const options = [];
 
-    }
+  if (count >= 20) options.push(10);
+  if (count >= 30) options.push(20);
+  if (count >= 40) options.push(30);
+  if (count >= 50) options.push(40);
+  if (count >= 50) options.push(50);
 
-    area.classList.add("active");
+  options.forEach(function(value) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value + "問";
+    select.appendChild(option);
+  });
 
-    const options = [];
-
-    if(count >= 20) options.push(10);
-    if(count >= 30) options.push(20);
-    if(count >= 40) options.push(30);
-    if(count >= 50) options.push(40);
-    if(count >= 50) options.push(50);
-
-    options.forEach(function(value){
-
-        const option = document.createElement("option");
-
-        option.value = value;
-        option.textContent = value + "問";
-
-        select.appendChild(option);
-
-    });
-
-const allOption = document.createElement("option");
-
-allOption.value = count;
-allOption.textContent = "全件（" + count + "問）";
-
-select.appendChild(allOption);
-
-
-// 前回選択した出題数を復元
-const saved = localStorage.getItem("testQuestionCount");
-
-if(saved){
-
-    select.value = saved;
-
+  const allOption = document.createElement("option");
+  allOption.value = count;
+  allOption.textContent = "全件（" + count + "問）";
+  select.appendChild(allOption);
 }
 
-select.onchange = function(){
-
-    localStorage.setItem(
-        "testQuestionCount",
-        this.value
-    );
-
-};
-
-}
 function updateAvailableTestCount() {
+  const count = getWordsForTest(selectedTestMode).length;
 
-    const count = getWordsForTest(selectedTestMode).length;
+  updateQuestionCountSelect(count);
 
-    updateQuestionCountSelect(count);
+  document.getElementById("availableTestCount").textContent =
+    "出題可能な単語：" + count + "件";
 
-    document.getElementById("availableTestCount").textContent =
-        "出題可能な単語：" + count + "件";
+  document.getElementById("startTestButton").disabled = count === 0;
 
-    document.getElementById("startTestButton").disabled =
-        count === 0;
-
-    const select = document.getElementById("testQuestionCount");
-
+  const select = document.getElementById("testQuestionCount");
+  if (select) {
     const saved = localStorage.getItem("testQuestionCount");
-
-    if(saved && select.querySelector('option[value="' + saved + '"]')){
-        select.value = saved;
+    if (saved) {
+      select.value = saved;
     }
 
-    select.onchange = function(){
-
-        localStorage.setItem(
-            "testQuestionCount",
-            this.value
-        );
-
+    select.onchange = function() {
+      localStorage.setItem("testQuestionCount", this.value);
     };
+  }
 }
-  
+
 function shuffleArray(array) {
   const result = array.slice();
 
@@ -968,43 +937,26 @@ function startTest() {
     modeLabel = "🏷️ " + document.getElementById("testTagSelect").value;
   }
 
-const shuffled = shuffleArray(candidates);
+  const shuffled = shuffleArray(candidates);
+  let questionCount = shuffled.length;
 
-let questionCount = shuffled.length;
+  if (shuffled.length >= 20) {
+    questionCount = Number(document.getElementById("testQuestionCount").value);
+  }
 
-if(shuffled.length >= 20){
-
-    questionCount = Number(
-        document.getElementById("testQuestionCount").value
-    );
-
-}
-
-testSession = {
-
+  testSession = {
     words: shuffled.slice(0, questionCount),
-
     index: 0,
-
     revealed: false,
-
     rated: false,
-
     mode: selectedTestMode,
-
     modeLabel: modeLabel,
-
     counts: {
-
-        perfect: 0,
-
-        review: 0,
-
-        weak: 0
-
+      perfect: 0,
+      review: 0,
+      weak: 0
     }
-
-};
+  };
 
   showScreen("testQuestionScreen");
   renderTestQuestion();
