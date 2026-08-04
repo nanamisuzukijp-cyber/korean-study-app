@@ -883,12 +883,31 @@ function getWordsForTest(mode) {
 
     });
 
-    const allOption = document.createElement("option");
+const allOption = document.createElement("option");
 
-    allOption.value = count;
-    allOption.textContent = "全件（" + count + "問）";
+allOption.value = count;
+allOption.textContent = "全件（" + count + "問）";
 
-    select.appendChild(allOption);
+select.appendChild(allOption);
+
+
+// 前回選択した出題数を復元
+const saved = localStorage.getItem("testQuestionCount");
+
+if(saved){
+
+    select.value = saved;
+
+}
+
+select.onchange = function(){
+
+    localStorage.setItem(
+        "testQuestionCount",
+        this.value
+    );
+
+};
 
 }
 function updateAvailableTestCount() {
